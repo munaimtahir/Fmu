@@ -1,5 +1,5 @@
 # Task List (Phase 1)
-- [ ] Scaffold backend & frontend
+- [x] Scaffold backend & frontend
 - [ ] Implement models & migrations
 - [ ] Auth/RBAC
 - [ ] Attendance import + UI
