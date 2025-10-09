@@ -1,0 +1,15 @@
+# Data Model (Phase 1)
+- University, College, Department
+- Program(code, name, type), Cohort(year), Section
+- Term(name, start/end, scheme: semester/year/block)
+- Course(code, title, credits, program, term)
+- Student(roll_no, CNIC, profile...), Admission(category, docs checklist)
+- Enrollment(student, course, term, status)
+- Attendance(enrollment, date, period, present/absent)
+- AssessmentScheme(course, total_weight)
+- AssessmentComponent(name, weight, max_marks)
+- Mark(student, component, marks_obtained)
+- Result(student, course, total_marks, grade, term_result_ref)
+- Transcript(student, term, cgpa/percentage)
+- Document(student, type, path), Verification(status)
+- RequestTicket(type: bonafide/transcript, status)
