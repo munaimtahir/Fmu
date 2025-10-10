@@ -1,6 +1,8 @@
-# Changelog
+
+    # Changelog
 
     ## 2025-10-10
-    - Add comprehensive Docs pack (ENV, ROLES, RULES, ARCHITECTURE, DATAMODEL, API, DATA-GOVERNANCE, OPERATIONS, DEPLOYMENT_TARGETS, SECURITY, CI-CD)
-    - Add ADRs
-    - Add CI & issue templates
+    - Admissions Student CRUD + Search (API, permissions, tests, seed).
+    - Standardized error shape; pagination enabled.
+    - Add demo data and docs snippets (API.students.md, DATAMODEL.students.md).
+    
