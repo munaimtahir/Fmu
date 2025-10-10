@@ -3,6 +3,8 @@ from django.db import models
 class Program(models.Model):
     name = models.CharField(max_length=128, unique=True)
     def __str__(self): return self.name
+    def __str__(self):
+        return self.name
 
 class Course(models.Model):
     code = models.CharField(max_length=32, unique=True)
@@ -17,4 +19,5 @@ class Section(models.Model):
     term = models.CharField(max_length=32)
     teacher = models.CharField(max_length=128)
     class Meta: unique_together = ("course", "term", "teacher")
-    def __str__(self): return f"{self.course.code} {self.term} ({self.teacher})"
+    def __str__(self):
+        return f"{self.course.code} {self.term} ({self.teacher})"
