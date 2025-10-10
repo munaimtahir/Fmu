@@ -1,15 +1,23 @@
-# Data Model (Phase 1)
-- University, College, Department
-- Program(code, name, type), Cohort(year), Section
-- Term(name, start/end, scheme: semester/year/block)
-- Course(code, title, credits, program, term)
-- Student(roll_no, CNIC, profile...), Admission(category, docs checklist)
-- Enrollment(student, course, term, status)
-- Attendance(enrollment, date, period, present/absent)
-- AssessmentScheme(course, total_weight)
-- AssessmentComponent(name, weight, max_marks)
-- Mark(student, component, marks_obtained)
-- Result(student, course, total_marks, grade, term_result_ref)
-- Transcript(student, term, cgpa/percentage)
-- Document(student, type, path), Verification(status)
-- RequestTicket(type: bonafide/transcript, status)
+# Data Model (ERD)
+
+    ```mermaid
+    erDiagram
+      INSTITUTION ||--o{ PROGRAM : offers
+      PROGRAM ||--o{ COURSE : contains
+      COURSE ||--o{ SECTION : offered_as
+      SECTION ||--o{ ENROLLMENT : has
+      STUDENT ||--o{ ENROLLMENT : takes
+      SECTION ||--o{ ATTENDANCE : records
+      SECTION ||--o{ ASSESSMENT : has
+      STUDENT ||--o{ RESULT : receives
+      RESULT ||--o{ AUDIT_LOG : tracks
+    ```
+
+    ## Key Entities
+    - **Student**: demographics, id, status
+    - **Program/Course/Section**: structure of learning
+    - **Enrollment**: student-course binding
+    - **Attendance**: date, presence, reason, entered by
+    - **Assessment**: type, weight, rubric
+    - **Result**: component marks, final grade, published flag
+    - **AuditLog**: who/what/when/why of changes

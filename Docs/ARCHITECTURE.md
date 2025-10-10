@@ -1,7 +1,19 @@
-# Architecture
-- Django REST API (sims_backend)
-- React SPA (sims_frontend)
-- Postgres DB
-- Nginx reverse proxy
-- Object storage for documents (local in dev; S3/minio later)
-- Background jobs (Django-Q or RQ) for PDFs, backups, notifications
+# Architecture Overview
+
+    - **Backend:** Django REST Framework (DRF), Postgres, Redis (optional).
+    - **Frontend:** React (Vite/Next), REST API client, component tests.
+    - **Infra:** Docker Compose (dev), Nginx reverse proxy, SSL (Let's Encrypt).
+
+    ## High-Level Diagram (ASCII)
+    ```
+    [React FE] <--> [DRF API] <--> [Postgres]
+                       |
+                     [Redis]*
+                       |
+                    [Celery]*
+    [Nginx/SSL] sits in front of FE+API in production.
+    ```
+
+    ## Error Handling
+    - Consistent error shape: `{ "error": { "code": "...", "message": "..." } }`.
+    - No PII in logs.
