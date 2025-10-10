@@ -9,7 +9,8 @@ class Course(models.Model):
     title = models.CharField(max_length=255)
     credits = models.PositiveSmallIntegerField(default=3)
     program = models.ForeignKey(Program, on_delete=models.CASCADE, related_name="courses")
-    def __str__(self): return f"{self.code} - {self.title}"
+    def __str__(self):
+        return f"{self.code} - {self.title}"
 
 class Section(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="sections")
