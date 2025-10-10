@@ -1,89 +1,86 @@
+from pathlib import Path
+import os
 
-    from pathlib import Path
-    import os
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-    BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
+DEBUG = os.getenv("DEBUG", "1") == "1"
+ALLOWED_HOSTS = ["*"]
 
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
-    DEBUG = os.getenv("DEBUG", "1") == "1"
-    ALLOWED_HOSTS = ["*"]
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "sims_backend.admissions",
+    "sims_backend.academics",
+    "sims_backend.enrollment",
+    "sims_backend.attendance",
+    "sims_backend.assessments",
+    "sims_backend.results",
+    "sims_backend.transcripts",
+    "sims_backend.audit",
+]
 
-    INSTALLED_APPS = [
-        "django.contrib.admin",
-        "django.contrib.auth",
-        "django.contrib.contenttypes",
-        "django.contrib.sessions",
-        "django.contrib.messages",
-        "django.contrib.staticfiles",
-        "rest_framework",
-        "sims_backend.admissions",
-    ]
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "sims_backend.audit.middleware.WriteAuditMiddleware",
+]
 
-    MIDDLEWARE = [
-        "django.middleware.security.SecurityMiddleware",
-        "django.contrib.sessions.middleware.SessionMiddleware",
-        "django.middleware.common.CommonMiddleware",
-        "django.middleware.csrf.CsrfViewMiddleware",
-        "django.contrib.auth.middleware.AuthenticationMiddleware",
-        "django.contrib.messages.middleware.MessageMiddleware",
-        "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    ]
+ROOT_URLCONF = "sims_backend.urls"
 
-    ROOT_URLCONF = "sims_backend.urls"
+TEMPLATES = [{
+    "BACKEND": "django.template.backends.django.DjangoTemplates",
+    "DIRS": [BASE_DIR / "templates"],
+    "APP_DIRS": True,
+    "OPTIONS": {"context_processors": [
+        "django.template.context_processors.debug",
+        "django.template.context_processors.request",
+        "django.contrib.auth.context_processors.auth",
+        "django.contrib.messages.context_processors.messages",
+    ]},
+}]
 
-    TEMPLATES = [
-        {
-            "BACKEND": "django.template.backends.django.DjangoTemplates",
-            "DIRS": [BASE_DIR / "templates"],
-            "APP_DIRS": True,
-            "OPTIONS": {
-                "context_processors": [
-                    "django.template.context_processors.debug",
-                    "django.template.context_processors.request",
-                    "django.contrib.auth.context_processors.auth",
-                    "django.contrib.messages.context_processors.messages",
-                ],
-            },
-        },
-    ]
+WSGI_APPLICATION = "sims_backend.wsgi.application"
+ASGI_APPLICATION = "sims_backend.asgi.application"
 
-    WSGI_APPLICATION = "sims_backend.wsgi.application"
-    ASGI_APPLICATION = "sims_backend.asgi.application"
+DATABASES = {"default": {"ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"), "NAME": os.getenv("DB_NAME", BASE_DIR / "db.sqlite3")}}
 
-    DATABASES = {
-        "default": {
-            "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"),
-            "NAME": os.getenv("DB_NAME", BASE_DIR / "db.sqlite3"),
-        }
-    }
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
 
-    AUTH_PASSWORD_VALIDATORS = [
-        {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-        {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-        {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-        {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-    ]
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
 
-    LANGUAGE_CODE = "en-us"
-    TIME_ZONE = "UTC"
-    USE_I18N = True
-    USE_TZ = True
+STATIC_URL = "static/"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-    STATIC_URL = "static/"
-    DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-    REST_FRAMEWORK = {
-        "DEFAULT_AUTHENTICATION_CLASSES": (
-            "rest_framework.authentication.SessionAuthentication",
-            "rest_framework.authentication.BasicAuthentication",
-        ),
-        "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-        "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-        "PAGE_SIZE": 10,
-        "EXCEPTION_HANDLER": "core.exceptions.custom_exception_handler",
-        "DEFAULT_FILTER_BACKENDS": [
-            "rest_framework.filters.SearchFilter",
-            "rest_framework.filters.OrderingFilter",
-        ],
-    }
-    
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "EXCEPTION_HANDLER": "core.exceptions.custom_exception_handler",
+    "DEFAULT_FILTER_BACKENDS": [
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ],
+}
