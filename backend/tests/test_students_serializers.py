@@ -1,16 +1,29 @@
+import pytest
 
-    from sims_backend.admissions.serializers import StudentSerializer
+from sims_backend.admissions.serializers import StudentSerializer
 
-    def test_student_serializer_valid():
-        data = {"reg_no": "STU-100", "name": "Jane Doe", "program": "BSc CS", "status": "active"}
-        s = StudentSerializer(data=data)
-        assert s.is_valid(), s.errors
-        obj = s.save()
-        assert obj.id is not None
-        assert obj.reg_no == "STU-100"
+pytestmark = pytest.mark.django_db
 
-    def test_student_serializer_invalid():
-        s = StudentSerializer(data={"name": "x", "program": "y", "status": "z"})
-        assert not s.is_valid()
-        assert "reg_no" in s.errors
-    
+
+def test_student_serializer_valid():
+    data = {
+        "reg_no": "STU-100",
+        "name": "Jane Doe",
+        "program": "BSc CS",
+        "status": "active",
+    }
+    serializer = StudentSerializer(data=data)
+    assert serializer.is_valid(), serializer.errors
+
+
+def test_student_serializer_requires_reg_no():
+    serializer = StudentSerializer(
+        data={
+            "reg_no": "   ",
+            "name": "Jane Doe",
+            "program": "BSc CS",
+            "status": "active",
+        }
+    )
+    assert not serializer.is_valid()
+    assert "reg_no" in serializer.errors

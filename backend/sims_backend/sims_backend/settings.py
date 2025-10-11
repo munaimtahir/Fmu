@@ -33,7 +33,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "sims_backend.audit.middleware.WriteAuditMiddleware",
+    "sims_backend.audit.middleware.WriteAuditMiddleware",
 ]
 
 ROOT_URLCONF = "sims_backend.urls"
