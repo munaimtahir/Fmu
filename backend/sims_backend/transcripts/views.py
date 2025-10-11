@@ -6,4 +6,4 @@ from rest_framework import status
 @api_view(["GET"]) 
 @permission_classes([IsAuthenticated])
 def verify_transcript(request, token: str):
-    return Response({"error": {"code": status.HTTP_501_NOT_IMPLEMENTED, "message": "Not Implemented", "details": {"token": token}}}, status=status.HTTP_501_NOT_IMPLEMENTED)
+    return Response({"error": {"code": 501, "message": "Not Implemented", "details": {"token": token}}}, status=501)
