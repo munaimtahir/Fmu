@@ -25,4 +25,11 @@ def health_check(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('health/', health_check, name='health'),
+    path('api/admissions/', include('sims_backend.admissions.urls')),
+    path('api/academics/', include('sims_backend.academics.urls')),
+    path('api/enrollment/', include('sims_backend.enrollment.urls')),
+    path('api/attendance/', include('sims_backend.attendance.urls')),
+    path('api/assessments/', include('sims_backend.assessments.urls')),
+    path('api/results/', include('sims_backend.results.urls')),
+    path('api/transcripts/', include('sims_backend.transcripts.urls')),
 ]

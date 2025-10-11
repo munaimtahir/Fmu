@@ -1,0 +1,1 @@
+# No serializers for now, as this app will only contain a placeholder view.

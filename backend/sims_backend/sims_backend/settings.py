@@ -17,6 +17,13 @@
         "django.contrib.staticfiles",
         "rest_framework",
         "sims_backend.admissions",
+        "sims_backend.academics",
+        "sims_backend.enrollment",
+        "sims_backend.attendance",
+        "sims_backend.assessments",
+        "sims_backend.results",
+        "sims_backend.transcripts",
+        "sims_backend.audit",
     ]
 
     MIDDLEWARE = [
@@ -27,6 +34,7 @@
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        # 'sims_backend.audit.middleware.AuditMiddleware',
     ]
 
     ROOT_URLCONF = "sims_backend.urls"
