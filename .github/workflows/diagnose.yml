@@ -1,4 +1,4 @@
- 
+x 
 name: Diagnose app_label wiring
 on:
   push:
