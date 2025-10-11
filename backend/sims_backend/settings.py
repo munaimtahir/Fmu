@@ -33,21 +33,26 @@ ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split('
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    # Third-party apps
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'corsheaders',
-    'django_filters',
-    'simple_history',
-    'django_rq',
-    # Local apps
-    'core',
+    # Django
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    # Third-party
+    "rest_framework",
+
+    # SIMS domain apps (must be these module paths)
+    "sims_backend.admissions",
+    "sims_backend.academics",
+    "sims_backend.enrollment",
+    "sims_backend.attendance",
+    "sims_backend.assessments",
+    "sims_backend.results",
+    "sims_backend.transcripts",
+    "sims_backend.audit",
 ]
 
 MIDDLEWARE = [
