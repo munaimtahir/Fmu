@@ -122,9 +122,7 @@ class TestSectionModel:
         )
         Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         with pytest.raises(IntegrityError):
-            Section.objects.create(
-                course=course, term="Fall 2024", teacher="Dr. Smith"
-            )
+            Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
 
 
 class TestEnrollmentModel:
@@ -236,9 +234,7 @@ class TestAssessmentScoreModel:
             course=course, term="Fall 2024", teacher="Dr. Smith"
         )
         assessment = Assessment.objects.create(section=section, type="Quiz")
-        score = AssessmentScore.objects.create(
-            assessment=assessment, student=student
-        )
+        score = AssessmentScore.objects.create(assessment=assessment, student=student)
         assert score.score == 0
         assert score.max_score == 100
 
@@ -255,9 +251,7 @@ class TestAssessmentScoreModel:
             course=course, term="Fall 2024", teacher="Dr. Smith"
         )
         assessment = Assessment.objects.create(section=section, type="Quiz")
-        AssessmentScore.objects.create(
-            assessment=assessment, student=student, score=85
-        )
+        AssessmentScore.objects.create(assessment=assessment, student=student, score=85)
         with pytest.raises(IntegrityError):
             AssessmentScore.objects.create(
                 assessment=assessment, student=student, score=90

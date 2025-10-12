@@ -153,7 +153,10 @@ class TestCommonPermissions:
     def test_unauthenticated_cannot_access_students(self, api_client):
         """Unauthenticated users should be denied."""
         resp = api_client.get("/api/students/")
-        assert resp.status_code in [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN]
+        assert resp.status_code in [
+            status.HTTP_401_UNAUTHORIZED,
+            status.HTTP_403_FORBIDDEN,
+        ]
 
     def test_authenticated_can_read_programs(self, api_client, student_user):
         """All authenticated users should be able to read programs."""

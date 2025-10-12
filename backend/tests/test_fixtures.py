@@ -3,7 +3,6 @@
 import pytest
 from django.contrib.auth.models import Group, User
 
-
 pytestmark = pytest.mark.django_db
 
 

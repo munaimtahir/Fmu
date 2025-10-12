@@ -24,7 +24,7 @@ class TestAdmissionPermissionsCoverage:
     def test_student_cannot_write(self, api_client, student_user):
         """Test that students cannot perform write operations."""
         api_client.force_authenticate(student_user)
-        
+
         resp = api_client.post(
             "/api/students/",
             {
@@ -35,7 +35,7 @@ class TestAdmissionPermissionsCoverage:
             },
             format="json",
         )
-        
+
         # Should be forbidden (students can only read)
         assert resp.status_code in [
             status.HTTP_403_FORBIDDEN,
@@ -50,12 +50,15 @@ class TestAdmissionPermissionsCoverage:
             program="BSc",
             status="active",
         )
-        
+
         api_client.force_authenticate(student_user)
         resp = api_client.get(f"/api/students/{other_student.id}/")
-        
+
         # Should be denied (username doesn't match reg_no)
-        assert resp.status_code in [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND]
+        assert resp.status_code in [
+            status.HTTP_403_FORBIDDEN,
+            status.HTTP_404_NOT_FOUND,
+        ]
 
 
 class TestCommonPermissionsCoverage:
@@ -72,10 +75,10 @@ class TestCommonPermissionsCoverage:
     def test_regular_user_readonly_access(self, api_client):
         """Test user without special groups has read-only access."""
         from django.contrib.auth.models import User
-        
+
         user = User.objects.create_user(username="regular", password="pass")
         api_client.force_authenticate(user)
-        
+
         # Should be able to read
         resp = api_client.get("/api/programs/")
         # Might be 200 OK or 403 depending on exact implementation
@@ -91,7 +94,7 @@ class TestAuditMiddlewareCoverage:
     def test_audit_middleware_exception_handling(self, api_client, admin_user):
         """Test that audit middleware handles exceptions gracefully."""
         api_client.force_authenticate(admin_user)
-        
+
         # Make a successful request that should be audited
         resp = api_client.post(
             "/api/students/",
@@ -103,30 +106,30 @@ class TestAuditMiddlewareCoverage:
             },
             format="json",
         )
-        
+
         assert resp.status_code == status.HTTP_201_CREATED
-        
+
         # Check that audit log was created
         from sims_backend.audit.models import AuditLog
-        
+
         assert AuditLog.objects.filter(method="POST", status_code=201).exists()
 
     def test_audit_middleware_model_label_resolution(self, api_client, admin_user):
         """Test audit middleware model label resolution."""
         from sims_backend.academics.models import Program
-        
+
         api_client.force_authenticate(admin_user)
-        
+
         resp = api_client.post(
             "/api/programs/",
             {"name": "Test Program Audit"},
             format="json",
         )
-        
+
         assert resp.status_code == status.HTTP_201_CREATED
-        
+
         from sims_backend.audit.models import AuditLog
-        
+
         log = AuditLog.objects.filter(method="POST").latest("timestamp")
         # Model should be captured in the log
         assert log.model is not None or "Program" in log.summary
@@ -150,7 +153,7 @@ class TestSerializerValidationCoverage:
     def test_student_serializer_validation_error(self):
         """Test student serializer validation error path."""
         from sims_backend.admissions.serializers import StudentSerializer
-        
+
         # Missing required fields should fail validation
         serializer = StudentSerializer(data={})
         assert not serializer.is_valid()

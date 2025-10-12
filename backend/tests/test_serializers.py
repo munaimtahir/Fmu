@@ -4,18 +4,14 @@ import pytest
 from django.utils import timezone
 
 from sims_backend.academics.models import Course, Program, Section
-from sims_backend.academics.serializers import (
-    CourseSerializer,
-    ProgramSerializer,
-    SectionSerializer,
-)
+from sims_backend.academics.serializers import (CourseSerializer,
+                                                ProgramSerializer,
+                                                SectionSerializer)
 from sims_backend.admissions.models import Student
 from sims_backend.admissions.serializers import StudentSerializer
 from sims_backend.assessments.models import Assessment, AssessmentScore
-from sims_backend.assessments.serializers import (
-    AssessmentScoreSerializer,
-    AssessmentSerializer,
-)
+from sims_backend.assessments.serializers import (AssessmentScoreSerializer,
+                                                  AssessmentSerializer)
 from sims_backend.attendance.models import Attendance
 from sims_backend.attendance.serializers import AttendanceSerializer
 from sims_backend.enrollment.models import Enrollment
@@ -128,9 +124,7 @@ class TestEnrollmentSerializer:
         section = Section.objects.create(
             course=course, term="Fall 2024", teacher="Dr. Smith"
         )
-        Enrollment.objects.create(
-            student=student, section=section, status="enrolled"
-        )
+        Enrollment.objects.create(student=student, section=section, status="enrolled")
         data = {"student": student.id, "section": section.id, "status": "enrolled"}
         serializer = EnrollmentSerializer(data=data)
         assert not serializer.is_valid()
@@ -223,9 +217,7 @@ class TestAssessmentScoreSerializer:
         section = Section.objects.create(
             course=course, term="Fall 2024", teacher="Dr. Smith"
         )
-        assessment = Assessment.objects.create(
-            section=section, type="Quiz", weight=10
-        )
+        assessment = Assessment.objects.create(section=section, type="Quiz", weight=10)
         data = {
             "assessment": assessment.id,
             "student": student.id,

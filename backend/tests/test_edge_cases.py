@@ -12,10 +12,10 @@ class TestTranscriptViews:
     def test_verify_transcript_placeholder(self, api_client, admin_user):
         """Test transcript verification endpoint (placeholder)."""
         api_client.force_authenticate(admin_user)
-        
+
         # Call the verify endpoint with a dummy token
         resp = api_client.get("/api/transcripts/verify/dummy-token-123")
-        
+
         # Currently returns 501 Not Implemented
         assert resp.status_code in [status.HTTP_200_OK, status.HTTP_501_NOT_IMPLEMENTED]
         if resp.status_code == status.HTTP_200_OK:
@@ -40,7 +40,7 @@ class TestAdmissionPermissionObjectLevel:
     def test_student_can_read_own_detail(self, api_client, student_user):
         """Test student can read their own details."""
         from sims_backend.admissions.models import Student
-        
+
         # Create the student that matches the user
         student = Student.objects.create(
             reg_no="STU-0001",
@@ -48,27 +48,27 @@ class TestAdmissionPermissionObjectLevel:
             program="BSc",
             status="active",
         )
-        
+
         api_client.force_authenticate(student_user)
         resp = api_client.get(f"/api/students/{student.id}/")
-        
+
         # Should succeed since username matches reg_no
         assert resp.status_code in [status.HTTP_200_OK, status.HTTP_404_NOT_FOUND]
 
     def test_admin_object_permission(self, api_client, admin_user):
         """Test admin can access any student object."""
         from sims_backend.admissions.models import Student
-        
+
         student = Student.objects.create(
             reg_no="STU-999",
             name="Any Student",
             program="BSc",
             status="active",
         )
-        
+
         api_client.force_authenticate(admin_user)
         resp = api_client.get(f"/api/students/{student.id}/")
-        
+
         assert resp.status_code == status.HTTP_200_OK
 
 
@@ -97,14 +97,14 @@ class TestAuditMiddlewareEdgeCases:
     def test_middleware_handles_invalid_response_data(self, api_client, admin_user):
         """Test middleware handles responses without standard data structure."""
         api_client.force_authenticate(admin_user)
-        
+
         # DELETE returns 204 with no content
         from sims_backend.admissions.models import Student
-        
+
         student = Student.objects.create(
             reg_no="DEL-001", name="To Delete", program="BSc", status="active"
         )
-        
+
         resp = api_client.delete(f"/api/students/{student.id}/")
         assert resp.status_code == status.HTTP_204_NO_CONTENT
 
@@ -115,7 +115,7 @@ class TestSerializerEdgeCases:
     def test_student_serializer_empty_reg_no_validation(self):
         """Test that empty registration numbers are rejected."""
         from sims_backend.admissions.serializers import StudentSerializer
-        
+
         # This should trigger the validate_reg_no method
         data = {
             "reg_no": "   ",  # Whitespace only
@@ -134,14 +134,14 @@ class TestPermissionHelperFunctions:
     def test_in_group_with_none_user(self):
         """Test _in_group handles None user gracefully."""
         from sims_backend.admissions.permissions import _in_group
-        
+
         result = _in_group(None, "Admin")
         assert result is False
 
     def test_common_in_group_with_none_user(self):
         """Test in_group handles None user gracefully."""
         from sims_backend.common_permissions import in_group
-        
+
         result = in_group(None, "Admin")
         assert result is False
 
@@ -154,7 +154,7 @@ class TestAssessmentScoreViews:
         from sims_backend.academics.models import Course, Program, Section
         from sims_backend.admissions.models import Student
         from sims_backend.assessments.models import Assessment, AssessmentScore
-        
+
         student = Student.objects.create(
             reg_no="STU-001", name="Test", program="BSc", status="active"
         )
@@ -165,13 +165,11 @@ class TestAssessmentScoreViews:
         section = Section.objects.create(
             course=course, term="Fall 2024", teacher="Dr. Smith"
         )
-        assessment = Assessment.objects.create(
-            section=section, type="Quiz", weight=10
-        )
+        assessment = Assessment.objects.create(section=section, type="Quiz", weight=10)
         AssessmentScore.objects.create(
             assessment=assessment, student=student, score=85, max_score=100
         )
-        
+
         api_client.force_authenticate(admin_user)
         resp = api_client.get("/api/assessment-scores/")
         assert resp.status_code == status.HTTP_200_OK
