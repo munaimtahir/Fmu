@@ -1,13 +1,10 @@
 """Comprehensive permission tests for all modules."""
 
 import pytest
-from django.contrib.auth.models import Group, User
 from rest_framework import status
-from rest_framework.test import APIClient
 
-from sims_backend.academics.models import Course, Program, Section
+from sims_backend.academics.models import Program
 from sims_backend.admissions.models import Student
-from sims_backend.enrollment.models import Enrollment
 
 pytestmark = pytest.mark.django_db
 

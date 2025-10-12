@@ -4,13 +4,11 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from sims_backend.common_permissions import \
-    IsAdminOrRegistrarReadOnlyFacultyStudent
+from sims_backend.common_permissions import IsAdminOrRegistrarReadOnlyFacultyStudent
 
 from .models import Attendance
 from .serializers import AttendanceSerializer
-from .utils import (calculate_attendance_percentage, check_eligibility,
-                    get_section_attendance_summary)
+from .utils import calculate_attendance_percentage, check_eligibility, get_section_attendance_summary
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):

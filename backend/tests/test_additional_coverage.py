@@ -74,7 +74,6 @@ class TestCommonPermissionsCoverage:
 
     def test_regular_user_readonly_access(self, api_client):
         """Test user without special groups has read-only access."""
-        from django.contrib.auth.models import User
 
         user = User.objects.create_user(username="regular", password="pass")
         api_client.force_authenticate(user)
@@ -116,7 +115,6 @@ class TestAuditMiddlewareCoverage:
 
     def test_audit_middleware_model_label_resolution(self, api_client, admin_user):
         """Test audit middleware model label resolution."""
-        from sims_backend.academics.models import Program
 
         api_client.force_authenticate(admin_user)
 

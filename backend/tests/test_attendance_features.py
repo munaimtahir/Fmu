@@ -6,9 +6,11 @@ from rest_framework import status
 from sims_backend.academics.models import Course, Program, Section
 from sims_backend.admissions.models import Student
 from sims_backend.attendance.models import Attendance
-from sims_backend.attendance.utils import (calculate_attendance_percentage,
-                                           check_eligibility,
-                                           get_section_attendance_summary)
+from sims_backend.attendance.utils import (
+    calculate_attendance_percentage,
+    check_eligibility,
+    get_section_attendance_summary,
+)
 
 pytestmark = pytest.mark.django_db
 

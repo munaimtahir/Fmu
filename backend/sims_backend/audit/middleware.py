@@ -32,8 +32,7 @@ class WriteAuditMiddleware:
         if status_code >= 400:
             return
 
-        from .models import \
-            AuditLog  # Local import to avoid AppRegistryNotReady
+        from .models import AuditLog  # Local import to avoid AppRegistryNotReady
 
         resolver_match = getattr(request, "resolver_match", None)
         model_label = self._resolve_model_label(resolver_match)

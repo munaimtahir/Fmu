@@ -4,19 +4,13 @@ import pytest
 from django.utils import timezone
 
 from sims_backend.academics.models import Course, Program, Section
-from sims_backend.academics.serializers import (CourseSerializer,
-                                                ProgramSerializer,
-                                                SectionSerializer)
+from sims_backend.academics.serializers import CourseSerializer, ProgramSerializer, SectionSerializer
 from sims_backend.admissions.models import Student
-from sims_backend.admissions.serializers import StudentSerializer
-from sims_backend.assessments.models import Assessment, AssessmentScore
-from sims_backend.assessments.serializers import (AssessmentScoreSerializer,
-                                                  AssessmentSerializer)
-from sims_backend.attendance.models import Attendance
+from sims_backend.assessments.models import Assessment
+from sims_backend.assessments.serializers import AssessmentScoreSerializer, AssessmentSerializer
 from sims_backend.attendance.serializers import AttendanceSerializer
 from sims_backend.enrollment.models import Enrollment
 from sims_backend.enrollment.serializers import EnrollmentSerializer
-from sims_backend.results.models import Result
 from sims_backend.results.serializers import ResultSerializer
 
 pytestmark = pytest.mark.django_db

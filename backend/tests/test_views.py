@@ -5,7 +5,7 @@ from rest_framework import status
 
 from sims_backend.academics.models import Course, Program, Section
 from sims_backend.admissions.models import Student
-from sims_backend.assessments.models import Assessment, AssessmentScore
+from sims_backend.assessments.models import Assessment
 from sims_backend.attendance.models import Attendance
 from sims_backend.enrollment.models import Enrollment
 from sims_backend.results.models import Result

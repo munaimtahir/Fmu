@@ -1,8 +1,6 @@
 """Attendance utility functions for calculating attendance percentage and eligibility."""
 
-from typing import Dict
-
-from django.db.models import Count, Q
+from typing import Any
 
 from sims_backend.attendance.models import Attendance
 
@@ -33,7 +31,7 @@ def calculate_attendance_percentage(student_id: int, section_id: int) -> float:
 
 def check_eligibility(
     student_id: int, section_id: int, threshold: float = 75.0
-) -> Dict[str, any]:
+) -> dict[str, Any]:
     """
     Check if a student is eligible based on attendance threshold.
 
@@ -58,7 +56,7 @@ def check_eligibility(
     }
 
 
-def get_section_attendance_summary(section_id: int) -> Dict[str, any]:
+def get_section_attendance_summary(section_id: int) -> dict[str, Any]:
     """
     Get attendance summary for a section.
 
