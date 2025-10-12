@@ -1,7 +1,8 @@
+import uuid
+
+import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
-import django.utils.timezone
-import uuid
 
 
 class Migration(migrations.Migration):
@@ -15,8 +16,21 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="AuditLog",
             fields=[
-                ("id", models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ("timestamp", models.DateTimeField(db_index=True, default=django.utils.timezone.now)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "timestamp",
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now
+                    ),
+                ),
                 ("method", models.CharField(max_length=16)),
                 ("path", models.TextField()),
                 ("status_code", models.PositiveIntegerField()),

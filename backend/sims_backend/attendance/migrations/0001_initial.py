@@ -1,5 +1,6 @@
-from django.db import migrations, models
 import django.db.models.deletion
+from django.db import migrations, models
+
 
 class Migration(migrations.Migration):
     initial = True
@@ -12,8 +13,22 @@ class Migration(migrations.Migration):
                 ("date", models.DateField()),
                 ("present", models.BooleanField(default=True)),
                 ("reason", models.CharField(max_length=255, blank=True, default="")),
-                ("section", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="attendance", to="academics.section")),
-                ("student", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="attendance", to="admissions.student")),
+                (
+                    "section",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="attendance",
+                        to="academics.section",
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="attendance",
+                        to="admissions.student",
+                    ),
+                ),
             ],
             options={"unique_together": {("section", "student", "date")}},
         ),

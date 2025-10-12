@@ -1,9 +1,13 @@
 from rest_framework import viewsets
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.filters import SearchFilter, OrderingFilter
-from sims_backend.common_permissions import IsAdminOrRegistrarReadOnlyFacultyStudent
+
+from sims_backend.common_permissions import \
+    IsAdminOrRegistrarReadOnlyFacultyStudent
+
 from .models import Assessment, AssessmentScore
-from .serializers import AssessmentSerializer, AssessmentScoreSerializer
+from .serializers import AssessmentScoreSerializer, AssessmentSerializer
+
 
 class AssessmentViewSet(viewsets.ModelViewSet):
     queryset = Assessment.objects.all()
@@ -12,6 +16,7 @@ class AssessmentViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["section__course__code", "type"]
     ordering_fields = ["id", "weight"]
+
 
 class AssessmentScoreViewSet(viewsets.ModelViewSet):
     queryset = AssessmentScore.objects.all()
