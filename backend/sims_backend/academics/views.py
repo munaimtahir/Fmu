@@ -1,9 +1,12 @@
 from rest_framework import viewsets
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.filters import SearchFilter, OrderingFilter
+
 from sims_backend.common_permissions import IsAdminOrRegistrarReadOnlyFacultyStudent
-from .models import Program, Course, Section
-from .serializers import ProgramSerializer, CourseSerializer, SectionSerializer
+
+from .models import Course, Program, Section
+from .serializers import CourseSerializer, ProgramSerializer, SectionSerializer
+
 
 class ProgramViewSet(viewsets.ModelViewSet):
     queryset = Program.objects.all()
@@ -13,6 +16,7 @@ class ProgramViewSet(viewsets.ModelViewSet):
     search_fields = ["name"]
     ordering_fields = ["id", "name"]
 
+
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -20,6 +24,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["code", "title"]
     ordering_fields = ["id", "code", "title", "credits"]
+
 
 class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()

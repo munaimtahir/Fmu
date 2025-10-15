@@ -5,7 +5,7 @@ from .models import Student
 
 def _in_group(user, group_name: str) -> bool:
     try:
-        return user.groups.filter(name=group_name).exists()
+        return bool(user.groups.filter(name=group_name).exists())
     except Exception:
         return False
 

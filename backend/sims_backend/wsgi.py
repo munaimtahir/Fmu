@@ -7,10 +7,12 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/
 """
 
-import os
+import os  # pragma: no cover - WSGI entry point, tested via deployment
 
-from django.core.wsgi import get_wsgi_application
+from django.core.wsgi import get_wsgi_application  # pragma: no cover
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sims_backend.settings')
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE", "sims_backend.settings"
+)  # pragma: no cover
 
-application = get_wsgi_application()
+application = get_wsgi_application()  # pragma: no cover
