@@ -65,12 +65,12 @@ class WriteAuditMiddleware:
         if queryset is not None:
             model = getattr(queryset, "model", None)
             if model is not None:
-                return model._meta.label
+                return str(model._meta.label)
         serializer_class = getattr(view_cls, "serializer_class", None)
         if serializer_class is not None:
             model = getattr(getattr(serializer_class, "Meta", None), "model", None)
             if model is not None:
-                return model._meta.label
+                return str(model._meta.label)
         return ""
 
     @staticmethod

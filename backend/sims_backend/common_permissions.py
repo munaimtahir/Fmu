@@ -3,7 +3,7 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 def in_group(user, group_name: str) -> bool:
     try:
-        return user.groups.filter(name=group_name).exists()
+        return bool(user.groups.filter(name=group_name).exists())
     except (AttributeError, TypeError):
         return False
 
