@@ -23,6 +23,8 @@ class TestStudentModel:
             reg_no="STU-001", name="John Doe", program="BSc CS", status="active"
         )
         assert str(student) == "STU-001 - John Doe"
+        # Explicitly call __str__ to ensure 100% coverage
+        assert student.__str__() == "STU-001 - John Doe"
 
     def test_unique_reg_no(self):
         """Test that reg_no must be unique."""
@@ -58,6 +60,8 @@ class TestProgramModel:
         """Test program string representation."""
         program = Program.objects.create(name="Bachelor of Science")
         assert str(program) == "Bachelor of Science"
+        # Explicitly call __str__ to ensure 100% coverage
+        assert program.__str__() == "Bachelor of Science"
 
     def test_unique_name(self):
         """Test that program name must be unique."""
@@ -79,6 +83,8 @@ class TestCourseModel:
             program=program,
         )
         assert str(course) == "CS101 - Introduction to Programming"
+        # Explicitly call __str__ to ensure 100% coverage
+        assert course.__str__() == "CS101 - Introduction to Programming"
 
     def test_unique_code(self):
         """Test that course code must be unique."""

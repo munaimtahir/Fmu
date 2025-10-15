@@ -400,3 +400,31 @@ class TestAttendanceAPIEndpoints:
 
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
         assert "error" in resp.json()
+
+    def test_attendance_percentage_invalid_ids(self, api_client, admin_user):
+        """Test attendance percentage with invalid IDs."""
+        api_client.force_authenticate(admin_user)
+        resp = api_client.get(
+            "/api/attendance/percentage/?student_id=invalid&section_id=also_invalid"
+        )
+
+        assert resp.status_code == status.HTTP_400_BAD_REQUEST
+        assert "error" in resp.json()
+
+    def test_eligibility_invalid_ids(self, api_client, admin_user):
+        """Test eligibility endpoint with invalid IDs."""
+        api_client.force_authenticate(admin_user)
+        resp = api_client.get(
+            "/api/attendance/eligibility/?student_id=invalid&section_id=999999"
+        )
+
+        assert resp.status_code == status.HTTP_400_BAD_REQUEST
+        assert "error" in resp.json()
+
+    def test_section_summary_invalid_id(self, api_client, admin_user):
+        """Test section summary with invalid section ID."""
+        api_client.force_authenticate(admin_user)
+        resp = api_client.get("/api/attendance/section-summary/?section_id=invalid")
+
+        assert resp.status_code == status.HTTP_400_BAD_REQUEST
+        assert "error" in resp.json()
