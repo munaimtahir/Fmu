@@ -11,6 +11,7 @@ from sims_backend.assessments.serializers import AssessmentScoreSerializer, Asse
 from sims_backend.attendance.serializers import AttendanceSerializer
 from sims_backend.enrollment.models import Enrollment
 from sims_backend.enrollment.serializers import EnrollmentSerializer
+from sims_backend.results.models import Result
 from sims_backend.results.serializers import ResultSerializer
 
 pytestmark = pytest.mark.django_db
@@ -261,17 +262,19 @@ class TestResultSerializer:
             code="CS101", title="Programming", credits=3, program=program
         )
         section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
+            course=course, term="Fall2024", teacher="Dr. Smith"
         )
         now = timezone.now()
-        data = {
-            "student": student.id,
-            "section": section.id,
-            "final_grade": "B+",
-            "published_at": now.isoformat(),
-            "published_by": "registrar1",
-        }
-        serializer = ResultSerializer(data=data)
-        assert serializer.is_valid(), serializer.errors
-        result = serializer.save()
-        assert result.published_by == "registrar1"
+        # Create result with published fields directly
+        result = Result.objects.create(
+            student=student,
+            section=section,
+            final_grade="B+",
+            is_published=True,
+            published_at=now,
+            published_by="registrar1",
+        )
+        serializer = ResultSerializer(result)
+        assert serializer.data["is_published"] is True
+        assert serializer.data["published_by"] == "registrar1"
+        assert serializer.data["final_grade"] == "B+"

@@ -10,16 +10,17 @@ class TestTranscriptViews:
     """Test transcript verification endpoints."""
 
     def test_verify_transcript_placeholder(self, api_client, admin_user):
-        """Test transcript verification endpoint (placeholder)."""
+        """Test transcript verification endpoint."""
         api_client.force_authenticate(admin_user)
 
         # Call the verify endpoint with a dummy token
-        resp = api_client.get("/api/transcripts/verify/dummy-token-123")
+        resp = api_client.get("/api/transcripts/verify/dummy-token-123/")
 
-        # Currently returns 501 Not Implemented
-        assert resp.status_code in [status.HTTP_200_OK, status.HTTP_501_NOT_IMPLEMENTED]
-        if resp.status_code == status.HTTP_200_OK:
-            assert "message" in resp.json()
+        # Now returns 200 with validation result
+        assert resp.status_code == status.HTTP_200_OK
+        assert "valid" in resp.json()
+        # With an invalid token, should return valid=False
+        assert resp.json()["valid"] is False
 
 
 class TestHealthCheck:
