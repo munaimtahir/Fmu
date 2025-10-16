@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "sims_backend.attendance",
     "sims_backend.assessments",
     "sims_backend.results",
+    "sims_backend.requests",
     "sims_backend.transcripts",
     "sims_backend.audit",
 ]

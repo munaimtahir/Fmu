@@ -26,6 +26,7 @@ class Section(models.Model):
     )
     term = models.CharField(max_length=32)
     teacher = models.CharField(max_length=128)
+    capacity = models.PositiveIntegerField(default=30)
 
     class Meta:
         unique_together = ("course", "term", "teacher")
