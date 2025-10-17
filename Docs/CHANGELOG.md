@@ -1,5 +1,24 @@
 # Changelog
 
+## 2025-10-17 - Remediation Complete
+### Django Configuration
+- Added `core` app to INSTALLED_APPS (was missing despite being used)
+- Verified all third-party apps registered: corsheaders, django_filters, simple_history, drf_spectacular
+- Confirmed middleware order with CorsMiddleware at top
+- Verified migrations run cleanly with both PostgreSQL and SQLite
+
+### Core Shared Logic Enhancement
+- Refactored Program model to inherit from TimeStampedModel base class
+- Created migration for Program model timestamp fields (created_at, updated_at)
+- Added comprehensive unit tests for Program model timestamp functionality
+- Demonstrated reusable base model pattern across multiple apps
+
+### Documentation
+- Created REMEDIATION_SUMMARY.md documenting all fixes and current system state
+- All endpoints verified: JWT auth at /api/auth/token/, API docs at /api/docs/
+- Frontend dashboard confirmed working with health endpoint integration
+- Updated changelog with remediation summary
+
 ## 2025-10-17
 - Enabled cross-origin, filtering, history, and API schema tooling in Django settings and verified migrations against SQLite for local development.
 - Exposed JWT authentication endpoints and DRF Spectacular-powered Swagger/ReDoc routes that align with published README URLs.

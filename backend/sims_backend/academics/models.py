@@ -1,7 +1,9 @@
 from django.db import models
 
+from core.models import TimeStampedModel
 
-class Program(models.Model):
+
+class Program(TimeStampedModel):
     name = models.CharField(max_length=128, unique=True)
 
     def __str__(self):
