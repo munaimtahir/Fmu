@@ -15,6 +15,9 @@ python-decouple==3.8
 # Filtering & Pagination
 django-filter==24.3
 
+# API Schema & Documentation
+drf-spectacular==0.27.2
+
 # Audit & History
 django-simple-history==3.7.0
 

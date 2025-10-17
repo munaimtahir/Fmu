@@ -72,6 +72,7 @@ docker exec -it sims_backend python manage.py createsuperuser
 - Frontend UI: http://localhost:5173
 - Backend API: http://localhost:8000
 - Django Admin: http://localhost:8000/admin
+- API Authentication: http://localhost:8000/api/auth/token/
 - Full stack via Nginx: http://localhost
 
 ## Local Development Setup
@@ -116,7 +117,12 @@ cd frontend
 npm install
 ```
 
-3. Start development server:
+3. Configure environment variables (optional):
+```bash
+cp .env.example .env  # or create frontend/.env manually
+```
+
+4. Start development server:
 ```bash
 npm run dev
 ```
@@ -198,6 +204,8 @@ npm run lint
 Once the backend is running, API documentation is available at:
 - Swagger UI: http://localhost:8000/api/docs/
 - ReDoc: http://localhost:8000/api/redoc/
+- OpenAPI schema: http://localhost:8000/api/schema/
+- JWT token obtain/refresh endpoints live under http://localhost:8000/api/auth/.
 
 ## Environment Variables
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2025-10-17
+- Enabled cross-origin, filtering, history, and API schema tooling in Django settings and verified migrations against SQLite for local development.
+- Exposed JWT authentication endpoints and DRF Spectacular-powered Swagger/ReDoc routes that align with published README URLs.
+- Added a reusable `TimeStampedModel` in the `core` app, refactored the admissions `Student` model to inherit from it, and backfilled data via migrations with accompanying tests.
+- Replaced the Vite starter counter with a dashboard stub that reads the backend health endpoint using a configurable `VITE_API_BASE_URL`.
+- Updated documentation and quick-start instructions to reflect the new tooling, endpoints, and frontend environment requirements.
+
 ## 2025-01-12 - Stage 1 Progress (copilot/stage-1-completion-100pct)
 ### Code Quality & Testing
 - Applied ruff, black, and isort formatting across entire codebase

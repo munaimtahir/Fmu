@@ -1,7 +1,9 @@
 from django.db import models
 
+from core.models import TimeStampedModel
 
-class Student(models.Model):
+
+class Student(TimeStampedModel):
     reg_no = models.CharField(max_length=32, unique=True)
     name = models.CharField(max_length=255)
     program = models.CharField(max_length=128)
