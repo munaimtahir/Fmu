@@ -3,6 +3,7 @@ import time
 import pytest
 from django.utils import timezone
 
+from sims_backend.academics.models import Program
 from sims_backend.admissions.models import Student
 
 
@@ -43,3 +44,24 @@ class TestTimeStampedModel:
         student.refresh_from_db()
 
         assert student.updated_at > second_checkpoint
+
+    def test_program_has_timestamp_fields(self):
+        """Test that Program model inherits timestamp fields from TimeStampedModel."""
+        program = Program.objects.create(name="BSc Computer Science")
+
+        assert program.created_at is not None
+        assert program.updated_at is not None
+        assert program.created_at <= timezone.now()
+        assert program.updated_at <= timezone.now()
+
+    def test_program_updated_at_changes_on_save(self):
+        """Test that Program model's updated_at changes when saved."""
+        program = Program.objects.create(name="BSc Information Technology")
+
+        original_updated = program.updated_at
+        time.sleep(0.1)
+        program.name = "BSc IT (Updated)"
+        program.save()
+        program.refresh_from_db()
+
+        assert program.updated_at > original_updated

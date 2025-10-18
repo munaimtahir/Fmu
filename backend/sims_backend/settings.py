@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "simple_history",
     "drf_spectacular",
+    # Core app (shared models and utilities)
+    "core",
     # SIMS domain apps (must be these module paths)
     "sims_backend.admissions",
     "sims_backend.academics",
