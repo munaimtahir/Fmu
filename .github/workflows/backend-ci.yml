@@ -79,12 +79,21 @@ jobs:
           DB_NAME: /tmp/test_db.sqlite3
           DB_HOST: ''
           DB_PORT: '0'
-        run: pytest tests --cov=. --cov-report=xml --cov-report=html
+        run: pytest tests --cov=. --cov-report=xml --cov-report=html --cov-fail-under=80
       - name: Fail if no tests ran
         if: always()
         run: |
           if [ ! -f coverage.xml ] && [ ! -d htmlcov ]; then
             echo "ERROR: No coverage output found. Pytest may have collected no tests."
+            exit 1
+          fi
+      - name: Check coverage threshold
+        run: |
+          COVERAGE=$(python -c "import xml.etree.ElementTree as ET; tree = ET.parse('coverage.xml'); print(tree.getroot().get('line-rate'))")
+          COVERAGE_PCT=$(python -c "print(round(float($COVERAGE) * 100, 2))")
+          echo "Coverage: $COVERAGE_PCT%"
+          if (( $(echo "$COVERAGE_PCT < 80" | bc -l) )); then
+            echo "ERROR: Coverage $COVERAGE_PCT% is below 80% threshold"
             exit 1
           fi
       - name: Upload coverage artifact
