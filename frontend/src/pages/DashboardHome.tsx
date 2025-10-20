@@ -36,7 +36,7 @@ export const DashboardHome: React.FC = () => {
       <div className="space-y-8">
         {/* Welcome Section */}
         <div>
-          <h1 className="text-3xl font-bold text-navy mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome back{user?.firstName ? `, ${user.firstName}` : ''}!
           </h1>
           <p className="text-gray-600 text-lg">
@@ -47,7 +47,7 @@ export const DashboardHome: React.FC = () => {
         {/* System Status */}
         <Card>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-navy">
+            <h2 className="text-xl font-semibold text-gray-900">
               System Status
             </h2>
             {health && (
@@ -63,7 +63,7 @@ export const DashboardHome: React.FC = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Backend Service:</span>
-                <span className="font-medium text-navy">{health.service}</span>
+                <span className="font-medium text-gray-900">{health.service}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">API Base URL:</span>
@@ -84,7 +84,7 @@ export const DashboardHome: React.FC = () => {
         {/* Quick Actions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="hover:shadow-lg transition-shadow duration-150 cursor-pointer">
-            <h3 className="text-lg font-semibold text-navy mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
               Stage-1 Complete ✓
             </h3>
             <p className="text-gray-600 text-sm mb-4">
@@ -94,7 +94,7 @@ export const DashboardHome: React.FC = () => {
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow duration-150">
-            <h3 className="text-lg font-semibold text-navy mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
               What&apos;s Next?
             </h3>
             <ul className="text-sm text-gray-600 space-y-2">
@@ -105,7 +105,7 @@ export const DashboardHome: React.FC = () => {
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow duration-150">
-            <h3 className="text-lg font-semibold text-navy mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
               API Documentation
             </h3>
             <p className="text-gray-600 text-sm mb-4">
@@ -135,18 +135,18 @@ export const DashboardHome: React.FC = () => {
         {/* User Info */}
         {user && (
           <Card>
-            <h2 className="text-xl font-semibold text-navy mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Your Profile
             </h2>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Email:</span>
-                <span className="font-medium text-navy">{user.email}</span>
+                <span className="font-medium text-gray-900">{user.email}</span>
               </div>
               {user.firstName && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Name:</span>
-                  <span className="font-medium text-navy">
+                  <span className="font-medium text-gray-900">
                     {user.firstName} {user.lastName}
                   </span>
                 </div>
