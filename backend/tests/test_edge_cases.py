@@ -31,8 +31,9 @@ class TestHealthCheck:
         resp = api_client.get("/health/")
         assert resp.status_code == status.HTTP_200_OK
         data = resp.json()
-        assert data["status"] == "ok"
+        assert data["status"] in ["ok", "degraded"]  # Allow degraded for tests without Redis
         assert data["service"] == "SIMS Backend"
+        assert "components" in data
 
 
 class TestAdmissionPermissionObjectLevel:

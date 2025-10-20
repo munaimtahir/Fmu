@@ -1,5 +1,6 @@
 import io
 
+import django_rq
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.http import FileResponse
 from django.utils import timezone
@@ -170,3 +171,48 @@ def verify_transcript(request, token: str):
     """Verify a transcript QR token"""
     result = verify_qr_token(token)
     return Response(result)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def enqueue_transcript_generation(request):
+    """
+    Enqueue transcript generation as a background job.
+
+    Request body:
+        {
+            "student_id": int,
+            "email": str (optional)
+        }
+    """
+    student_id = request.data.get("student_id")
+    email = request.data.get("email")
+
+    if not student_id:
+        return Response(
+            {"error": {"code": 400, "message": "student_id is required"}}, status=400
+        )
+
+    # Check if student exists
+    try:
+        Student.objects.get(id=student_id)
+    except Student.DoesNotExist:
+        return Response(
+            {"error": {"code": 404, "message": "Student not found"}}, status=404
+        )
+
+    # Enqueue the job
+    queue = django_rq.get_queue("default")
+    from .jobs import generate_and_email_transcript
+
+    job = queue.enqueue(generate_and_email_transcript, student_id, email)
+
+    return Response(
+        {
+            "message": "Transcript generation job enqueued",
+            "job_id": job.id,
+            "student_id": student_id,
+        },
+        status=202,
+    )
+
