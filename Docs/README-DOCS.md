@@ -24,4 +24,6 @@
 
     **Decisions:** see [/Docs/adr](adr)
 
-    **For AI contributors:** see [FINAL_AI_DEVELOPER_PROMPT.md](FINAL_AI_DEVELOPER_PROMPT.md)
+    **For AI contributors:**
+    - [FINAL_AI_DEVELOPER_PROMPT.md](FINAL_AI_DEVELOPER_PROMPT.md) — general AI development guidelines
+    - [AUTONOMOUS_STAGE1_BUILD_PROMPT.md](AUTONOMOUS_STAGE1_BUILD_PROMPT.md) — Stage-1 frontend build instructions
