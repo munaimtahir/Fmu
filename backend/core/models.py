@@ -15,10 +15,8 @@ class TimeStampedModel(models.Model):
 
     def touch(self, using: str | None = None, update_fields: set[str] | None = None) -> None:
         """Force an update to refresh the ``updated_at`` timestamp."""
-
-        save_kwargs: dict[str, object] = {}
-        if using:
-            save_kwargs["using"] = using
+        # Call save with appropriate arguments to update the timestamp
         if update_fields is not None:
-            save_kwargs["update_fields"] = update_fields
-        self.save(**save_kwargs)
+            self.save(using=using, update_fields=update_fields)
+        else:
+            self.save(using=using)
