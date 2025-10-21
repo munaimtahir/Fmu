@@ -18,7 +18,7 @@ export interface PaginationState {
   pageSize: number
 }
 
-export interface SortingState {
+export type SortingState = {
   id: string
   desc: boolean
-}[]
+}[];
