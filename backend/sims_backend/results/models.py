@@ -2,6 +2,14 @@ from django.db import models
 
 
 class Result(models.Model):
+    """Student result with state management"""
+
+    STATE_CHOICES = [
+        ("draft", "Draft"),
+        ("published", "Published"),
+        ("frozen", "Frozen"),
+    ]
+
     student = models.ForeignKey(
         "admissions.Student", on_delete=models.CASCADE, related_name="results"
     )
@@ -9,9 +17,15 @@ class Result(models.Model):
         "academics.Section", on_delete=models.CASCADE, related_name="results"
     )
     final_grade = models.CharField(max_length=8, blank=True, default="")
+    state = models.CharField(max_length=16, choices=STATE_CHOICES, default="draft")
     is_published = models.BooleanField(default=False)
     published_at = models.DateTimeField(null=True, blank=True)
     published_by = models.CharField(max_length=128, blank=True, default="")
+    frozen_at = models.DateTimeField(null=True, blank=True)
+    frozen_by = models.CharField(max_length=128, blank=True, default="")
+
+    class Meta:
+        unique_together = ("student", "section")
 
 
 class PendingChange(models.Model):

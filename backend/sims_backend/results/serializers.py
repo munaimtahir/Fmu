@@ -11,11 +11,21 @@ class ResultSerializer(serializers.ModelSerializer):
             "student",
             "section",
             "final_grade",
+            "state",
             "is_published",
             "published_at",
             "published_by",
+            "frozen_at",
+            "frozen_by",
         ]
-        read_only_fields = ["is_published", "published_at", "published_by"]
+        read_only_fields = [
+            "state",
+            "is_published",
+            "published_at",
+            "published_by",
+            "frozen_at",
+            "frozen_by",
+        ]
 
 
 class PendingChangeSerializer(serializers.ModelSerializer):
