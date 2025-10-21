@@ -2,14 +2,21 @@
 
 Student Information Management System - Frontend Application
 
-## 🎯 Stage-1 Complete: Foundation & Authentication
+## 🎯 Stage-2 Complete: Core UI Layer
 
-This is a production-ready Stage-1 MVP featuring:
+This is a production-ready Stage-2 MVP featuring:
 - ✅ Full JWT authentication with token refresh
+- ✅ **Collapsible sidebar with role-aware navigation**
+- ✅ **Enhanced topbar with user menu and search**
+- ✅ **Breadcrumb navigation**
+- ✅ **DataTable component with TanStack Table**
+- ✅ **Comprehensive Form Kit (Select, DatePicker, FileUpload, Switch, TextArea)**
+- ✅ **Role-specific dashboards (Admin, Registrar, Faculty, Student, ExamCell)**
 - ✅ TypeScript strict mode with comprehensive type safety
 - ✅ Minimalist-Elite design system
-- ✅ Protected routes and authorization guards
+- ✅ Protected routes and role-based authorization
 - ✅ Comprehensive test coverage (26 tests passing)
+- ✅ **CI/CD workflow with automated testing**
 - ✅ Production build optimized and ready
 
 ## Tech Stack
@@ -86,25 +93,47 @@ frontend/
 │   │   │   ├── Badge.tsx
 │   │   │   ├── Alert.tsx
 │   │   │   ├── Spinner.tsx
-│   │   │   └── FormField.tsx
+│   │   │   ├── FormField.tsx
+│   │   │   ├── Select.tsx          # NEW: Searchable select
+│   │   │   ├── DatePicker.tsx      # NEW: Date/range picker
+│   │   │   ├── FileUpload.tsx      # NEW: Drag-drop upload
+│   │   │   ├── Switch.tsx          # NEW: Toggle switch
+│   │   │   ├── TextArea.tsx        # NEW: Text area with counter
+│   │   │   ├── EmptyState.tsx      # NEW: Empty state component
+│   │   │   ├── Skeleton.tsx        # NEW: Loading skeletons
+│   │   │   └── DataTable/          # NEW: Data table
+│   │   │       ├── DataTable.tsx
+│   │   │       ├── types.ts
+│   │   │       └── useDataTable.ts
+│   │   ├── layout/            # NEW: Layout components
+│   │   │   ├── Sidebar.tsx         # Collapsible sidebar
+│   │   │   ├── Topbar.tsx          # Top navigation bar
+│   │   │   └── Breadcrumbs.tsx     # Breadcrumb navigation
 │   │   └── layouts/           # Page layouts
 │   │       ├── AuthLayout.tsx
-│   │       └── DashboardLayout.tsx
+│   │       └── DashboardLayout.tsx # Updated with new layout
 │   ├── features/              # Feature-based modules
 │   │   └── auth/
 │   │       ├── types.ts       # Auth type definitions
 │   │       ├── authStore.ts   # Zustand auth state
 │   │       ├── useAuth.ts     # Auth hook
 │   │       ├── LoginPage.tsx  # Login page component
-│   │       └── ProtectedRoute.tsx  # Route guard
+│   │       └── ProtectedRoute.tsx  # Updated: role-based guards
 │   ├── pages/                 # Page components
-│   │   └── DashboardHome.tsx
+│   │   ├── DashboardHome.tsx  # Updated: role-based redirect
+│   │   ├── dashboards/        # NEW: Role dashboards
+│   │   │   ├── AdminDashboard.tsx
+│   │   │   ├── RegistrarDashboard.tsx
+│   │   │   ├── FacultyDashboard.tsx
+│   │   │   ├── StudentDashboard.tsx
+│   │   │   └── ExamCellDashboard.tsx
+│   │   └── demo/              # NEW: Demo pages
+│   │       └── DataTableDemo.tsx
 │   ├── routes/                # Routing configuration
 │   │   ├── index.tsx
-│   │   └── appRoutes.tsx
+│   │   └── appRoutes.tsx      # Updated: role routes
 │   ├── lib/                   # Shared utilities
-│   │   ├── env.ts            # Environment variable access
-│   │   └── tokens.ts         # Design system tokens
+│   │   └── env.ts             # NEW: Environment config
 │   ├── styles/
 │   │   └── globals.css       # Global styles and Tailwind
 │   ├── test/                 # Test utilities
@@ -161,7 +190,27 @@ Routes wrapped with `<ProtectedRoute>` component:
 - Check authentication state
 - Display loading spinner during initialization
 - Redirect to `/login` if not authenticated
-- Render protected content if authenticated
+- **NEW**: Check role-based authorization
+- **NEW**: Redirect to main dashboard if user lacks required role
+- Render protected content if authorized
+
+Example:
+```tsx
+<ProtectedRoute allowedRoles={['Admin', 'Registrar']}>
+  <StudentManagementPage />
+</ProtectedRoute>
+```
+
+### Role-Based Redirect
+
+The main dashboard (`/dashboard`) automatically redirects users to their role-specific dashboard:
+- **Admin** → `/dashboard/admin`
+- **Registrar** → `/dashboard/registrar`
+- **Faculty** → `/dashboard/faculty`
+- **Student** → `/dashboard/student`
+- **ExamCell** → `/dashboard/examcell`
+
+Priority order: Admin > Registrar > Faculty > Student > ExamCell
 
 ### Logout
 
@@ -272,6 +321,18 @@ npm run preview
 
 ## Code Quality
 
+### Continuous Integration
+
+GitHub Actions CI workflow runs on every PR and push:
+- ✅ **Type checking** - TypeScript strict mode
+- ✅ **Linting** - ESLint code quality checks
+- ✅ **Testing** - All unit tests must pass
+- ✅ **Building** - Production build verification
+
+The CI workflow is defined in `.github/workflows/ci.yml` and automatically runs for:
+- Pull requests to `main` or `master`
+- Pushes to `main`, `master`, `feat/*`, `stage/*` branches
+
 ### Type Safety
 
 - **Strict TypeScript mode** enabled
@@ -317,6 +378,251 @@ The foundation is ready for Stage-2 features:
 - Role-based access control (Admin, Registrar, Faculty, Student)
 - Advanced filtering and search
 - Data tables with pagination
+
+## 🧩 Navigation & Layout (Stage-2)
+
+### Sidebar Navigation
+
+The application features a collapsible sidebar with:
+- **Role-aware menu items** - Items shown based on user roles
+- **Persistent state** - Collapse state saved to localStorage
+- **Mobile responsive** - Drawer on mobile, fixed on desktop
+- **Keyboard accessible** - Full keyboard navigation support
+
+```tsx
+// Sidebar automatically filters items by role
+const navigationItems = [
+  { label: 'Students', roles: ['Admin', 'Registrar'] },
+  { label: 'Courses', roles: ['Admin', 'Registrar', 'Faculty'] },
+  // ... more items
+]
+```
+
+### Breadcrumbs
+
+Automatic breadcrumb generation from route paths:
+- `/dashboard/student` → Home > Dashboard > Student
+- Customizable labels via `routeLabels` mapping
+- Click any breadcrumb to navigate
+
+### Topbar
+
+Features:
+- **User menu** with profile info and logout
+- **Global search** (placeholder for future implementation)
+- **Notifications** (placeholder for future implementation)
+- **Responsive design** for mobile and desktop
+
+## 📊 DataTable Component (Stage-2)
+
+A powerful, reusable data table built with TanStack Table:
+
+### Features
+
+- ✅ **Sorting** - Click column headers to sort
+- ✅ **Global filtering** - Search across all columns
+- ✅ **Pagination** - Navigate through pages
+- ✅ **CSV Export** - Export all or selected rows
+- ✅ **Row selection** - Multi-select with checkboxes
+- ✅ **Column visibility** - Show/hide columns
+- ✅ **Loading states** - Skeleton loaders
+- ✅ **Empty states** - Friendly empty state UI
+- ✅ **Responsive** - Works on all screen sizes
+
+### Basic Usage
+
+```tsx
+import { DataTable } from '@/components/ui/DataTable/DataTable'
+import { ColumnDef } from '@tanstack/react-table'
+
+interface Student {
+  id: string
+  name: string
+  email: string
+  gpa: number
+}
+
+const columns: ColumnDef<Student>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+  },
+  {
+    accessorKey: 'gpa',
+    header: 'GPA',
+    cell: ({ row }) => row.getValue('gpa').toFixed(2),
+  },
+]
+
+function StudentList() {
+  const students = // ... fetch data
+  
+  return (
+    <DataTable
+      data={students}
+      columns={columns}
+      enableSorting
+      enableFiltering
+      enablePagination
+      pageSize={10}
+    />
+  )
+}
+```
+
+### Advanced Features
+
+```tsx
+<DataTable
+  data={students}
+  columns={columns}
+  enableSorting
+  enableFiltering
+  enablePagination
+  enableRowSelection      // Enable row selection
+  enableColumnVisibility  // Enable column toggle
+  pageSize={20}          // Custom page size
+  onRowClick={(row) => {
+    // Handle row click
+    navigate(`/students/${row.id}`)
+  }}
+  isLoading={isLoading}  // Show loading skeleton
+/>
+```
+
+### Demo
+
+Visit `/demo/datatable` in the application to see an interactive demo with:
+- Sample student data
+- All features enabled
+- Usage examples and code snippets
+
+## 📝 Form Components (Stage-2)
+
+### Select (Searchable Dropdown)
+
+```tsx
+import { Select } from '@/components/ui/Select'
+
+<Select
+  label="Program"
+  options={[
+    { value: 'cs', label: 'Computer Science' },
+    { value: 'eng', label: 'Engineering' },
+  ]}
+  value={program}
+  onChange={setProgram}
+  searchable
+  required
+/>
+```
+
+### DatePicker
+
+```tsx
+import { DatePicker, DateRangePicker } from '@/components/ui/DatePicker'
+
+// Single date
+<DatePicker
+  label="Birth Date"
+  value={birthDate}
+  onChange={setBirthDate}
+  required
+/>
+
+// Date range
+<DateRangePicker
+  label="Enrollment Period"
+  startDate={startDate}
+  endDate={endDate}
+  onStartChange={setStartDate}
+  onEndChange={setEndDate}
+/>
+```
+
+### FileUpload (Drag & Drop)
+
+```tsx
+import { FileUpload } from '@/components/ui/FileUpload'
+
+<FileUpload
+  label="Upload Documents"
+  onChange={(files) => setFiles(files)}
+  accept=".pdf,.doc,.docx"
+  multiple
+  maxSize={5 * 1024 * 1024} // 5MB
+/>
+```
+
+### Switch
+
+```tsx
+import { Switch } from '@/components/ui/Switch'
+
+<Switch
+  label="Email Notifications"
+  checked={emailNotifications}
+  onChange={setEmailNotifications}
+  description="Receive email updates"
+/>
+```
+
+### TextArea
+
+```tsx
+import { TextArea } from '@/components/ui/TextArea'
+
+<TextArea
+  label="Comments"
+  value={comments}
+  onChange={(e) => setComments(e.target.value)}
+  showCharCount
+  maxLength={500}
+  rows={5}
+/>
+```
+
+### Integration with React Hook Form
+
+All form components work seamlessly with React Hook Form:
+
+```tsx
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+
+const schema = z.object({
+  program: z.string().min(1, 'Program is required'),
+  birthDate: z.date(),
+})
+
+function StudentForm() {
+  const { control, handleSubmit } = useForm({
+    resolver: zodResolver(schema),
+  })
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Controller
+        name="program"
+        control={control}
+        render={({ field, fieldState }) => (
+          <Select
+            {...field}
+            label="Program"
+            options={programOptions}
+            error={fieldState.error?.message}
+          />
+        )}
+      />
+    </form>
+  )
+}
+```
 
 ## Troubleshooting
 

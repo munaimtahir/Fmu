@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { DashboardLayout } from '@/components/layouts/DashboardLayout'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
@@ -8,12 +9,28 @@ import { env } from '@/lib/env'
 
 /**
  * DashboardHome - Main dashboard landing page
+ * Redirects to role-specific dashboard based on user's primary role
  * Features: System status, user info, navigation cards
  */
 export const DashboardHome: React.FC = () => {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [health, setHealth] = useState<{ status: string; service: string } | null>(null)
   const [loading, setLoading] = useState(true)
+
+  // Role-based redirect logic
+  useEffect(() => {
+    if (user && user.roles && user.roles.length > 0) {
+      // Priority: Admin > Registrar > Faculty > Student > ExamCell
+      const rolePriority = ['Admin', 'Registrar', 'Faculty', 'Student', 'ExamCell']
+      const primaryRole = rolePriority.find(role => user.roles.includes(role))
+      
+      if (primaryRole) {
+        const dashboardPath = `/dashboard/${primaryRole.toLowerCase()}`
+        navigate(dashboardPath, { replace: true })
+      }
+    }
+  }, [user, navigate])
 
   useEffect(() => {
     const checkHealth = async () => {
@@ -85,10 +102,10 @@ export const DashboardHome: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="hover:shadow-lg transition-shadow duration-150 cursor-pointer">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Stage-1 Complete ✓
+              Stage-2 Complete ✓
             </h3>
             <p className="text-gray-600 text-sm mb-4">
-              Authentication and foundation are fully operational. Your MVP is ready for Stage-2 development.
+              Core UI layer with navigation, DataTable, and form components is now complete.
             </p>
             <Badge variant="success">Ready</Badge>
           </Card>
@@ -98,9 +115,9 @@ export const DashboardHome: React.FC = () => {
               What&apos;s Next?
             </h3>
             <ul className="text-sm text-gray-600 space-y-2">
-              <li>• Stage-2: Student Management</li>
-              <li>• Stage-3: Course & Enrollment</li>
-              <li>• Stage-4: Assessments & Results</li>
+              <li>• Stage-3: Student Management</li>
+              <li>• Stage-4: Course & Enrollment</li>
+              <li>• Stage-5: Assessments & Results</li>
             </ul>
           </Card>
 
