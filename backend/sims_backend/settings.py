@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # Third-party
     "corsheaders",
     "django_filters",
+    "django_rq",
     "rest_framework",
     "simple_history",
     "drf_spectacular",

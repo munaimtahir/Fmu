@@ -1,0 +1,67 @@
+name: Nightly Database Backup
+
+on:
+  schedule:
+    # Run at 2 AM UTC every day
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  backup:
+    name: PostgreSQL Backup
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      
+      - name: Generate backup filename
+        id: backup
+        run: |
+          BACKUP_DATE=$(date +%Y%m%d_%H%M%S)
+          BACKUP_FILE="sims_db_backup_${BACKUP_DATE}.sql"
+          echo "filename=${BACKUP_FILE}" >> $GITHUB_OUTPUT
+          echo "date=${BACKUP_DATE}" >> $GITHUB_OUTPUT
+      
+      - name: Create database backup
+        env:
+          PGHOST: ${{ secrets.DB_HOST }}
+          PGPORT: ${{ secrets.DB_PORT }}
+          PGDATABASE: ${{ secrets.DB_NAME }}
+          PGUSER: ${{ secrets.DB_USER }}
+          PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          # Create backup using pg_dump
+          pg_dump \
+            --host=${PGHOST} \
+            --port=${PGPORT} \
+            --username=${PGUSER} \
+            --dbname=${PGDATABASE} \
+            --format=custom \
+            --file=${{ steps.backup.outputs.filename }} \
+            --verbose
+          
+          # Compress the backup
+          gzip ${{ steps.backup.outputs.filename }}
+          
+          # Display backup size
+          ls -lh ${{ steps.backup.outputs.filename }}.gz
+      
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ steps.backup.outputs.date }}
+          path: ${{ steps.backup.outputs.filename }}.gz
+          retention-days: 7
+          compression-level: 0  # Already compressed
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::Database backup failed for $(date)"
+          # In production, you would send notifications here (e.g., email, Slack)

@@ -20,14 +20,15 @@ class ResultViewSet(viewsets.ModelViewSet):
     ordering_fields = ["id", "published_at"]
 
     def update(self, request, *args, **kwargs):
-        """Override update to prevent editing published results"""
+        """Override update to prevent editing published or frozen results"""
         instance = self.get_object()
-        if instance.is_published:
+        # Check both state and is_published for backward compatibility
+        if instance.state in ["published", "frozen"] or instance.is_published:
             return Response(
                 {
                     "error": {
                         "code": 403,
-                        "message": "Cannot edit published result. Use change-request endpoint instead.",
+                        "message": f"Cannot edit {instance.state} result. Use change-request endpoint instead.",
                     }
                 },
                 status=status.HTTP_403_FORBIDDEN,
@@ -35,14 +36,15 @@ class ResultViewSet(viewsets.ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
-        """Override partial_update to prevent editing published results"""
+        """Override partial_update to prevent editing published or frozen results"""
         instance = self.get_object()
-        if instance.is_published:
+        # Check both state and is_published for backward compatibility
+        if instance.state in ["published", "frozen"] or instance.is_published:
             return Response(
                 {
                     "error": {
                         "code": 403,
-                        "message": "Cannot edit published result. Use change-request endpoint instead.",
+                        "message": f"Cannot edit {instance.state} result. Use change-request endpoint instead.",
                     }
                 },
                 status=status.HTTP_403_FORBIDDEN,
@@ -51,7 +53,7 @@ class ResultViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["post"])
     def publish(self, request):
-        """Publish a result (freeze it from direct edits)"""
+        """Publish a result (transition from draft to published)"""
         result_id = request.data.get("result_id")
         published_by = request.data.get("published_by", "")
 
@@ -69,15 +71,69 @@ class ResultViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if result.is_published:
+        if result.state == "frozen":
+            return Response(
+                {"error": {"code": 400, "message": "Cannot publish a frozen result"}},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check both state and is_published for backward compatibility
+        if result.state == "published" or result.is_published:
             return Response(
                 {"error": {"code": 400, "message": "Result is already published"}},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        result.state = "published"
         result.is_published = True
         result.published_at = timezone.now()
         result.published_by = published_by
+        result.save()
+
+        serializer = self.get_serializer(result)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["post"])
+    def freeze(self, request):
+        """Freeze a result (final state, no more changes allowed)"""
+        result_id = request.data.get("result_id")
+        frozen_by = request.data.get("frozen_by", "")
+
+        if not result_id:
+            return Response(
+                {"error": {"code": 400, "message": "result_id is required"}},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            result = Result.objects.get(id=result_id)
+        except Result.DoesNotExist:
+            return Response(
+                {"error": {"code": 404, "message": "Result not found"}},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if result.state != "published":
+            return Response(
+                {
+                    "error": {
+                        "code": 400,
+                        "message": "Can only freeze published results. Current state: "
+                        + result.state,
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if result.state == "frozen":
+            return Response(
+                {"error": {"code": 400, "message": "Result is already frozen"}},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        result.state = "frozen"
+        result.frozen_at = timezone.now()
+        result.frozen_by = frozen_by
         result.save()
 
         serializer = self.get_serializer(result)

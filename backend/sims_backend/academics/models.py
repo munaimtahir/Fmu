@@ -3,6 +3,22 @@ from django.db import models
 from core.models import TimeStampedModel
 
 
+class Term(models.Model):
+    """Academic term/semester with enrollment status"""
+
+    name = models.CharField(max_length=32, unique=True)
+    status = models.CharField(
+        max_length=16,
+        choices=[("open", "Open"), ("closed", "Closed")],
+        default="open",
+    )
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.name} ({self.status})"
+
+
 class Program(TimeStampedModel):
     name = models.CharField(max_length=128, unique=True)
 
