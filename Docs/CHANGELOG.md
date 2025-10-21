@@ -1,5 +1,34 @@
 # Changelog
 
+## 2025-10-20 - Stage 3 Development (v0.3.0-beta) - IN PROGRESS
+
+### Infrastructure & Background Jobs
+- Added rqworker service to docker-compose.yml for async task processing
+- Created background jobs for transcript generation (generate_and_email_transcript, batch_generate_transcripts)
+- Added `/api/transcripts/enqueue/` endpoint for async transcript generation
+- Enhanced health check endpoint with Redis/RQ component status monitoring
+- Integrated django-rq for background task management
+
+### CI/CD & Security
+- **CodeQL Security Analysis:** Added workflow for Python and JavaScript security scanning
+- **Trivy Scanning:** Added comprehensive security scanning for filesystem and Docker images
+- **Dependency Review:** Automated dependency vulnerability checking in PRs
+- **Coverage Enforcement:** Backend ≥80% (99% achieved)
+- **Release Automation:** Created workflow for automated release creation with artifacts
+
+### Testing & Quality
+- All backend tests passing (220 tests, 99% coverage)
+- All linting checks passing (ruff for Python, ESLint for JavaScript)
+- Updated tests to handle "degraded" health status when Redis unavailable
+- Frontend development happening in parallel in separate branch
+
+### Next Steps
+- Expand frontend with JWT authentication flow
+- Build CRUD screens for core modules
+- Add dashboard with real-time statistics
+- Update remaining documentation
+- Create release tag v0.3.0-beta
+
 ## 2025-10-17 - Remediation Complete
 ### Django Configuration
 - Added `core` app to INSTALLED_APPS (was missing despite being used)

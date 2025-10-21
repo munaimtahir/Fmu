@@ -28,5 +28,9 @@
     - `GET /api/results?student=...`
 
     ## Transcripts
-    - `GET /api/transcripts/{student_id}`
-    - `GET /api/transcripts/verify/{token}`
+    - `GET /api/transcripts/{student_id}` - Generate and download transcript PDF
+    - `POST /api/transcripts/enqueue/` - Enqueue transcript generation as background job
+    - `GET /api/transcripts/verify/{token}` - Verify transcript QR token
+
+    ## Health & Monitoring
+    - `GET /health/` - System health check (database, Redis, RQ queue status)
