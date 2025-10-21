@@ -7,6 +7,7 @@ import { RegistrarDashboard } from '@/pages/dashboards/RegistrarDashboard'
 import { FacultyDashboard } from '@/pages/dashboards/FacultyDashboard'
 import { StudentDashboard } from '@/pages/dashboards/StudentDashboard'
 import { ExamCellDashboard } from '@/pages/dashboards/ExamCellDashboard'
+import { DataTableDemo } from '@/pages/demo/DataTableDemo'
 
 /**
  * Application routes configuration
@@ -67,6 +68,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={['ExamCell']}>
         <ExamCellDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/demo/datatable',
+    element: (
+      <ProtectedRoute>
+        <DataTableDemo />
       </ProtectedRoute>
     ),
   },

@@ -17,6 +17,7 @@ const navigationItems: NavItem[] = [
   { label: 'Assessments', path: '/assessments', icon: '📋', roles: ['Faculty', 'ExamCell'] },
   { label: 'Results', path: '/results', icon: '🎯', roles: ['Admin', 'Faculty', 'ExamCell', 'Student'] },
   { label: 'Reports', path: '/reports', icon: '📈', roles: ['Admin', 'Registrar'] },
+  { label: 'DataTable Demo', path: '/demo/datatable', icon: '🧪', roles: [] },
 ]
 
 interface SidebarProps {
