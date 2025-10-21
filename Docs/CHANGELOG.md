@@ -13,22 +13,14 @@
 - **CodeQL Security Analysis:** Added workflow for Python and JavaScript security scanning
 - **Trivy Scanning:** Added comprehensive security scanning for filesystem and Docker images
 - **Dependency Review:** Automated dependency vulnerability checking in PRs
-- **Coverage Enforcement:** Backend ≥80% (99% achieved), Frontend ≥50% (92.5% achieved)
+- **Coverage Enforcement:** Backend ≥80% (99% achieved)
 - **Release Automation:** Created workflow for automated release creation with artifacts
-
-### Frontend Development
-- Expanded test coverage from 1 to 7 tests (92.5% coverage achieved)
-- Added comprehensive App component tests (loading, error, success states)
-- Configured coverage thresholds and reporting (v8 provider)
-- Installed testing utilities (@testing-library/react, @testing-library/user-event)
-- Enhanced ESLint configuration for test files
-- Added test:coverage script to package.json
 
 ### Testing & Quality
 - All backend tests passing (220 tests, 99% coverage)
-- All frontend tests passing (7 tests, 92.5% coverage)
 - All linting checks passing (ruff for Python, ESLint for JavaScript)
 - Updated tests to handle "degraded" health status when Redis unavailable
+- Frontend development happening in parallel in separate branch
 
 ### Next Steps
 - Expand frontend with JWT authentication flow
