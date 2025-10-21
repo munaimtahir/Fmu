@@ -49,7 +49,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Starting data seeding..."))
 
         # Create users for different roles
-        users = self._create_users()
+        self._create_users()
 
         # Create academic structure
         programs = self._create_programs()
@@ -77,10 +77,10 @@ class Command(BaseCommand):
         self.stdout.write(f"  - Sections: {len(sections)}")
         self.stdout.write(f"  - Students: {len(students)}")
         self.stdout.write(f"  - Enrollments: {len(enrollments)}")
-        self.stdout.write(f"\n🔑 Login credentials:")
-        self.stdout.write(f"  Admin: admin / admin123")
-        self.stdout.write(f"  Faculty: faculty / faculty123")
-        self.stdout.write(f"  Student: student / student123")
+        self.stdout.write("\n🔑 Login credentials:")
+        self.stdout.write("  Admin: admin / admin123")
+        self.stdout.write("  Faculty: faculty / faculty123")
+        self.stdout.write("  Student: student / student123")
 
     def _clear_data(self):
         """Clear existing data"""
