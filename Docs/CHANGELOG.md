@@ -1,5 +1,106 @@
 # Changelog
 
+## 2025-10-21 - Stage 4 Backend MVP (v0.4.0-stage4-backend-mvp)
+
+### Major Features Delivered
+
+#### Enrollment Module (Enhanced)
+- ✅ POST /api/sections/{id}/enroll endpoint for section enrollment
+- ✅ Duplicate enrollment prevention (409 Conflict)
+- ✅ Term validation: closed terms return 400 error
+- ✅ Capacity validation with detailed error messages
+- ✅ Automatic term tracking from section
+- ✅ Enrolled_at timestamp for audit trail
+
+#### Assessment Module (Complete)
+- ✅ Assessment types: midterm, final, quiz, assignment, project
+- ✅ Weight validation: total must = 100% per section
+- ✅ Score validation: score ≤ max_score
+- ✅ Assessment score CRUD with student-assessment uniqueness
+- ✅ Faculty write permissions for own sections
+
+#### Results Publish/Freeze Workflow (Enhanced)
+- ✅ State machine: draft → published → frozen
+- ✅ POST /api/results/publish/ endpoint
+- ✅ POST /api/results/freeze/ endpoint for final archival
+- ✅ Dual approval via PendingChange model
+- ✅ Change request workflow for published/frozen results
+- ✅ Immutability enforcement: cannot edit published/frozen results
+- ✅ Backward compatibility with existing is_published flag
+
+#### Transcripts Module (Async RQ Jobs)
+- ✅ generate_transcript(student_id) background job
+- ✅ PDF generation with ReportLab
+- ✅ QR token generation and verification (48-hour validity)
+- ✅ GET /api/transcripts/{student_id} - download PDF
+- ✅ POST /api/transcripts/enqueue/ - queue async generation
+- ✅ GET /api/transcripts/verify/{token} - verify token
+- ✅ Email support for async jobs
+
+#### Requests Module (Complete)
+- ✅ CRUD for bonafide, transcript, NOC requests
+- ✅ Workflow: pending → approved → rejected → completed
+- ✅ Transition endpoint for status changes
+- ✅ Role-based permissions tested
+
+#### Audit & Search (Complete)
+- ✅ WriteAuditMiddleware logs all write operations
+- ✅ Actor + timestamp + summary captured
+- ✅ django-filters on Students (program, status)
+- ✅ django-filters on Sections (term, course)
+- ✅ django-filters on Programs, Courses, Terms
+- ✅ Search + ordering on all major entities
+
+#### Ops & Reliability
+- ✅ Nightly backup GitHub Action (pg_dump, 7-day retention)
+- ✅ restore.sh script for database restoration
+- ✅ /healthz endpoint (alias for /health/)
+- ✅ Health check monitors: database, Redis, RQ queue
+- ✅ RQ worker configuration in docker-compose
+
+### New Models
+- **Term**: Academic periods with open/closed status
+- **Result.state**: draft/published/frozen state machine
+- **Enrollment.enrolled_at**: Timestamp tracking
+- **Enrollment.term**: Explicit term reference
+
+### API Enhancements
+- **Terms API**: Full CRUD with status filtering
+- **Enrollment**: POST /api/sections/{id}/enroll with validations
+- **Results**: /api/results/freeze/ for final archival
+- **Health**: /healthz alias endpoint
+
+### Testing & Quality
+- ✅ 220 tests passing
+- ✅ 97% code coverage (exceeds 85% requirement)
+- ✅ Ruff linting: all checks passing
+- ✅ mypy type checking: clean
+- ✅ Django system checks: no issues
+- ✅ All migrations linear and applied
+
+### Documentation Updates
+- ✅ API.md: Complete endpoint documentation with examples
+- ✅ DATAMODEL.md: Comprehensive ERD with Mermaid diagram
+- ✅ DATAMODEL.md: Business rules and state machines documented
+- ✅ CHANGELOG.md: This release entry
+
+### CI/CD & Infrastructure
+- ✅ Backend CI workflow: lint + type check + tests (≥80% coverage)
+- ✅ CodeQL security scanning
+- ✅ Nightly backup workflow with 7-day artifact retention
+- ✅ Database restore script with safety checks
+
+### Definition of Done
+- ✅ All 6 core modules delivered and tested
+- ✅ APIs operational with role-based auth
+- ✅ Transcripts generated via RQ job + QR verification
+- ✅ Coverage ≥ 85% (achieved 97%)
+- ✅ Documentation updated (API, DATAMODEL, CHANGELOG)
+- ✅ CI green and passing
+- ✅ Backup and restore automation complete
+
+---
+
 ## 2025-10-20 - Stage 3 Development (v0.3.0-beta) - IN PROGRESS
 
 ### Infrastructure & Background Jobs
