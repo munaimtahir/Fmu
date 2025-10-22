@@ -103,9 +103,7 @@ class TestAuditMiddlewareEdgeCases:
         # DELETE returns 204 with no content
         from sims_backend.admissions.models import Student
 
-        student = Student.objects.create(
-            reg_no="DEL-001", name="To Delete", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="DEL-001", name="To Delete", program="BSc", status="active")
 
         resp = api_client.delete(f"/api/students/{student.id}/")
         assert resp.status_code == status.HTTP_204_NO_CONTENT
@@ -157,20 +155,12 @@ class TestAssessmentScoreViews:
         from sims_backend.admissions.models import Student
         from sims_backend.assessments.models import Assessment, AssessmentScore
 
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         assessment = Assessment.objects.create(section=section, type="Quiz", weight=10)
-        AssessmentScore.objects.create(
-            assessment=assessment, student=student, score=85, max_score=100
-        )
+        AssessmentScore.objects.create(assessment=assessment, student=student, score=85, max_score=100)
 
         api_client.force_authenticate(admin_user)
         resp = api_client.get("/api/assessment-scores/")

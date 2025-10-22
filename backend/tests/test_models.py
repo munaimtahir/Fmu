@@ -19,34 +19,22 @@ class TestStudentModel:
 
     def test_str_representation(self):
         """Test student string representation."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="John Doe", program="BSc CS", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="John Doe", program="BSc CS", status="active")
         assert str(student) == "STU-001 - John Doe"
         # Explicitly call __str__ to ensure 100% coverage
         assert student.__str__() == "STU-001 - John Doe"
 
     def test_unique_reg_no(self):
         """Test that reg_no must be unique."""
-        Student.objects.create(
-            reg_no="STU-001", name="John", program="BSc", status="active"
-        )
+        Student.objects.create(reg_no="STU-001", name="John", program="BSc", status="active")
         with pytest.raises(IntegrityError):
-            Student.objects.create(
-                reg_no="STU-001", name="Jane", program="MSc", status="active"
-            )
+            Student.objects.create(reg_no="STU-001", name="Jane", program="MSc", status="active")
 
     def test_ordering(self):
         """Test students are ordered by reg_no."""
-        Student.objects.create(
-            reg_no="STU-003", name="Third", program="BSc", status="active"
-        )
-        Student.objects.create(
-            reg_no="STU-001", name="First", program="BSc", status="active"
-        )
-        Student.objects.create(
-            reg_no="STU-002", name="Second", program="BSc", status="active"
-        )
+        Student.objects.create(reg_no="STU-003", name="Third", program="BSc", status="active")
+        Student.objects.create(reg_no="STU-001", name="First", program="BSc", status="active")
+        Student.objects.create(reg_no="STU-002", name="Second", program="BSc", status="active")
         students = list(Student.objects.all())
         assert students[0].reg_no == "STU-001"
         assert students[1].reg_no == "STU-002"
@@ -89,20 +77,14 @@ class TestCourseModel:
     def test_unique_code(self):
         """Test that course code must be unique."""
         program = Program.objects.create(name="BSc CS")
-        Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
+        Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
         with pytest.raises(IntegrityError):
-            Course.objects.create(
-                code="CS101", title="Different Course", credits=4, program=program
-            )
+            Course.objects.create(code="CS101", title="Different Course", credits=4, program=program)
 
     def test_default_credits(self):
         """Test default credits value."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", program=program
-        )
+        course = Course.objects.create(code="CS101", title="Programming", program=program)
         assert course.credits == 3
 
 
@@ -112,20 +94,14 @@ class TestSectionModel:
     def test_str_representation(self):
         """Test section string representation."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         assert str(section) == "CS101 Fall 2024 (Dr. Smith)"
 
     def test_unique_together(self):
         """Test unique constraint on course, term, teacher."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
         Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         with pytest.raises(IntegrityError):
             Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
@@ -136,31 +112,19 @@ class TestEnrollmentModel:
 
     def test_default_status(self):
         """Test default enrollment status."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         enrollment = Enrollment.objects.create(student=student, section=section)
         assert enrollment.status == "enrolled"
 
     def test_unique_together(self):
         """Test unique constraint on student and section."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         Enrollment.objects.create(student=student, section=section)
         with pytest.raises(IntegrityError):
             Enrollment.objects.create(student=student, section=section)
@@ -171,41 +135,23 @@ class TestAttendanceModel:
 
     def test_default_present(self):
         """Test default present value."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
-        attendance = Attendance.objects.create(
-            section=section, student=student, date="2024-01-15"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        attendance = Attendance.objects.create(section=section, student=student, date="2024-01-15")
         assert attendance.present is True
         assert attendance.reason == ""
 
     def test_unique_together(self):
         """Test unique constraint on section, student, and date."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
-        Attendance.objects.create(
-            section=section, student=student, date="2024-01-15", present=True
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        Attendance.objects.create(section=section, student=student, date="2024-01-15", present=True)
         with pytest.raises(IntegrityError):
-            Attendance.objects.create(
-                section=section, student=student, date="2024-01-15", present=False
-            )
+            Attendance.objects.create(section=section, student=student, date="2024-01-15", present=False)
 
 
 class TestAssessmentModel:
@@ -214,12 +160,8 @@ class TestAssessmentModel:
     def test_default_weight(self):
         """Test default assessment weight."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         assessment = Assessment.objects.create(section=section, type="Quiz")
         assert assessment.weight == 10
 
@@ -229,16 +171,10 @@ class TestAssessmentScoreModel:
 
     def test_default_values(self):
         """Test default score values."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         assessment = Assessment.objects.create(section=section, type="Quiz")
         score = AssessmentScore.objects.create(assessment=assessment, student=student)
         assert score.score == 0
@@ -246,22 +182,14 @@ class TestAssessmentScoreModel:
 
     def test_unique_together(self):
         """Test unique constraint on assessment and student."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         assessment = Assessment.objects.create(section=section, type="Quiz")
         AssessmentScore.objects.create(assessment=assessment, student=student, score=85)
         with pytest.raises(IntegrityError):
-            AssessmentScore.objects.create(
-                assessment=assessment, student=student, score=90
-            )
+            AssessmentScore.objects.create(assessment=assessment, student=student, score=90)
 
 
 class TestResultModel:
@@ -269,16 +197,10 @@ class TestResultModel:
 
     def test_default_values(self):
         """Test default result values."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         result = Result.objects.create(student=student, section=section)
         assert result.final_grade == ""
         assert result.published_at is None

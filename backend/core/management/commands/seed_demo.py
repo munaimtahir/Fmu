@@ -175,9 +175,7 @@ class Command(BaseCommand):
             else:
                 program = next(p for p in programs if "Business Administration" in p.name)
 
-            course, created = Course.objects.get_or_create(
-                code=data["code"], defaults={**data, "program": program}
-            )
+            course, created = Course.objects.get_or_create(code=data["code"], defaults={**data, "program": program})
             courses.append(course)
 
         self.stdout.write(f"  ✓ Created {len(courses)} courses")
@@ -342,9 +340,7 @@ class Command(BaseCommand):
 
             for assessment in assessments:
                 try:
-                    score = AssessmentScore.objects.get(
-                        assessment=assessment, student=enrollment.student
-                    )
+                    score = AssessmentScore.objects.get(assessment=assessment, student=enrollment.student)
                     # Weighted score
                     total_score += (score.score / score.max_score) * assessment.weight
                 except AssessmentScore.DoesNotExist:
@@ -385,4 +381,3 @@ class Command(BaseCommand):
             return "C-"
         else:
             return "F"
-

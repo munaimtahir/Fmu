@@ -5,25 +5,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('academics', '0002_section_capacity_alter_course_id_alter_program_id_and_more'),
+        ("academics", "0002_section_capacity_alter_course_id_alter_program_id_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='program',
-            name='created_at',
+            model_name="program",
+            name="created_at",
             field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='program',
-            name='updated_at',
+            model_name="program",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AlterModelOptions(
-            name='program',
-            options={'ordering': ('-created_at',)},
+            name="program",
+            options={"ordering": ("-created_at",)},
         ),
     ]

@@ -64,9 +64,7 @@ class TestCourseViews:
     def test_list_courses(self, api_client, admin_user):
         """Test listing courses."""
         program = Program.objects.create(name="BSc CS")
-        Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
+        Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
         api_client.force_authenticate(admin_user)
 
         resp = api_client.get("/api/courses/")
@@ -93,12 +91,8 @@ class TestCourseViews:
     def test_search_courses(self, api_client, admin_user):
         """Test searching courses."""
         program = Program.objects.create(name="BSc CS")
-        Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        Course.objects.create(
-            code="CS201", title="Algorithms", credits=4, program=program
-        )
+        Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        Course.objects.create(code="CS201", title="Algorithms", credits=4, program=program)
         api_client.force_authenticate(admin_user)
 
         resp = api_client.get("/api/courses/?search=CS101")
@@ -113,9 +107,7 @@ class TestSectionViews:
     def test_list_sections(self, api_client, admin_user):
         """Test listing sections."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
         Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         api_client.force_authenticate(admin_user)
 
@@ -126,9 +118,7 @@ class TestSectionViews:
     def test_search_sections(self, api_client, admin_user):
         """Test searching sections."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
         Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         api_client.force_authenticate(admin_user)
 
@@ -141,19 +131,11 @@ class TestAttendanceViews:
 
     def test_list_attendance(self, api_client, admin_user):
         """Test listing attendance records."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
-        Attendance.objects.create(
-            section=section, student=student, date="2024-01-15", present=True
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        Attendance.objects.create(section=section, student=student, date="2024-01-15", present=True)
         api_client.force_authenticate(admin_user)
 
         resp = api_client.get("/api/attendance/")
@@ -162,16 +144,10 @@ class TestAttendanceViews:
 
     def test_create_attendance(self, api_client, admin_user):
         """Test creating attendance record."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         api_client.force_authenticate(admin_user)
 
         resp = api_client.post(
@@ -189,19 +165,11 @@ class TestAttendanceViews:
 
     def test_search_attendance(self, api_client, admin_user):
         """Test searching attendance records."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
-        Attendance.objects.create(
-            section=section, student=student, date="2024-01-15", present=True
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        Attendance.objects.create(section=section, student=student, date="2024-01-15", present=True)
         api_client.force_authenticate(admin_user)
 
         resp = api_client.get("/api/attendance/?search=STU-001")
@@ -214,12 +182,8 @@ class TestAssessmentViews:
     def test_list_assessments(self, api_client, admin_user):
         """Test listing assessments."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         Assessment.objects.create(section=section, type="Midterm", weight=30)
         api_client.force_authenticate(admin_user)
 
@@ -233,16 +197,10 @@ class TestResultViews:
 
     def test_list_results(self, api_client, admin_user):
         """Test listing results."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         Result.objects.create(student=student, section=section, final_grade="A")
         api_client.force_authenticate(admin_user)
 
@@ -256,16 +214,10 @@ class TestEnrollmentFiltering:
 
     def test_filter_by_student(self, api_client, admin_user):
         """Test filtering enrollments by student."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(
-            code="CS101", title="Programming", credits=3, program=program
-        )
-        section = Section.objects.create(
-            course=course, term="Fall 2024", teacher="Dr. Smith"
-        )
+        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
         Enrollment.objects.create(student=student, section=section)
         api_client.force_authenticate(admin_user)
 

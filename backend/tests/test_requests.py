@@ -18,9 +18,7 @@ def api_client():
 
 @pytest.fixture
 def sample_student():
-    return Student.objects.create(
-        reg_no="2024001", name="John Doe", program="CS", status="active"
-    )
+    return Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
 
 @pytest.mark.django_db
@@ -44,12 +42,8 @@ class TestRequestCRUD:
 
     def test_list_requests(self, api_client, sample_student):
         """Test listing requests"""
-        Request.objects.create(
-            student=sample_student, type="transcript", notes="Test request 1"
-        )
-        Request.objects.create(
-            student=sample_student, type="bonafide", notes="Test request 2"
-        )
+        Request.objects.create(student=sample_student, type="transcript", notes="Test request 1")
+        Request.objects.create(student=sample_student, type="bonafide", notes="Test request 2")
 
         response = api_client.get("/api/requests/")
 
@@ -58,9 +52,7 @@ class TestRequestCRUD:
 
     def test_get_request_detail(self, api_client, sample_student):
         """Test getting request details"""
-        request = Request.objects.create(
-            student=sample_student, type="transcript", notes="Test request"
-        )
+        request = Request.objects.create(student=sample_student, type="transcript", notes="Test request")
 
         response = api_client.get(f"/api/requests/{request.id}/")
 
@@ -70,9 +62,7 @@ class TestRequestCRUD:
 
     def test_update_request(self, api_client, sample_student):
         """Test updating a request"""
-        request = Request.objects.create(
-            student=sample_student, type="transcript", notes="Old notes"
-        )
+        request = Request.objects.create(student=sample_student, type="transcript", notes="Old notes")
 
         response = api_client.patch(
             f"/api/requests/{request.id}/",
@@ -86,9 +76,7 @@ class TestRequestCRUD:
 
     def test_delete_request(self, api_client, sample_student):
         """Test deleting a request"""
-        request = Request.objects.create(
-            student=sample_student, type="transcript", notes="Test request"
-        )
+        request = Request.objects.create(student=sample_student, type="transcript", notes="Test request")
 
         response = api_client.delete(f"/api/requests/{request.id}/")
 
@@ -100,9 +88,7 @@ class TestRequestCRUD:
 class TestRequestTransition:
     def test_transition_to_approved(self, api_client, sample_student):
         """Test transitioning request to approved"""
-        request = Request.objects.create(
-            student=sample_student, type="transcript", status="pending"
-        )
+        request = Request.objects.create(student=sample_student, type="transcript", status="pending")
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -120,9 +106,7 @@ class TestRequestTransition:
 
     def test_transition_to_rejected(self, api_client, sample_student):
         """Test transitioning request to rejected"""
-        request = Request.objects.create(
-            student=sample_student, type="bonafide", status="pending"
-        )
+        request = Request.objects.create(student=sample_student, type="bonafide", status="pending")
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -139,9 +123,7 @@ class TestRequestTransition:
 
     def test_transition_to_completed(self, api_client, sample_student):
         """Test transitioning request to completed"""
-        request = Request.objects.create(
-            student=sample_student, type="transcript", status="approved"
-        )
+        request = Request.objects.create(student=sample_student, type="transcript", status="approved")
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -158,9 +140,7 @@ class TestRequestTransition:
 
     def test_transition_missing_status(self, api_client, sample_student):
         """Test transition without status"""
-        request = Request.objects.create(
-            student=sample_student, type="transcript", status="pending"
-        )
+        request = Request.objects.create(student=sample_student, type="transcript", status="pending")
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -173,9 +153,7 @@ class TestRequestTransition:
 
     def test_transition_invalid_status(self, api_client, sample_student):
         """Test transition with invalid status"""
-        request = Request.objects.create(
-            student=sample_student, type="transcript", status="pending"
-        )
+        request = Request.objects.create(student=sample_student, type="transcript", status="pending")
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -244,9 +222,7 @@ class TestRequestSearch:
         """Test searching requests by student reg_no"""
         Request.objects.create(student=sample_student, type="transcript")
 
-        response = api_client.get(
-            "/api/requests/", {"search": sample_student.reg_no}
-        )
+        response = api_client.get("/api/requests/", {"search": sample_student.reg_no})
 
         assert response.status_code == 200
         assert len(response.data["results"]) == 1

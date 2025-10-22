@@ -16,9 +16,7 @@ def calculate_attendance_percentage(student_id: int, section_id: int) -> float:
     Returns:
         Attendance percentage (0-100)
     """
-    attendance_records = Attendance.objects.filter(
-        student_id=student_id, section_id=section_id
-    )
+    attendance_records = Attendance.objects.filter(student_id=student_id, section_id=section_id)
 
     total_days = attendance_records.count()
     if total_days == 0:
@@ -29,9 +27,7 @@ def calculate_attendance_percentage(student_id: int, section_id: int) -> float:
     return (present_days / total_days) * 100.0
 
 
-def check_eligibility(
-    student_id: int, section_id: int, threshold: float = 75.0
-) -> dict[str, Any]:
+def check_eligibility(student_id: int, section_id: int, threshold: float = 75.0) -> dict[str, Any]:
     """
     Check if a student is eligible based on attendance threshold.
 
@@ -77,7 +73,5 @@ def get_section_attendance_summary(section_id: int) -> dict[str, Any]:
         "total_records": total_records,
         "present_count": present_count,
         "absent_count": absent_count,
-        "overall_percentage": (
-            (present_count / total_records * 100.0) if total_records > 0 else 0.0
-        ),
+        "overall_percentage": ((present_count / total_records * 100.0) if total_records > 0 else 0.0),
     }

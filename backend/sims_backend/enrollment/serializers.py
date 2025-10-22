@@ -21,22 +21,16 @@ class EnrollmentSerializer(serializers.ModelSerializer):
             try:
                 term = Term.objects.get(name=term_name)
                 if term.status == "closed":
-                    raise serializers.ValidationError(
-                        {"term": "Cannot enroll in a closed term"}
-                    )
+                    raise serializers.ValidationError({"term": "Cannot enroll in a closed term"})
             except Term.DoesNotExist:
                 # If term doesn't exist in Term model, allow enrollment (backward compatibility)
                 pass
 
         # Validate capacity (only for new enrollments)
         if section and self.instance is None:
-            current_count = Enrollment.objects.filter(
-                section=section, status="enrolled"
-            ).count()
+            current_count = Enrollment.objects.filter(section=section, status="enrolled").count()
             if current_count >= section.capacity:
-                raise serializers.ValidationError(
-                    {"section": f"Section is at full capacity ({section.capacity})"}
-                )
+                raise serializers.ValidationError({"section": f"Section is at full capacity ({section.capacity})"})
 
         # Auto-populate term from section if not provided
         if not term_name and section:

@@ -21,9 +21,7 @@ class StudentViewSet(viewsets.ModelViewSet):
         qs = super().get_queryset()
         user = self.request.user
         if _in_group(user, "Student") and not (
-            user.is_superuser
-            or _in_group(user, "Admin")
-            or _in_group(user, "Registrar")
+            user.is_superuser or _in_group(user, "Admin") or _in_group(user, "Registrar")
         ):
             return qs.filter(reg_no=getattr(user, "username", ""))
         return qs

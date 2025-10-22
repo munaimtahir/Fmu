@@ -10,12 +10,8 @@ class Result(models.Model):
         ("frozen", "Frozen"),
     ]
 
-    student = models.ForeignKey(
-        "admissions.Student", on_delete=models.CASCADE, related_name="results"
-    )
-    section = models.ForeignKey(
-        "academics.Section", on_delete=models.CASCADE, related_name="results"
-    )
+    student = models.ForeignKey("admissions.Student", on_delete=models.CASCADE, related_name="results")
+    section = models.ForeignKey("academics.Section", on_delete=models.CASCADE, related_name="results")
     final_grade = models.CharField(max_length=8, blank=True, default="")
     state = models.CharField(max_length=16, choices=STATE_CHOICES, default="draft")
     is_published = models.BooleanField(default=False)
@@ -35,9 +31,7 @@ class PendingChange(models.Model):
         ("rejected", "Rejected"),
     ]
 
-    result = models.ForeignKey(
-        Result, on_delete=models.CASCADE, related_name="pending_changes"
-    )
+    result = models.ForeignKey(Result, on_delete=models.CASCADE, related_name="pending_changes")
     requested_by = models.CharField(max_length=128)
     approved_by = models.CharField(max_length=128, blank=True, default="")
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default="pending")
