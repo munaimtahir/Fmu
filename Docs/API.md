@@ -264,6 +264,50 @@ Use ordering:
 
 ---
 
+### Audit Logs
+- `GET /api/audit/` - List audit log entries (Admin only)
+
+**Query Parameters**:
+- `actor` - Filter by username (partial match)
+- `entity` - Filter by model name (partial match)
+- `date_from` - Filter by timestamp (ISO 8601 format, e.g., 2025-10-22T00:00:00)
+- `date_to` - Filter by timestamp (ISO 8601 format)
+- `method` - Filter by HTTP method (POST, PUT, PATCH, DELETE)
+
+**Example:**
+```
+GET /api/audit/?actor=admin&entity=Student&date_from=2025-10-22T00:00:00&method=POST
+```
+
+**Response:**
+```json
+{
+  "count": 42,
+  "results": [
+    {
+      "id": "uuid-here",
+      "timestamp": "2025-10-22T10:30:00Z",
+      "actor": 1,
+      "actor_username": "admin",
+      "method": "POST",
+      "path": "/api/students/",
+      "status_code": 201,
+      "model": "Student",
+      "object_id": "123",
+      "summary": "Created student: John Doe (REG001)"
+    }
+  ]
+}
+```
+
+**Notes:**
+- All write operations (POST, PUT, PATCH, DELETE) are automatically logged
+- Logs are immutable and cannot be modified or deleted
+- Only administrators can access audit logs
+- Useful for compliance, troubleshooting, and security audits
+
+---
+
 ## Error Handling
 
 Standard error response format:
