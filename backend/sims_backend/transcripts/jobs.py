@@ -1,6 +1,7 @@
 """Background jobs for transcript generation and processing"""
 
 import logging
+from typing import Any
 
 from django.core.mail import send_mail
 
@@ -11,7 +12,7 @@ from .views import generate_transcript_pdf
 logger = logging.getLogger(__name__)
 
 
-def generate_and_email_transcript(student_id: int, recipient_email: str | None = None) -> dict:
+def generate_and_email_transcript(student_id: int, recipient_email: str | None = None) -> dict[str, Any]:
     """
     Background job to generate a transcript PDF and optionally email it.
 
@@ -72,7 +73,7 @@ def generate_and_email_transcript(student_id: int, recipient_email: str | None =
         return {"status": "error", "message": f"Transcript generation failed: {str(e)}"}
 
 
-def batch_generate_transcripts(student_ids: list[int]) -> dict:
+def batch_generate_transcripts(student_ids: list[int]) -> dict[str, Any]:
     """
     Background job to generate transcripts for multiple students.
 
@@ -82,7 +83,7 @@ def batch_generate_transcripts(student_ids: list[int]) -> dict:
     Returns:
         Dict with summary of results
     """
-    results = {"success": [], "failed": [], "total": len(student_ids)}
+    results: dict[str, Any] = {"success": [], "failed": [], "total": len(student_ids)}
 
     for student_id in student_ids:
         result = generate_and_email_transcript(student_id)
