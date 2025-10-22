@@ -32,9 +32,7 @@ class TestStudentPermissions:
 
     def test_student_cannot_update_other_student(self, api_client, student_user):
         """Students should not be able to update other students."""
-        other_student = Student.objects.create(
-            reg_no="STU-9999", name="Other", program="BSc", status="active"
-        )
+        other_student = Student.objects.create(reg_no="STU-9999", name="Other", program="BSc", status="active")
         api_client.force_authenticate(student_user)
         resp = api_client.patch(
             f"/api/students/{other_student.id}/",
@@ -48,9 +46,7 @@ class TestStudentPermissions:
 
     def test_student_cannot_delete_student(self, api_client, student_user):
         """Students should not be able to delete students."""
-        own_student = Student.objects.create(
-            reg_no="STU-0001", name="Own", program="BSc", status="active"
-        )
+        own_student = Student.objects.create(reg_no="STU-0001", name="Own", program="BSc", status="active")
         api_client.force_authenticate(student_user)
         resp = api_client.delete(f"/api/students/{own_student.id}/")
         assert resp.status_code in [
@@ -79,9 +75,7 @@ class TestRegistrarPermissions:
 
     def test_registrar_can_update_student(self, api_client, registrar_user):
         """Registrars should be able to update students."""
-        student = Student.objects.create(
-            reg_no="STU-001", name="Test", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         api_client.force_authenticate(registrar_user)
         resp = api_client.patch(
             f"/api/students/{student.id}/",
@@ -94,12 +88,8 @@ class TestRegistrarPermissions:
 
     def test_registrar_can_list_all_students(self, api_client, registrar_user):
         """Registrars should see all students."""
-        Student.objects.create(
-            reg_no="STU-001", name="Student1", program="BSc", status="active"
-        )
-        Student.objects.create(
-            reg_no="STU-002", name="Student2", program="MSc", status="active"
-        )
+        Student.objects.create(reg_no="STU-001", name="Student1", program="BSc", status="active")
+        Student.objects.create(reg_no="STU-002", name="Student2", program="MSc", status="active")
         api_client.force_authenticate(registrar_user)
         resp = api_client.get("/api/students/")
         assert resp.status_code == status.HTTP_200_OK

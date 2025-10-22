@@ -5,20 +5,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('enrollment', '0002_alter_enrollment_id'),
+        ("enrollment", "0002_alter_enrollment_id"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='enrollment',
-            name='enrolled_at',
+            model_name="enrollment",
+            name="enrolled_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='enrollment',
-            name='term',
-            field=models.CharField(blank=True, default='', max_length=32),
+            model_name="enrollment",
+            name="term",
+            field=models.CharField(blank=True, default="", max_length=32),
         ),
     ]

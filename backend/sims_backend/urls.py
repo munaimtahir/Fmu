@@ -63,4 +63,5 @@ urlpatterns = [
     path("", include("sims_backend.results.urls")),
     path("", include("sims_backend.requests.urls")),
     path("", include("sims_backend.transcripts.urls")),
+    path("", include("sims_backend.audit.urls")),
 ]

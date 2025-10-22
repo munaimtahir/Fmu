@@ -39,9 +39,7 @@ class TestAuditMiddleware:
 
     def test_audit_log_on_update(self, api_client, admin_user):
         """Test that audit logs are created on PATCH/PUT."""
-        student = Student.objects.create(
-            reg_no="AUDIT-002", name="Original", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="AUDIT-002", name="Original", program="BSc", status="active")
         api_client.force_authenticate(admin_user)
         initial_count = AuditLog.objects.count()
 
@@ -60,9 +58,7 @@ class TestAuditMiddleware:
 
     def test_audit_log_on_delete(self, api_client, admin_user):
         """Test that audit logs are created on DELETE."""
-        student = Student.objects.create(
-            reg_no="AUDIT-003", name="To Delete", program="BSc", status="active"
-        )
+        student = Student.objects.create(reg_no="AUDIT-003", name="To Delete", program="BSc", status="active")
         api_client.force_authenticate(admin_user)
         initial_count = AuditLog.objects.count()
 
@@ -77,9 +73,7 @@ class TestAuditMiddleware:
 
     def test_no_audit_log_on_read(self, api_client, admin_user):
         """Test that audit logs are NOT created on GET."""
-        Student.objects.create(
-            reg_no="AUDIT-004", name="Read Only", program="BSc", status="active"
-        )
+        Student.objects.create(reg_no="AUDIT-004", name="Read Only", program="BSc", status="active")
         api_client.force_authenticate(admin_user)
         initial_count = AuditLog.objects.count()
 

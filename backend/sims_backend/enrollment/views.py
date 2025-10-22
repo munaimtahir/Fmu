@@ -62,9 +62,7 @@ def enroll_in_section(request, section_id):
         )
 
     # Create enrollment using serializer (includes validation)
-    serializer = EnrollmentSerializer(
-        data={"student": student.id, "section": section.id, "term": section.term}
-    )
+    serializer = EnrollmentSerializer(data={"student": student.id, "section": section.id, "term": section.term})
     serializer.is_valid(raise_exception=True)
     serializer.save()
 

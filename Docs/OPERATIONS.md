@@ -91,40 +91,164 @@ POST /api/transcripts/enqueue/
 }
 ```
 
+## Staging Deployment
+
+### Prerequisites
+- Docker and Docker Compose installed
+- Domain name configured (for SSL)
+- Environment variables set in `.env`
+
+### Initial Setup
+```bash
+# Clone repository
+git clone https://github.com/munaimtahir/Fmu.git
+cd Fmu
+
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with production values
+nano .env
+
+# Build and start staging services
+docker compose -f docker-compose.staging.yml up -d
+
+# Run migrations
+docker exec sims_backend_staging python manage.py migrate
+
+# Create superuser
+docker exec -it sims_backend_staging python manage.py createsuperuser
+
+# Seed demo data (optional)
+docker exec sims_backend_staging python manage.py seed_demo --students=50
+```
+
+### SSL Certificate Setup (Let's Encrypt)
+```bash
+# Update nginx.staging.conf with your domain
+nano nginx/nginx.staging.conf
+# Replace 'yourdomain.com' with your actual domain
+
+# Initial certificate request
+docker compose -f docker-compose.staging.yml run --rm certbot certonly \
+  --webroot --webroot-path=/var/www/certbot \
+  --email admin@yourdomain.com \
+  --agree-tos \
+  --no-eff-email \
+  -d yourdomain.com -d www.yourdomain.com
+
+# Restart nginx
+docker compose -f docker-compose.staging.yml restart nginx
+```
+
+**Certificate Auto-Renewal:**
+The certbot container automatically renews certificates every 12 hours.
+
+### Staging Environment Variables
+```env
+# Production settings
+DEBUG=False
+ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+SECRET_KEY=<generate-strong-secret-key>
+
+# Database
+POSTGRES_DB=sims_db
+POSTGRES_USER=sims_user
+POSTGRES_PASSWORD=<strong-password>
+
+# Email (optional)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your-email@example.com
+EMAIL_HOST_PASSWORD=<app-password>
+
+# Security
+SECURE_SSL_REDIRECT=True
+SESSION_COOKIE_SECURE=True
+CSRF_COOKIE_SECURE=True
+```
+
 ## Backups
 
-### Database Backup
-```bash
-# Manual backup
-docker exec sims_postgres pg_dump -U sims_user sims_db > backup_$(date +%Y%m%d).sql
+### Automated Backup (Nightly)
+The staging deployment includes automated nightly backups via GitHub Actions workflow:
+- Runs daily at 2 AM UTC
+- Creates compressed PostgreSQL dump
+- Uploads as GitHub artifact (7-day retention)
+- Manual trigger available via workflow dispatch
 
-# Automated backup (cron)
-# Daily at 2 AM
-0 2 * * * docker exec sims_postgres pg_dump -U sims_user sims_db > /backups/sims_$(date +\%Y\%m\%d).sql
+### Manual Database Backup
+```bash
+# Create backup directory
+mkdir -p backups
+
+# Backup to file
+docker exec sims_postgres_staging pg_dump -U sims_user -Fc sims_db > backups/backup_$(date +%Y%m%d_%H%M%S).dump
+
+# Compress (if using SQL format)
+gzip backups/backup_$(date +%Y%m%d_%H%M%S).sql
 ```
 
 ### Database Restore
 ```bash
 # Stop backend and worker
-docker compose stop backend rqworker
+docker compose -f docker-compose.staging.yml stop backend rqworker
 
 # Restore from backup
-docker exec -i sims_postgres psql -U sims_user sims_db < backup_20251020.sql
+docker exec -i sims_postgres_staging pg_restore -U sims_user -d sims_db -c backups/backup_20251022.dump
+
+# Or from SQL file
+gunzip -c backups/backup_20251022.sql.gz | docker exec -i sims_postgres_staging psql -U sims_user sims_db
 
 # Restart services
-docker compose start backend rqworker
+docker compose -f docker-compose.staging.yml start backend rqworker
 
 # Verify health
-curl http://localhost:8000/health/
+curl https://yourdomain.com/healthz
 ```
 
 ### Media Files Backup
 ```bash
 # Backup uploaded files
-tar -czf media_backup_$(date +%Y%m%d).tar.gz ./media/
+docker run --rm -v sims_media_volume:/data -v $(pwd)/backups:/backup alpine \
+  tar czf /backup/media_$(date +%Y%m%d).tar.gz -C /data .
 
 # Restore
-tar -xzf media_backup_20251020.tar.gz -C ./
+docker run --rm -v sims_media_volume:/data -v $(pwd)/backups:/backup alpine \
+  tar xzf /backup/media_20251022.tar.gz -C /data
+
+# Or using docker cp
+docker cp sims_backend_staging:/app/media ./media_backup
+docker cp ./media_backup sims_backend_staging:/app/media
+```
+
+### Weekly Snapshot
+```bash
+# Create complete backup (database + media)
+./backup.sh
+
+# Verify backup
+ls -lh backups/
+```
+
+**Backup Script (backup.sh):**
+```bash
+#!/bin/bash
+BACKUP_DIR="backups"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+mkdir -p $BACKUP_DIR
+
+# Database
+docker exec sims_postgres_staging pg_dump -U sims_user -Fc sims_db > $BACKUP_DIR/db_$DATE.dump
+
+# Media files
+docker run --rm -v sims_media_volume:/data -v $(pwd)/$BACKUP_DIR:/backup alpine \
+  tar czf /backup/media_$DATE.tar.gz -C /data .
+
+echo "Backup completed: $DATE"
+ls -lh $BACKUP_DIR/*$DATE*
 ```
 
 ## Monitoring

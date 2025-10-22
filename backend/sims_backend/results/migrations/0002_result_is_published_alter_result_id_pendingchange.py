@@ -5,34 +5,45 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('results', '0001_initial'),
+        ("results", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='result',
-            name='is_published',
+            model_name="result",
+            name="is_published",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID'),
+            model_name="result",
+            name="id",
+            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID"),
         ),
         migrations.CreateModel(
-            name='PendingChange',
+            name="PendingChange",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('requested_by', models.CharField(max_length=128)),
-                ('approved_by', models.CharField(blank=True, default='', max_length=128)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending', max_length=16)),
-                ('new_grade', models.CharField(max_length=8)),
-                ('reason', models.TextField(blank=True, default='')),
-                ('requested_at', models.DateTimeField(auto_now_add=True)),
-                ('resolved_at', models.DateTimeField(blank=True, null=True)),
-                ('result', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pending_changes', to='results.result')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("requested_by", models.CharField(max_length=128)),
+                ("approved_by", models.CharField(blank=True, default="", max_length=128)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("pending", "Pending"), ("approved", "Approved"), ("rejected", "Rejected")],
+                        default="pending",
+                        max_length=16,
+                    ),
+                ),
+                ("new_grade", models.CharField(max_length=8)),
+                ("reason", models.TextField(blank=True, default="")),
+                ("requested_at", models.DateTimeField(auto_now_add=True)),
+                ("resolved_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "result",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="pending_changes", to="results.result"
+                    ),
+                ),
             ],
         ),
     ]

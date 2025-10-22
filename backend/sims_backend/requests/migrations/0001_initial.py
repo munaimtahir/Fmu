@@ -5,28 +5,55 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('admissions', '0002_alter_student_id'),
+        ("admissions", "0002_alter_student_id"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Request',
+            name="Request",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('transcript', 'Transcript'), ('bonafide', 'Bonafide Certificate'), ('noc', 'No Objection Certificate'), ('other', 'Other')], max_length=32)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected'), ('completed', 'Completed')], default='pending', max_length=16)),
-                ('notes', models.TextField(blank=True, default='')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('processed_by', models.CharField(blank=True, default='', max_length=128)),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='requests', to='admissions.student')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("transcript", "Transcript"),
+                            ("bonafide", "Bonafide Certificate"),
+                            ("noc", "No Objection Certificate"),
+                            ("other", "Other"),
+                        ],
+                        max_length=32,
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("approved", "Approved"),
+                            ("rejected", "Rejected"),
+                            ("completed", "Completed"),
+                        ],
+                        default="pending",
+                        max_length=16,
+                    ),
+                ),
+                ("notes", models.TextField(blank=True, default="")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("processed_by", models.CharField(blank=True, default="", max_length=128)),
+                (
+                    "student",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="requests", to="admissions.student"
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]
