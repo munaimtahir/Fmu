@@ -207,14 +207,15 @@ Fmu/
 │   ├── nginx.conf             # Main config
 │   └── conf.d/                # Site configs
 ├── Docs/                       # Documentation
-│   ├── FINAL_AI_DEVELOPER_PROMPT.md
 │   ├── ARCHITECTURE.md
-│   ├── DATAMODEL.md
 │   ├── API.md
+│   ├── DATAMODEL.md
 │   ├── SETUP.md
+│   ├── archive/               # Historical completion reports
 │   └── ...
 ├── docker-compose.yml          # Docker services
 ├── .env.example               # Environment template
+├── MIGRATION_LOG.md           # Repository change history
 └── README.md                  # This file
 ```
 
