@@ -205,9 +205,9 @@ else
     check_fail "CHANGELOG.md missing"
 fi
 
-# Check completion report
-if [ -f "FINAL_SESSION_COMPLETION_REPORT.md" ]; then
-    check_pass "Final session completion report exists"
+# Check completion report (now archived)
+if [ -f "Docs/archive/FINAL_SESSION_COMPLETION_REPORT.md" ]; then
+    check_pass "Final session completion report exists (archived)"
 else
     check_fail "Final completion report missing"
 fi
