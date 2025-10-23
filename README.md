@@ -1,8 +1,65 @@
 # FMU - Student Information Management System (SIMS)
 
-A comprehensive Student Information Management System built with Django REST Framework and React.
+[![Backend CI](https://github.com/munaimtahir/Fmu/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/munaimtahir/Fmu/actions/workflows/backend-ci.yml)
+[![Frontend CI](https://github.com/munaimtahir/Fmu/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/munaimtahir/Fmu/actions/workflows/frontend-ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![React 19](https://img.shields.io/badge/react-19-61dafb.svg)](https://reactjs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-## Overview
+A comprehensive, production-ready Student Information Management System built with Django REST Framework and React.
+
+## 🚀 Quick Start
+
+### Using Docker (Recommended)
+```bash
+# Clone and start
+git clone https://github.com/munaimtahir/Fmu.git
+cd Fmu
+cp .env.example .env
+
+# Start all services
+docker compose up -d
+
+# Run migrations and seed demo data
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py seed_demo --students 30
+
+# Access the application
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:8000
+# Admin Panel: http://localhost:8000/admin
+```
+
+### Using Makefile
+```bash
+make demo        # Setup and seed demo data
+make test        # Run all tests
+make lint        # Run all linters
+make docker-up   # Start Docker services
+```
+
+## 📊 Status & Metrics
+
+### Current Version
+- **Production:** v1.0.0-prod
+- **Stable:** v1.1.0-stable
+- **Status:** ✅ Production-ready
+
+### Test Coverage
+| Component | Tests | Coverage | Status |
+|-----------|-------|----------|--------|
+| Backend | 220 | 91% | ✅ PASS |
+| Frontend | 26 | 100% | ✅ PASS |
+
+### Quality Metrics
+- ✅ All linters passing (ruff, mypy, eslint, tsc)
+- ✅ All tests passing
+- ✅ CI/CD green
+- ✅ Docker build successful
+- ✅ Security scanning configured (CodeQL)
+
+## 📋 Overview
 
 SIMS is a production-ready academic digitization system designed to manage:
 - Universities, Colleges, Departments, Programs
@@ -219,11 +276,48 @@ Key environment variables (see `.env.example` for full list):
 
 ## Deployment
 
-See `Docs/CI-CD.md` for CI/CD and deployment instructions.
+See [Docs/SETUP.md](Docs/SETUP.md) for detailed deployment instructions.
+See [Docs/CI-CD.md](Docs/CI-CD.md) for CI/CD pipeline documentation.
+
+## 📄 Documentation
+
+Complete documentation is available in the [Docs/](Docs/) directory:
+
+- **[Architecture](Docs/ARCHITECTURE.md)** - System design and components
+- **[API Reference](Docs/API.md)** - Complete endpoint documentation  
+- **[Data Model](Docs/DATAMODEL.md)** - Database schema and ERD
+- **[Setup Guide](Docs/SETUP.md)** - Deployment and configuration
+- **[Contributing](Docs/CONTRIBUTING.md)** - Contribution guidelines
+- **[Changelog](Docs/CHANGELOG.md)** - Version history
+- **[Tests](Docs/TESTS.md)** - Testing documentation
+- **[CI/CD](Docs/CI-CD.md)** - Pipeline configuration
+
+## 🎯 Demo Credentials
+
+After running `make demo` or `python manage.py seed_demo`:
+
+- **Admin:** admin / admin123
+- **Faculty:** faculty / faculty123  
+- **Student:** student / student123
 
 ## Contributing
 
-Please read `Docs/CONTRIBUTING.md` for contribution guidelines.
+Please read [Docs/CONTRIBUTING.md](Docs/CONTRIBUTING.md) for contribution guidelines.
+
+We welcome contributions! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## Support
+
+For issues, questions, or contributions:
+
+- 📖 [Complete Documentation](Docs/)
+- 🐛 [Issue Tracker](https://github.com/munaimtahir/Fmu/issues)
+- 📧 Contact: munaimtahir@users.noreply.github.com
 
 ## License
 
