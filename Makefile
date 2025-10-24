@@ -1,4 +1,4 @@
-.PHONY: help demo build test lint clean docker-up docker-down migrate seed
+.PHONY: help demo build test lint clean docker-up docker-down migrate seed admin-theme
 
 help:
 	@echo "FMU SIMS - Available Commands"
@@ -12,6 +12,7 @@ help:
 	@echo "make migrate        - Run database migrations"
 	@echo "make seed           - Seed demo data"
 	@echo "make clean          - Clean build artifacts"
+	@echo "make admin-theme    - Setup admin theme (Jazzmin + static files)"
 
 demo: migrate seed
 	@echo "✅ Demo environment ready!"
@@ -76,3 +77,11 @@ docker-down:
 	@echo "Stopping Docker services..."
 	docker compose down
 	@echo "✅ Docker services stopped"
+
+admin-theme:
+	@echo "🌈 Setting up FMU SIMS Admin Theme..."
+	cd backend && pip install -q django-jazzmin whitenoise
+	mkdir -p backend/static/img
+	cd backend && python manage.py collectstatic --noinput
+	@echo "✅ Admin theme setup complete"
+	@echo "Run 'cd backend && python manage.py runserver' to test the admin interface"
