@@ -1,5 +1,33 @@
 # Changelog
 
+## 2025-10-24 - Authentication Fix (v1.1.1)
+
+### Issue Fixed
+Fixed login payload mismatch between frontend and backend authentication.
+
+### Changes
+- **Backend**: Created custom `EmailTokenObtainPairSerializer` that accepts `email` and `password` instead of `username` and `password`
+- **Backend**: Added `EmailTokenObtainPairView` to handle email-based authentication
+- **Backend**: Updated `/api/auth/token/` endpoint to use the new serializer
+- **Tests**: Added comprehensive test suite for email-based authentication (7 tests)
+- **Documentation**: Updated API.md to clarify authentication payload structure
+
+### Technical Details
+- Frontend was sending `{ email: string, password: string }`
+- Backend (Django's default JWT) expected `{ username: string, password: string }`
+- Solution: Custom serializer that looks up users by email field instead of username
+- All existing tests pass (227 tests)
+- New tests validate email authentication works correctly
+
+### Files Changed
+- `backend/core/serializers.py` - New file with EmailTokenObtainPairSerializer
+- `backend/core/views.py` - New EmailTokenObtainPairView
+- `backend/sims_backend/urls.py` - Updated to use custom view
+- `backend/tests/test_email_auth.py` - New test file
+- `Docs/API.md` - Updated authentication documentation
+
+---
+
 ## 2025-10-23 - Final Verification & Release (v1.1.0-stable)
 
 ### Session Summary
