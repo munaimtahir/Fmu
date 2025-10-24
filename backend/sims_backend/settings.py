@@ -218,4 +218,5 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 
 # Jazzmin Admin Theme Configuration
+# Django-jazzmin automatically discovers these settings from this module
 from core.jazzmin import JAZZMIN_SETTINGS, JAZZMIN_UI_TWEAKS  # noqa: E402, F401
