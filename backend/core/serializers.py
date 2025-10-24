@@ -1,6 +1,7 @@
 """Custom serializers for authentication."""
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import update_last_login
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.settings import api_settings
 
@@ -36,21 +37,18 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 # Use generic error message to avoid leaking user information
-                from rest_framework_simplejwt.exceptions import AuthenticationFailed
                 raise AuthenticationFailed(
                     "No active account found with the given credentials"
                 )
 
             # Check password
             if not user.check_password(password):
-                from rest_framework_simplejwt.exceptions import AuthenticationFailed
                 raise AuthenticationFailed(
                     "No active account found with the given credentials"
                 )
 
             # Check if user is active
             if not user.is_active:
-                from rest_framework_simplejwt.exceptions import AuthenticationFailed
                 raise AuthenticationFailed(
                     "No active account found with the given credentials"
                 )
@@ -69,7 +67,6 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
 
             return data
         else:
-            from rest_framework_simplejwt.exceptions import AuthenticationFailed
             raise AuthenticationFailed(
                 "Must include 'email' and 'password'."
             )
