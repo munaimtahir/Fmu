@@ -2,7 +2,9 @@
 
 Student Information Management System - Frontend Application
 
-## 🎯 Stage-2 Complete: Core UI Layer
+> 📖 **New**: See [INTEGRATION.md](./INTEGRATION.md) for quick start guide on the newly integrated CRUD modules
+
+## 🎯 Stage-2 Complete: Core UI Layer + CRUD Integration ✅
 
 This is a production-ready Stage-2 MVP featuring:
 - ✅ Full JWT authentication with token refresh
@@ -12,6 +14,9 @@ This is a production-ready Stage-2 MVP featuring:
 - ✅ **DataTable component with TanStack Table**
 - ✅ **Comprehensive Form Kit (Select, DatePicker, FileUpload, Switch, TextArea)**
 - ✅ **Role-specific dashboards (Admin, Registrar, Faculty, Student, ExamCell)**
+- ✅ **Complete CRUD modules (Students, Courses, Sections, Assessments)** 🆕
+- ✅ **Type-safe API service layer with React Query** 🆕
+- ✅ **Form validation with Zod schemas** 🆕
 - ✅ TypeScript strict mode with comprehensive type safety
 - ✅ Minimalist-Elite design system
 - ✅ Protected routes and role-based authorization
