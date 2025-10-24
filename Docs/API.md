@@ -8,7 +8,25 @@
 - `POST /api/auth/token/` - Obtain JWT access and refresh tokens
 - `POST /api/auth/token/refresh/` - Refresh access token
 
+**Login Request** (`POST /api/auth/token/`):
+```json
+{
+  "email": "user@university.edu",
+  "password": "your_password"
+}
+```
+
+**Response**:
+```json
+{
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+}
+```
+
 **Headers**: Include `Authorization: Bearer <access_token>` in all authenticated requests.
+
+**Note**: The authentication endpoint accepts `email` and `password` (not `username`).
 
 ---
 

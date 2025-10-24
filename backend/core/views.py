@@ -7,9 +7,9 @@ from .serializers import EmailTokenObtainPairSerializer
 class EmailTokenObtainPairView(TokenObtainPairView):
     """
     Custom token view that accepts email instead of username.
-    
+
     This view uses the EmailTokenObtainPairSerializer to allow
     users to authenticate using their email address.
     """
-    
-    serializer_class = EmailTokenObtainPairSerializer
+
+    serializer_class = EmailTokenObtainPairSerializer  # type: ignore[assignment]
