@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
 import toast from 'react-hot-toast'
+import { DashboardLayout } from '@/components/layouts/DashboardLayout'
 import { DataTable } from '@/components/ui/DataTable/DataTable'
 import { Button } from '@/components/ui/Button'
 import { sectionsService } from '@/services'
@@ -102,28 +103,30 @@ export function SectionsPage() {
   )
 
   return (
-    <div className="container mx-auto py-6 px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Sections</h1>
-        <Button onClick={handleAdd}>Add Section</Button>
-      </div>
+    <DashboardLayout>
+      <div className="container mx-auto py-6 px-4">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Sections</h1>
+          <Button onClick={handleAdd}>Add Section</Button>
+        </div>
 
-      <DataTable
-        data={data?.results || []}
-        columns={columns}
-        isLoading={isLoading}
-      />
-
-      {isFormOpen && (
-        <SectionForm
-          section={editingSection}
-          onClose={handleFormClose}
-          onSuccess={() => {
-            handleFormClose()
-            queryClient.invalidateQueries({ queryKey: ['sections'] })
-          }}
+        <DataTable
+          data={data?.results || []}
+          columns={columns}
+          isLoading={isLoading}
         />
-      )}
-    </div>
+
+        {isFormOpen && (
+          <SectionForm
+            section={editingSection}
+            onClose={handleFormClose}
+            onSuccess={() => {
+              handleFormClose()
+              queryClient.invalidateQueries({ queryKey: ['sections'] })
+            }}
+          />
+        )}
+      </div>
+    </DashboardLayout>
   )
 }

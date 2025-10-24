@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
 import toast from 'react-hot-toast'
+import { DashboardLayout } from '@/components/layouts/DashboardLayout'
 import { DataTable } from '@/components/ui/DataTable/DataTable'
 import { Button } from '@/components/ui/Button'
 import { assessmentsService } from '@/services'
@@ -98,28 +99,30 @@ export function AssessmentsPage() {
   )
 
   return (
-    <div className="container mx-auto py-6 px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Assessments</h1>
-        <Button onClick={handleAdd}>Add Assessment</Button>
-      </div>
+    <DashboardLayout>
+      <div className="container mx-auto py-6 px-4">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Assessments</h1>
+          <Button onClick={handleAdd}>Add Assessment</Button>
+        </div>
 
-      <DataTable
-        data={data?.results || []}
-        columns={columns}
-        isLoading={isLoading}
-      />
-
-      {isFormOpen && (
-        <AssessmentForm
-          assessment={editingAssessment}
-          onClose={handleFormClose}
-          onSuccess={() => {
-            handleFormClose()
-            queryClient.invalidateQueries({ queryKey: ['assessments'] })
-          }}
+        <DataTable
+          data={data?.results || []}
+          columns={columns}
+          isLoading={isLoading}
         />
-      )}
-    </div>
+
+        {isFormOpen && (
+          <AssessmentForm
+            assessment={editingAssessment}
+            onClose={handleFormClose}
+            onSuccess={() => {
+              handleFormClose()
+              queryClient.invalidateQueries({ queryKey: ['assessments'] })
+            }}
+          />
+        )}
+      </div>
+    </DashboardLayout>
   )
 }

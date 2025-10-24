@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
 import toast from 'react-hot-toast'
+import { DashboardLayout } from '@/components/layouts/DashboardLayout'
 import { DataTable } from '@/components/ui/DataTable/DataTable'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -100,37 +101,39 @@ export function CoursesPage() {
   )
 
   return (
-    <div className="container mx-auto py-6 px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Courses</h1>
-        <Button onClick={handleAdd}>Add Course</Button>
-      </div>
+    <DashboardLayout>
+      <div className="container mx-auto py-6 px-4">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Courses</h1>
+          <Button onClick={handleAdd}>Add Course</Button>
+        </div>
 
-      <div className="mb-4">
-        <Input
-          placeholder="Search courses..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-sm"
+        <div className="mb-4">
+          <Input
+            placeholder="Search courses..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="max-w-sm"
+          />
+        </div>
+
+        <DataTable
+          data={data?.results || []}
+          columns={columns}
+          isLoading={isLoading}
         />
+
+        {isFormOpen && (
+          <CourseForm
+            course={editingCourse}
+            onClose={handleFormClose}
+            onSuccess={() => {
+              handleFormClose()
+              queryClient.invalidateQueries({ queryKey: ['courses'] })
+            }}
+          />
+        )}
       </div>
-
-      <DataTable
-        data={data?.results || []}
-        columns={columns}
-        isLoading={isLoading}
-      />
-
-      {isFormOpen && (
-        <CourseForm
-          course={editingCourse}
-          onClose={handleFormClose}
-          onSuccess={() => {
-            handleFormClose()
-            queryClient.invalidateQueries({ queryKey: ['courses'] })
-          }}
-        />
-      )}
-    </div>
+    </DashboardLayout>
   )
 }
