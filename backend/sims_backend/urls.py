@@ -1,4 +1,6 @@
 import django_rq
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import include, path
@@ -67,3 +69,7 @@ urlpatterns = [
     path("", include("sims_backend.transcripts.urls")),
     path("", include("sims_backend.audit.urls")),
 ]
+
+# Static files in DEBUG mode
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
