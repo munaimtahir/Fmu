@@ -14,6 +14,13 @@ import { Gradebook } from '@/pages/gradebook/Gradebook'
 import { PublishResults } from '@/pages/examcell/PublishResults'
 import { TranscriptVerify } from '@/pages/verify/TranscriptVerify'
 import { AuditLog } from '@/pages/admin/AuditLog'
+import { StudentsPage } from '@/features/students/StudentsPage'
+import { CoursesPage } from '@/features/courses/CoursesPage'
+import { SectionsPage } from '@/features/sections/SectionsPage'
+import { AssessmentsPage } from '@/features/assessments/AssessmentsPage'
+import { BulkEnrollmentPage } from '@/features/enrollment/BulkEnrollmentPage'
+import { BulkAttendancePage } from '@/features/attendance/BulkAttendancePage'
+import { AnalyticsDashboard } from '@/features/analytics/AnalyticsDashboard'
 
 /**
  * Application routes configuration
@@ -126,6 +133,62 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={['Admin']}>
         <AuditLog />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/students',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin', 'Registrar']}>
+        <StudentsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/courses',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin', 'Registrar', 'Faculty']}>
+        <CoursesPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/sections',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin', 'Registrar', 'Faculty']}>
+        <SectionsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/assessments',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin', 'Faculty']}>
+        <AssessmentsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/enrollment/bulk',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin', 'Registrar']}>
+        <BulkEnrollmentPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/attendance/bulk',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin', 'Faculty']}>
+        <BulkAttendancePage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/analytics',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin']}>
+        <AnalyticsDashboard />
       </ProtectedRoute>
     ),
   },

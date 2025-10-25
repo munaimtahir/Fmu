@@ -11,12 +11,15 @@ interface NavItem {
 
 const navigationItems: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: '📊', roles: [] },
+  { label: 'Analytics', path: '/analytics', icon: '📈', roles: ['Admin'] },
   { label: 'Students', path: '/students', icon: '👥', roles: ['Admin', 'Registrar'] },
   { label: 'Courses', path: '/courses', icon: '📚', roles: ['Admin', 'Registrar', 'Faculty'] },
-  { label: 'Enrollment', path: '/enrollment', icon: '📝', roles: ['Admin', 'Registrar'] },
-  { label: 'Assessments', path: '/assessments', icon: '📋', roles: ['Faculty', 'ExamCell'] },
-  { label: 'Results', path: '/results', icon: '🎯', roles: ['Admin', 'Faculty', 'ExamCell', 'Student'] },
-  { label: 'Reports', path: '/reports', icon: '📈', roles: ['Admin', 'Registrar'] },
+  { label: 'Sections', path: '/sections', icon: '🏫', roles: ['Admin', 'Registrar', 'Faculty'] },
+  { label: 'Bulk Enrollment', path: '/enrollment/bulk', icon: '📝', roles: ['Admin', 'Registrar'] },
+  { label: 'Assessments', path: '/assessments', icon: '📋', roles: ['Admin', 'Faculty'] },
+  { label: 'Attendance', path: '/attendance', icon: '✅', roles: ['Admin', 'Faculty'] },
+  { label: 'Bulk Attendance', path: '/attendance/bulk', icon: '✏️', roles: ['Admin', 'Faculty'] },
+  { label: 'Gradebook', path: '/gradebook', icon: '📖', roles: ['Admin', 'Faculty', 'Student'] },
   { label: 'DataTable Demo', path: '/demo/datatable', icon: '🧪', roles: [] },
 ]
 
