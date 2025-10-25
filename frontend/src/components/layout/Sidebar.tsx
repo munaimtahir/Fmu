@@ -14,6 +14,7 @@ const navigationItems: NavItem[] = [
   { label: 'Students', path: '/students', icon: '👥', roles: ['Admin', 'Registrar'] },
   { label: 'Courses', path: '/courses', icon: '📚', roles: ['Admin', 'Registrar', 'Faculty'] },
   { label: 'Sections', path: '/sections', icon: '🏫', roles: ['Admin', 'Registrar', 'Faculty'] },
+  { label: 'Bulk Enrollment', path: '/enrollment/bulk', icon: '📝', roles: ['Admin', 'Registrar'] },
   { label: 'Assessments', path: '/assessments', icon: '📋', roles: ['Admin', 'Faculty'] },
   { label: 'Attendance', path: '/attendance', icon: '✅', roles: ['Admin', 'Faculty'] },
   { label: 'Gradebook', path: '/gradebook', icon: '📖', roles: ['Admin', 'Faculty', 'Student'] },

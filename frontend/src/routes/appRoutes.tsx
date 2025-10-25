@@ -18,6 +18,7 @@ import { StudentsPage } from '@/features/students/StudentsPage'
 import { CoursesPage } from '@/features/courses/CoursesPage'
 import { SectionsPage } from '@/features/sections/SectionsPage'
 import { AssessmentsPage } from '@/features/assessments/AssessmentsPage'
+import { BulkEnrollmentPage } from '@/features/enrollment/BulkEnrollmentPage'
 
 /**
  * Application routes configuration
@@ -162,6 +163,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={['Admin', 'Faculty']}>
         <AssessmentsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/enrollment/bulk',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin', 'Registrar']}>
+        <BulkEnrollmentPage />
       </ProtectedRoute>
     ),
   },
