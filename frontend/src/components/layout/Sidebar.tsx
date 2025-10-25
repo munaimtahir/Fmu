@@ -17,6 +17,7 @@ const navigationItems: NavItem[] = [
   { label: 'Bulk Enrollment', path: '/enrollment/bulk', icon: '📝', roles: ['Admin', 'Registrar'] },
   { label: 'Assessments', path: '/assessments', icon: '📋', roles: ['Admin', 'Faculty'] },
   { label: 'Attendance', path: '/attendance', icon: '✅', roles: ['Admin', 'Faculty'] },
+  { label: 'Bulk Attendance', path: '/attendance/bulk', icon: '✏️', roles: ['Admin', 'Faculty'] },
   { label: 'Gradebook', path: '/gradebook', icon: '📖', roles: ['Admin', 'Faculty', 'Student'] },
   { label: 'DataTable Demo', path: '/demo/datatable', icon: '🧪', roles: [] },
 ]
