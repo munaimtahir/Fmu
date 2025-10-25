@@ -11,6 +11,7 @@ interface NavItem {
 
 const navigationItems: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: '📊', roles: [] },
+  { label: 'Analytics', path: '/analytics', icon: '📈', roles: ['Admin'] },
   { label: 'Students', path: '/students', icon: '👥', roles: ['Admin', 'Registrar'] },
   { label: 'Courses', path: '/courses', icon: '📚', roles: ['Admin', 'Registrar', 'Faculty'] },
   { label: 'Sections', path: '/sections', icon: '🏫', roles: ['Admin', 'Registrar', 'Faculty'] },

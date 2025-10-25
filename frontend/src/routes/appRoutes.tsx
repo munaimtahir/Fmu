@@ -20,6 +20,7 @@ import { SectionsPage } from '@/features/sections/SectionsPage'
 import { AssessmentsPage } from '@/features/assessments/AssessmentsPage'
 import { BulkEnrollmentPage } from '@/features/enrollment/BulkEnrollmentPage'
 import { BulkAttendancePage } from '@/features/attendance/BulkAttendancePage'
+import { AnalyticsDashboard } from '@/features/analytics/AnalyticsDashboard'
 
 /**
  * Application routes configuration
@@ -180,6 +181,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={['Admin', 'Faculty']}>
         <BulkAttendancePage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/analytics',
+    element: (
+      <ProtectedRoute allowedRoles={['Admin']}>
+        <AnalyticsDashboard />
       </ProtectedRoute>
     ),
   },
