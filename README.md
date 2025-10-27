@@ -259,6 +259,21 @@ cd frontend
 npm run lint
 ```
 
+### Comprehensive Validation
+```bash
+# Run full release validation check
+./validate_release.sh
+```
+
+This script validates:
+- Backend tests and coverage (≥80%)
+- Frontend tests and coverage (≥70%)
+- Code quality (linters, type checking)
+- Docker configuration
+- Security configuration
+- CI/CD workflows
+- Documentation completeness
+
 ## API Documentation
 
 Once the backend is running, API documentation is available at:
@@ -294,6 +309,7 @@ Complete documentation is available in the [Docs/](Docs/) directory:
 - **[Changelog](Docs/CHANGELOG.md)** - Version history
 - **[Tests](Docs/TESTS.md)** - Testing documentation
 - **[CI/CD](Docs/CI-CD.md)** - Pipeline configuration
+- **[Autonomous Release Prompt](Docs/AUTONOMOUS_RELEASE_PROMPT.md)** - AI agent execution guide
 
 ## 🎯 Demo Credentials
 
