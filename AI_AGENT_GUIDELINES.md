@@ -475,5 +475,14 @@ These guidelines exist to maintain code quality, security, and reliability. Foll
 
 ---
 
-**Last Updated**: 2025-10-10
-**Version**: 1.0
+**Last Updated**: 2025-10-27
+**Version**: 1.1
+
+## Additional Resources
+
+For autonomous release execution by AI agents, see:
+- **[AUTONOMOUS_RELEASE_PROMPT.md](Docs/AUTONOMOUS_RELEASE_PROMPT.md)** - Comprehensive 7-phase release execution guide
+- **[AUTONOMOUS_RELEASE_QUICKSTART.md](Docs/AUTONOMOUS_RELEASE_QUICKSTART.md)** - Quick reference guide
+- **[validate_release.sh](../validate_release.sh)** - Automated validation script
+
+These documents provide structured guidance for AI agents performing complete release workflows.
