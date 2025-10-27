@@ -483,6 +483,6 @@ These guidelines exist to maintain code quality, security, and reliability. Foll
 For autonomous release execution by AI agents, see:
 - **[AUTONOMOUS_RELEASE_PROMPT.md](Docs/AUTONOMOUS_RELEASE_PROMPT.md)** - Comprehensive 7-phase release execution guide
 - **[AUTONOMOUS_RELEASE_QUICKSTART.md](Docs/AUTONOMOUS_RELEASE_QUICKSTART.md)** - Quick reference guide
-- **[validate_release.sh](../validate_release.sh)** - Automated validation script
+- **[validate_release.sh](validate_release.sh)** - Automated validation script
 
 These documents provide structured guidance for AI agents performing complete release workflows.
