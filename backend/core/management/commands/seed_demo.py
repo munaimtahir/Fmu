@@ -58,7 +58,7 @@ class Command(BaseCommand):
         sections = self._create_sections(courses, terms, users)
 
         # Create students and enroll them
-        students = self._create_students(programs, num_students)
+        students = self._create_students(programs, num_students, users)
         enrollments = self._enroll_students(students, sections)
 
         # Create attendance records
@@ -288,12 +288,28 @@ class Command(BaseCommand):
         self.stdout.write(f"  ✓ Created {len(sections)} sections with faculty assignments")
         return sections
 
-    def _create_students(self, programs, num_students):
-        """Create student records"""
+    def _create_students(self, programs, num_students, users):
+        """Create student records and link to student user"""
         students = []
         bscs_program = next(p for p in programs if "Computer Science" in p.name)
 
-        for i in range(num_students):
+        # Create the demo student user's record first
+        student_user = users.get("student")
+        if student_user:
+            reg_no = "2024-CS-001"
+            student, created = Student.objects.get_or_create(
+                reg_no=reg_no,
+                defaults={
+                    "name": f"{student_user.first_name} {student_user.last_name}",
+                    "program": bscs_program.name,
+                    "status": "active",
+                },
+            )
+            students.append(student)
+            self.stdout.write(f"  ✓ Created student record for demo user: {reg_no}")
+
+        # Create other students
+        for i in range(1, num_students):
             reg_no = f"2024-CS-{100 + i:03d}"
             student, created = Student.objects.get_or_create(
                 reg_no=reg_no,
