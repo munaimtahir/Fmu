@@ -49,16 +49,16 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Starting data seeding..."))
 
         # Create users for different roles
-        self._create_users()
+        users = self._create_users()
 
         # Create academic structure
         programs = self._create_programs()
         courses = self._create_courses(programs)
         terms = self._create_terms()
-        sections = self._create_sections(courses, terms)
+        sections = self._create_sections(courses, terms, users)
 
         # Create students and enroll them
-        students = self._create_students(programs, num_students)
+        students = self._create_students(programs, num_students, users)
         enrollments = self._enroll_students(students, sections)
 
         # Create attendance records
@@ -79,7 +79,8 @@ class Command(BaseCommand):
         self.stdout.write(f"  - Enrollments: {len(enrollments)}")
         self.stdout.write("\n🔑 Login credentials:")
         self.stdout.write("  Admin: admin / admin123")
-        self.stdout.write("  Faculty: faculty / faculty123")
+        self.stdout.write("  Registrar: registrar / registrar123")
+        self.stdout.write("  Faculty: faculty / faculty123 (also faculty1, faculty2, faculty3)")
         self.stdout.write("  Student: student / student123")
 
     def _clear_data(self):
@@ -99,7 +100,15 @@ class Command(BaseCommand):
 
     def _create_users(self):
         """Create demo users for different roles"""
+        from django.contrib.auth.models import Group
+        
         users = {}
+
+        # Ensure groups exist
+        admin_group, _ = Group.objects.get_or_create(name="Admin")
+        faculty_group, _ = Group.objects.get_or_create(name="Faculty")
+        student_group, _ = Group.objects.get_or_create(name="Student")
+        registrar_group, _ = Group.objects.get_or_create(name="Registrar")
 
         # Create admin
         if not User.objects.filter(username="admin").exists():
@@ -110,7 +119,24 @@ class Command(BaseCommand):
                 first_name="Admin",
                 last_name="User",
             )
+            users["admin"].groups.add(admin_group)
             self.stdout.write("  ✓ Created admin user")
+        else:
+            users["admin"] = User.objects.get(username="admin")
+
+        # Create registrar user
+        if not User.objects.filter(username="registrar").exists():
+            users["registrar"] = User.objects.create_user(
+                username="registrar",
+                email="registrar@sims.edu",
+                password="registrar123",
+                first_name="Mary",
+                last_name="Registrar",
+            )
+            users["registrar"].groups.add(registrar_group)
+            self.stdout.write("  ✓ Created registrar user")
+        else:
+            users["registrar"] = User.objects.get(username="registrar")
 
         # Create faculty user
         if not User.objects.filter(username="faculty").exists():
@@ -121,7 +147,27 @@ class Command(BaseCommand):
                 first_name="John",
                 last_name="Professor",
             )
+            users["faculty"].groups.add(faculty_group)
             self.stdout.write("  ✓ Created faculty user")
+        else:
+            users["faculty"] = User.objects.get(username="faculty")
+
+        # Create additional faculty users
+        for i in range(1, 4):
+            username = f"faculty{i}"
+            if not User.objects.filter(username=username).exists():
+                user = User.objects.create_user(
+                    username=username,
+                    email=f"faculty{i}@sims.edu",
+                    password="faculty123",
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
+                )
+                user.groups.add(faculty_group)
+                users[username] = user
+                self.stdout.write(f"  ✓ Created {username} user")
+            else:
+                users[username] = User.objects.get(username=username)
 
         # Create student user
         if not User.objects.filter(username="student").exists():
@@ -132,7 +178,10 @@ class Command(BaseCommand):
                 first_name="Jane",
                 last_name="Scholar",
             )
+            users["student"].groups.add(student_group)
             self.stdout.write("  ✓ Created student user")
+        else:
+            users["student"] = User.objects.get(username="student")
 
         return users
 
@@ -207,30 +256,60 @@ class Command(BaseCommand):
         self.stdout.write(f"  ✓ Created {len(terms)} terms")
         return terms
 
-    def _create_sections(self, courses, terms):
-        """Create sections for courses in current term"""
+    def _create_sections(self, courses, terms, users):
+        """Create sections for courses in current term and assign to faculty"""
         current_term = terms[0]  # Fall term
         sections = []
-
+        
+        # Get faculty users
+        faculty_users = [
+            users.get("faculty"),
+            users.get("faculty1"),
+            users.get("faculty2"),
+            users.get("faculty3"),
+        ]
+        
+        faculty_idx = 0
+        
         for course in courses[:6]:  # Create sections for first 6 courses
             for section_num in range(1, 3):  # 2 sections per course
+                # Assign faculty in round-robin fashion
+                teacher = faculty_users[faculty_idx % len(faculty_users)]
+                faculty_idx += 1
+                
                 section, created = Section.objects.get_or_create(
                     course=course,
                     term=current_term.name,
-                    teacher=f"Prof. {fake.last_name()}",
+                    teacher=teacher,
                     defaults={"capacity": 30},
                 )
                 sections.append(section)
 
-        self.stdout.write(f"  ✓ Created {len(sections)} sections")
+        self.stdout.write(f"  ✓ Created {len(sections)} sections with faculty assignments")
         return sections
 
-    def _create_students(self, programs, num_students):
-        """Create student records"""
+    def _create_students(self, programs, num_students, users):
+        """Create student records and link to student user"""
         students = []
         bscs_program = next(p for p in programs if "Computer Science" in p.name)
 
-        for i in range(num_students):
+        # Create the demo student user's record first
+        student_user = users.get("student")
+        if student_user:
+            reg_no = "2024-CS-001"
+            student, created = Student.objects.get_or_create(
+                reg_no=reg_no,
+                defaults={
+                    "name": f"{student_user.first_name} {student_user.last_name}",
+                    "program": bscs_program.name,
+                    "status": "active",
+                },
+            )
+            students.append(student)
+            self.stdout.write(f"  ✓ Created student record for demo user: {reg_no}")
+
+        # Create other students
+        for i in range(1, num_students):
             reg_no = f"2024-CS-{100 + i:03d}"
             student, created = Student.objects.get_or_create(
                 reg_no=reg_no,

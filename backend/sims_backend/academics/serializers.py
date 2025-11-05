@@ -23,6 +23,8 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class SectionSerializer(serializers.ModelSerializer):
+    teacher_name = serializers.CharField(read_only=True)
+    
     class Meta:
         model = Section
-        fields = ["id", "course", "term", "teacher", "capacity"]
+        fields = ["id", "course", "term", "teacher", "teacher_name", "capacity"]
