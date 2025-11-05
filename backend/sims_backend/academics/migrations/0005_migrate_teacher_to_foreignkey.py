@@ -13,7 +13,7 @@ def preserve_teacher_names(apps, schema_editor):
     
     # Copy teacher string to teacher_name
     for section in Section.objects.all():
-        section.teacher_name = section._teacher_old if hasattr(section, '_teacher_old') else ''
+        section.teacher_name = getattr(section, '_teacher_old')
         section.save(update_fields=['teacher_name'])
 
 

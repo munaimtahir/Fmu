@@ -56,11 +56,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
     container_name: sims_frontend
     volumes:
       - frontend_dist:/usr/share/nginx/html
-    environment:
-      - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
 
   rqworker:
     build:

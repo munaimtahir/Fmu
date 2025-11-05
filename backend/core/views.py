@@ -105,15 +105,21 @@ def _count_ineligible_students():
     """
     Count students who are ineligible due to low attendance
     Ineligible = attendance < 75%
+    Optimized to avoid N+1 queries.
     """
-    ineligible_count = 0
-    students = Student.objects.filter(status="active")
+    from django.db.models import Count, Q
     
+    # Get students with their attendance counts in a single query
+    students = Student.objects.filter(status="active").annotate(
+        total_attendance=Count('attendance'),
+        present_attendance=Count('attendance', filter=Q(attendance__present=True))
+    ).filter(total_attendance__gt=0)
+    
+    # Count students with attendance rate < 75%
+    ineligible_count = 0
     for student in students:
-        total_attendance = Attendance.objects.filter(student=student).count()
-        if total_attendance > 0:
-            present_count = Attendance.objects.filter(student=student, present=True).count()
-            attendance_rate = (present_count / total_attendance) * 100
+        if student.total_attendance > 0:
+            attendance_rate = (student.present_attendance / student.total_attendance) * 100
             if attendance_rate < 75:
                 ineligible_count += 1
     
@@ -123,21 +129,21 @@ def _count_ineligible_students():
 def _count_pending_attendance(sections):
     """
     Count sections that need attendance marking (basic heuristic)
+    Optimized to avoid N+1 queries.
     """
     from datetime import date, timedelta
     
-    # Count sections with no attendance in last 7 days
-    pending = 0
     last_week = date.today() - timedelta(days=7)
-    
-    for section in sections:
-        recent_attendance = Attendance.objects.filter(
-            section=section,
+    section_ids = list(sections.values_list('id', flat=True))
+    # Get section IDs with attendance in the last 7 days
+    attended_section_ids = set(
+        Attendance.objects.filter(
+            section_id__in=section_ids,
             date__gte=last_week
-        ).count()
-        if recent_attendance == 0:
-            pending += 1
-    
+        ).values_list('section_id', flat=True).distinct()
+    )
+    # Sections with no recent attendance
+    pending = len(set(section_ids) - attended_section_ids)
     return pending
 
 
