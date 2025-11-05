@@ -1,6 +1,6 @@
 # Documentation Index
 
-    _Updated: 2025-10-10_
+    _Updated: 2025-10-27_
 
     This folder holds living documentation for the FMU SIMS project.
 
@@ -24,4 +24,7 @@
 
     **Decisions:** see [/Docs/adr](adr)
 
-    **For AI contributors:** see [FINAL_AI_DEVELOPER_PROMPT.md](FINAL_AI_DEVELOPER_PROMPT.md)
+    **For AI contributors:**
+    - [FINAL_AI_DEVELOPER_PROMPT.md](FINAL_AI_DEVELOPER_PROMPT.md) — Development guidelines
+    - [AUTONOMOUS_RELEASE_PROMPT.md](AUTONOMOUS_RELEASE_PROMPT.md) — Complete release execution guide
+    - [AUTONOMOUS_RELEASE_QUICKSTART.md](AUTONOMOUS_RELEASE_QUICKSTART.md) — Quick reference

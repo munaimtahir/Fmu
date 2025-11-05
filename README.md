@@ -316,6 +316,21 @@ cd frontend
 npm run lint
 ```
 
+### Comprehensive Validation
+```bash
+# Run full release validation check
+./validate_release.sh
+```
+
+This script validates:
+- Backend tests and coverage (≥80%)
+- Frontend tests and coverage (≥70%)
+- Code quality (linters, type checking)
+- Docker configuration
+- Security configuration
+- CI/CD workflows
+- Documentation completeness
+
 ## API Documentation
 
 Once the backend is running, API documentation is available at:
