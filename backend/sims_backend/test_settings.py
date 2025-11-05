@@ -1,7 +1,12 @@
-"""
-Test settings - use SQLite in-memory database for tests
-"""
-from sims_backend.settings import *  # noqa: F401, F403
+"""Test settings - use SQLite in-memory database for tests."""
+
+from sims_backend import settings as base_settings
+
+
+# Import all uppercase settings from the base module without using wildcard imports
+for setting_name in dir(base_settings):
+    if setting_name.isupper():
+        globals()[setting_name] = getattr(base_settings, setting_name)
 
 # Override database for testing
 DATABASES = {

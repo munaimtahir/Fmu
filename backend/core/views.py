@@ -1,6 +1,7 @@
 """Custom views for authentication and dashboard."""
 import logging
 
+from django.db.models import Count, ExpressionWrapper, F, FloatField, Q
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -106,39 +107,47 @@ def _count_ineligible_students():
     Count students who are ineligible due to low attendance
     Ineligible = attendance < 75%
     """
-    ineligible_count = 0
-    students = Student.objects.filter(status="active")
-    
-    for student in students:
-        total_attendance = Attendance.objects.filter(student=student).count()
-        if total_attendance > 0:
-            present_count = Attendance.objects.filter(student=student, present=True).count()
-            attendance_rate = (present_count / total_attendance) * 100
-            if attendance_rate < 75:
-                ineligible_count += 1
-    
-    return ineligible_count
+    active_students = (
+        Student.objects.filter(status="active")
+        .annotate(
+            total_attendance=Count("attendance"),
+            present_attendance=Count(
+                "attendance",
+                filter=Q(attendance__present=True),
+            ),
+        )
+        .filter(total_attendance__gt=0)
+        .annotate(
+            attendance_rate=ExpressionWrapper(
+                (F("present_attendance") * 100.0) / F("total_attendance"),
+                output_field=FloatField(),
+            ),
+        )
+    )
 
+    return active_students.filter(attendance_rate__lt=75).count()
 
 def _count_pending_attendance(sections):
     """
     Count sections that need attendance marking (basic heuristic)
     """
     from datetime import date, timedelta
-    
+
     # Count sections with no attendance in last 7 days
-    pending = 0
     last_week = date.today() - timedelta(days=7)
-    
-    for section in sections:
-        recent_attendance = Attendance.objects.filter(
-            section=section,
-            date__gte=last_week
-        ).count()
-        if recent_attendance == 0:
-            pending += 1
-    
-    return pending
+    if not hasattr(sections, "annotate"):
+        section_ids = [section.pk for section in sections]
+        sections = Section.objects.filter(pk__in=section_ids)
+    return (
+        sections.annotate(
+            recent_attendance=Count(
+                "attendance",
+                filter=Q(attendance__date__gte=last_week),
+            )
+        )
+        .filter(recent_attendance=0)
+        .count()
+    )
 
 
 def _calculate_attendance_rate(student):
