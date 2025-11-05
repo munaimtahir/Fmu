@@ -11,21 +11,77 @@ A comprehensive, production-ready Student Information Management System built wi
 
 ## 🚀 Quick Start
 
-### Using Docker (Recommended)
+### One-Command Demo Setup (Recommended)
+
 ```bash
-# Clone and start
+# Clone, setup, and run with demo data in one command
+git clone https://github.com/munaimtahir/Fmu.git && cd Fmu && \
+cp .env.example .env && \
+docker compose up -d && \
+sleep 10 && \
+docker compose exec backend python manage.py migrate && \
+docker compose exec backend python manage.py seed_demo --students 30
+```
+
+**Access the application:**
+- 🌐 Frontend: http://localhost:5173
+- 🔌 Backend API: http://localhost:8000
+- 👨‍💼 Admin Panel: http://localhost:8000/admin
+
+### Demo Accounts
+
+After running `seed_demo`, use these credentials to log in:
+
+| Role | Username | Password | Access Level |
+|------|----------|----------|--------------|
+| **Admin** | admin | admin123 | Full system access |
+| **Registrar** | registrar | registrar123 | Enrollment & records management |
+| **Faculty** | faculty | faculty123 | Own sections & students |
+| **Student** | student | student123 | Own records & transcripts |
+
+Additional faculty accounts: `faculty1`, `faculty2`, `faculty3` (all with password: `faculty123`)
+
+### Production Deployment
+
+For production deployment with static frontend:
+
+```bash
+# Use production docker-compose
+docker compose -f docker-compose.prod.yml up -d --build
+
+# Run migrations and collect static files
+docker compose -f docker-compose.prod.yml exec backend python manage.py migrate
+docker compose -f docker-compose.prod.yml exec backend python manage.py collectstatic --noinput
+
+# Seed demo data (optional)
+docker compose -f docker-compose.prod.yml exec backend python manage.py seed_demo --students 50
+
+# Access via: http://localhost
+```
+
+**See [Docs/SECURITY_DEPLOYMENT.md](Docs/SECURITY_DEPLOYMENT.md) for production configuration.**
+
+### Using Docker (Step by Step)
+```bash
+# 1. Clone and setup environment
 git clone https://github.com/munaimtahir/Fmu.git
 cd Fmu
 cp .env.example .env
+# Edit .env if needed for custom configuration
 
-# Start all services
+# 2. Start all services
 docker compose up -d
 
-# Run migrations and seed demo data
+# 3. Wait for services to be ready (about 10 seconds)
+sleep 10
+
+# 4. Run migrations
 docker compose exec backend python manage.py migrate
+
+# 5. Seed demo data
 docker compose exec backend python manage.py seed_demo --students 30
 
-# Access the application
+# 6. Access the application
 # Frontend: http://localhost:5173
 # Backend API: http://localhost:8000
 # Admin Panel: http://localhost:8000/admin
@@ -33,10 +89,11 @@ docker compose exec backend python manage.py seed_demo --students 30
 
 ### Using Makefile
 ```bash
-make demo        # Setup and seed demo data
+make demo        # Complete setup with demo data
 make test        # Run all tests
 make lint        # Run all linters
 make docker-up   # Start Docker services
+make docker-down # Stop Docker services
 ```
 
 ## 📊 Status & Metrics
@@ -271,16 +328,61 @@ Once the backend is running, API documentation is available at:
 
 Key environment variables (see `.env.example` for full list):
 
-- `DJANGO_SECRET_KEY`: Django secret key (change in production!)
-- `DJANGO_DEBUG`: Debug mode (True/False)
+**Core Settings:**
+- `DJANGO_SECRET_KEY`: Django secret key (**MUST change in production!**)
+- `DJANGO_DEBUG`: Debug mode (`True` for development, `False` for production)
+- `DJANGO_ALLOWED_HOSTS`: Comma-separated list of allowed hosts (set to your domain in production)
+
+**Database:**
 - `DB_NAME`, `DB_USER`, `DB_PASSWORD`: Database credentials
-- `REDIS_HOST`: Redis server host
-- `CORS_ALLOWED_ORIGINS`: Allowed frontend origins
+- `DB_HOST`, `DB_PORT`: Database connection details
+
+**Security:**
+- `CORS_ALLOWED_ORIGINS`: Allowed frontend origins for CORS
+- `JWT_ACCESS_TOKEN_LIFETIME`: JWT access token lifetime in minutes (default: 60)
+- `JWT_REFRESH_TOKEN_LIFETIME`: JWT refresh token lifetime in minutes (default: 1440)
+
+**Email (Optional):**
+- `EMAIL_BACKEND`: Email backend (console for dev, smtp for production)
+- `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`
+
+**See:**
+- [Docs/SECURITY_DEPLOYMENT.md](Docs/SECURITY_DEPLOYMENT.md) for production security
+- [Docs/EMAIL_CONFIG.md](Docs/EMAIL_CONFIG.md) for email configuration
 
 ## Deployment
 
-See [Docs/SETUP.md](Docs/SETUP.md) for detailed deployment instructions.
-See [Docs/CI-CD.md](Docs/CI-CD.md) for CI/CD pipeline documentation.
+### Quick Production Deployment
+
+```bash
+# 1. Clone and configure
+git clone https://github.com/munaimtahir/Fmu.git && cd Fmu
+cp .env.example .env
+# Edit .env with production values (see Docs/SECURITY_DEPLOYMENT.md)
+
+# 2. Deploy with production configuration
+docker compose -f docker-compose.prod.yml up -d --build
+
+# 3. Initialize database
+docker compose -f docker-compose.prod.yml exec backend python manage.py migrate
+docker compose -f docker-compose.prod.yml exec backend python manage.py collectstatic --noinput
+
+# 4. Create admin user
+docker compose -f docker-compose.prod.yml exec backend python manage.py createsuperuser
+
+# Access at: http://your-domain (configure nginx with your domain)
+```
+
+**Important:**
+- Set `DJANGO_DEBUG=False` in production
+- Use strong `DJANGO_SECRET_KEY`
+- Configure `DJANGO_ALLOWED_HOSTS` with your domain
+- Enable HTTPS (see [Docs/SECURITY_DEPLOYMENT.md](Docs/SECURITY_DEPLOYMENT.md))
+
+**Complete guides:**
+- [Docs/SETUP.md](Docs/SETUP.md) - Detailed deployment instructions
+- [Docs/SECURITY_DEPLOYMENT.md](Docs/SECURITY_DEPLOYMENT.md) - Production security
+- [Docs/CI-CD.md](Docs/CI-CD.md) - CI/CD pipeline documentation
 
 ## 📄 Documentation
 
@@ -290,18 +392,28 @@ Complete documentation is available in the [Docs/](Docs/) directory:
 - **[API Reference](Docs/API.md)** - Complete endpoint documentation  
 - **[Data Model](Docs/DATAMODEL.md)** - Database schema and ERD
 - **[Setup Guide](Docs/SETUP.md)** - Deployment and configuration
-- **[Contributing](Docs/CONTRIBUTING.md)** - Contribution guidelines
+- **[Security & Deployment](Docs/SECURITY_DEPLOYMENT.md)** - Production security guide
+- **[Email Configuration](Docs/EMAIL_CONFIG.md)** - Email setup guide
+- **[Contributing](CONTRIBUTING.md)** - Contribution guidelines
 - **[Changelog](Docs/CHANGELOG.md)** - Version history
 - **[Tests](Docs/TESTS.md)** - Testing documentation
 - **[CI/CD](Docs/CI-CD.md)** - Pipeline configuration
+- **[Roles & Permissions](Docs/ROLES.md)** - User roles and access control
 
 ## 🎯 Demo Credentials
 
-After running `make demo` or `python manage.py seed_demo`:
+After running `seed_demo`, use these credentials to explore different user roles:
 
-- **Admin:** admin / admin123
-- **Faculty:** faculty / faculty123  
-- **Student:** student / student123
+| Role | Username | Password | Description |
+|------|----------|----------|-------------|
+| **Admin** | admin | admin123 | Full system access, user management |
+| **Registrar** | registrar | registrar123 | Enrollment management, records |
+| **Faculty** | faculty | faculty123 | View/manage own sections and students |
+| **Student** | student | student123 | View own records, attendance, results |
+
+**Additional accounts:**
+- Faculty: `faculty1`, `faculty2`, `faculty3` (password: `faculty123`)
+- Each role demonstrates different permission levels per [Docs/ROLES.md](Docs/ROLES.md)
 
 ## Contributing
 
