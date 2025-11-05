@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import logging
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -220,7 +221,6 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply
 
 # Email logging fallback
 if EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend":
-    import logging
     email_logger = logging.getLogger("django.mail")
     email_logger.info("Email backend set to console. Emails will be logged to console.")
 

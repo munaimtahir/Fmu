@@ -32,10 +32,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: sims_backend
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             gunicorn sims_backend.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    command: gunicorn sims_backend.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
       - ./backend:/app
       - static_volume:/app/static

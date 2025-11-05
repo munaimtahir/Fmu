@@ -1,4 +1,6 @@
 """Custom views for authentication and dashboard."""
+import logging
+
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +16,8 @@ from sims_backend.requests.models import Request
 from sims_backend.results.models import Result
 
 from .serializers import EmailTokenObtainPairSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class EmailTokenObtainPairView(TokenObtainPairView):
@@ -66,6 +70,8 @@ def dashboard_stats(request):
         }
     elif in_group(user, "Student"):
         # Student sees their own stats
+        # Try to find student by name (temporary solution)
+        # TODO: Add proper User to Student relationship via ForeignKey
         try:
             student = Student.objects.get(name=f"{user.first_name} {user.last_name}")
             my_enrollments = Enrollment.objects.filter(student=student)
@@ -83,6 +89,7 @@ def dashboard_stats(request):
                 ).count(),
             }
         except Student.DoesNotExist:
+            logger.warning(f"No student record found for user {user.username}")
             stats = {
                 "error": "No student record found for this user"
             }
