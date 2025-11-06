@@ -219,11 +219,6 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@sims.edu")
 
-# Email logging fallback
-if EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend":
-    email_logger = logging.getLogger("django.mail")
-    email_logger.info("Email backend set to console. Emails will be logged to console.")
-
 # Jazzmin Admin Theme Configuration
 # Django-jazzmin automatically discovers these settings from this module
 from core.jazzmin import JAZZMIN_SETTINGS, JAZZMIN_UI_TWEAKS  # noqa: E402, F401
