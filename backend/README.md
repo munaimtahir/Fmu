@@ -95,3 +95,17 @@ API documentation will be available at:
 ## Admin Interface
 
 Django admin is available at: http://localhost:8000/admin/
+
+## Production Configuration
+
+Set the `DJANGO_ENV` environment variable to `production` for deployments. In
+this mode the application will:
+
+- Require `DJANGO_SECRET_KEY` and fail fast if it is missing.
+- Reject accidental `DEBUG=True` settings.
+- Enforce a non-empty `DJANGO_ALLOWED_HOSTS` list.
+- Enable HTTPS-only cookie and redirect behaviours.
+
+When running behind a reverse proxy (for example nginx or a load balancer)
+ensure that it forwards the `X-Forwarded-Proto` header so Django can honour the
+`SECURE_PROXY_SSL_HEADER` setting.

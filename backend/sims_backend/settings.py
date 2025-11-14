@@ -15,6 +15,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,15 +25,42 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+ENVIRONMENT = os.getenv("DJANGO_ENV", "development").strip().lower()
+_DEFAULT_SECRET_KEY = "django-insecure-&7mgx!y1_ln3-&li1$p*&l2tbsw7cp(-s+3&l^dmi(@8i!1!5i"
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
-    "django-insecure-&7mgx!y1_ln3-&li1$p*&l2tbsw7cp(-s+3&l^dmi(@8i!1!5i",
+    _DEFAULT_SECRET_KEY if ENVIRONMENT != "production" else "",
 )
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
+if not SECRET_KEY:
+    raise ImproperlyConfigured(
+        "DJANGO_SECRET_KEY must be set when DJANGO_ENV=production."
+    )
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = (
+    os.getenv(
+        "DJANGO_DEBUG",
+        "False" if ENVIRONMENT == "production" else "True",
+    )
+    == "True"
+)
+
+if ENVIRONMENT == "production" and DEBUG:
+    raise ImproperlyConfigured("DEBUG must be False when DJANGO_ENV=production.")
+
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        "DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1"
+    ).split(",")
+    if host.strip()
+]
+
+if ENVIRONMENT == "production" and not ALLOWED_HOSTS:
+    raise ImproperlyConfigured(
+        "DJANGO_ALLOWED_HOSTS must include at least one host when DJANGO_ENV=production."
+    )
 
 
 # Application definition
@@ -197,6 +226,17 @@ SPECTACULAR_SETTINGS = {
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = os.getenv("DJANGO_SECURE_SSL_REDIRECT", "True") == "True"
+    SECURE_HSTS_SECONDS = int(os.getenv("DJANGO_SECURE_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv(
+        "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", "True"
+    ) == "True"
+    SECURE_HSTS_PRELOAD = os.getenv("DJANGO_SECURE_HSTS_PRELOAD", "True") == "True"
+    SESSION_COOKIE_SECURE = os.getenv("DJANGO_SESSION_COOKIE_SECURE", "True") == "True"
+    CSRF_COOKIE_SECURE = os.getenv("DJANGO_CSRF_COOKIE_SECURE", "True") == "True"
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 CORS_ALLOW_CREDENTIALS = True
 
