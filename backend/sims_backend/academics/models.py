@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db import models
+from django.db import IntegrityError, models
 
 from core.models import TimeStampedModel
 
@@ -38,6 +38,21 @@ class Course(models.Model):
 
 
 class Section(models.Model):
+    def __init__(self, *args, **kwargs):
+        manual_teacher_name = None
+        teacher_value = kwargs.pop("teacher", models.DEFERRED)
+        if isinstance(teacher_value, str):
+            manual_teacher_name = teacher_value.strip()
+            teacher_value = None
+
+        super().__init__(*args, **kwargs)
+
+        if manual_teacher_name:
+            self.teacher_name = manual_teacher_name
+
+        if teacher_value is not models.DEFERRED:
+            self.teacher = teacher_value
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="sections")
     term = models.CharField(max_length=32)
     teacher = models.ForeignKey(
@@ -62,6 +77,17 @@ class Section(models.Model):
         # Auto-populate teacher_name from teacher user
         if self.teacher:
             self.teacher_name = f"{self.teacher.first_name} {self.teacher.last_name}".strip() or self.teacher.username
+        elif self.teacher_name:
+            duplicate_qs = Section.objects.filter(
+                course=self.course,
+                term=self.term,
+                teacher__isnull=True,
+                teacher_name=self.teacher_name,
+            )
+            if self.pk:
+                duplicate_qs = duplicate_qs.exclude(pk=self.pk)
+            if duplicate_qs.exists():
+                raise IntegrityError("Section with this course, term and teacher already exists")
         super().save(*args, **kwargs)
 
     def __str__(self):
