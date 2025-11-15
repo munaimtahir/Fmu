@@ -79,7 +79,9 @@ def generate_transcript_pdf(student: Student) -> io.BytesIO:
     story.append(Spacer(1, 0.25 * inch))
 
     # Results
-    results = Result.objects.filter(student=student, is_published=True).select_related("section__course")
+    results = Result.objects.filter(student=student, is_published=True).select_related(
+        "section__course"
+    )
 
     if results.exists():
         story.append(Paragraph("<b>Course Results</b>", styles["Heading2"]))
@@ -97,7 +99,9 @@ def generate_transcript_pdf(student: Student) -> io.BytesIO:
                 ]
             )
 
-        result_table = Table(result_data, colWidths=[1.5 * inch, 3 * inch, 1 * inch, 1 * inch])
+        result_table = Table(
+            result_data, colWidths=[1.5 * inch, 3 * inch, 1 * inch, 1 * inch]
+        )
         result_table.setStyle(
             TableStyle(
                 [
@@ -147,7 +151,9 @@ def get_transcript(request, student_id: int):
     try:
         student = Student.objects.get(id=student_id)
     except Student.DoesNotExist:
-        return Response({"error": {"code": 404, "message": "Student not found"}}, status=404)
+        return Response(
+            {"error": {"code": 404, "message": "Student not found"}}, status=404
+        )
 
     # Generate PDF
     pdf_buffer = generate_transcript_pdf(student)
@@ -185,13 +191,17 @@ def enqueue_transcript_generation(request):
     email = request.data.get("email")
 
     if not student_id:
-        return Response({"error": {"code": 400, "message": "student_id is required"}}, status=400)
+        return Response(
+            {"error": {"code": 400, "message": "student_id is required"}}, status=400
+        )
 
     # Check if student exists
     try:
         Student.objects.get(id=student_id)
     except Student.DoesNotExist:
-        return Response({"error": {"code": 404, "message": "Student not found"}}, status=404)
+        return Response(
+            {"error": {"code": 404, "message": "Student not found"}}, status=404
+        )
 
     # Enqueue the job
     queue = django_rq.get_queue("default")

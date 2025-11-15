@@ -40,7 +40,11 @@ class WriteAuditMiddleware:
         summary = self._build_summary(method, model_label, object_id, request.path)
 
         AuditLog.objects.create(
-            actor=(request.user if getattr(request, "user", None) and request.user.is_authenticated else None),
+            actor=(
+                request.user
+                if getattr(request, "user", None) and request.user.is_authenticated
+                else None
+            ),
             method=method,
             path=request.path,
             status_code=status_code,
@@ -54,7 +58,9 @@ class WriteAuditMiddleware:
     def _resolve_model_label(resolver_match) -> str:
         if not resolver_match:
             return ""
-        view_cls = getattr(resolver_match.func, "view_class", None) or getattr(resolver_match.func, "cls", None)
+        view_cls = getattr(resolver_match.func, "view_class", None) or getattr(
+            resolver_match.func, "cls", None
+        )
         queryset = getattr(view_cls, "queryset", None)
         if queryset is not None:
             model = getattr(queryset, "model", None)

@@ -13,7 +13,9 @@ class TimeStampedModel(models.Model):
         abstract = True
         ordering = ("-created_at",)
 
-    def touch(self, using: str | None = None, update_fields: set[str] | None = None) -> None:
+    def touch(
+        self, using: str | None = None, update_fields: set[str] | None = None
+    ) -> None:
         """Force an update to refresh the ``updated_at`` timestamp."""
         # Call save with appropriate arguments to update the timestamp
         if update_fields is not None:

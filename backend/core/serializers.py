@@ -1,4 +1,5 @@
 """Custom serializers for authentication."""
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import update_last_login
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
@@ -67,6 +68,4 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
 
             return data
         else:
-            raise AuthenticationFailed(
-                "Must include 'email' and 'password'."
-            )
+            raise AuthenticationFailed("Must include 'email' and 'password'.")

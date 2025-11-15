@@ -11,14 +11,18 @@ from sims_backend.requests.models import Request
 @pytest.fixture
 def api_client():
     client = APIClient()
-    user = User.objects.create_user(username="testuser", password="testpass", is_staff=True, is_superuser=True)
+    user = User.objects.create_user(
+        username="testuser", password="testpass", is_staff=True, is_superuser=True
+    )
     client.force_authenticate(user=user)
     return client
 
 
 @pytest.fixture
 def sample_student():
-    return Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
+    return Student.objects.create(
+        reg_no="2024001", name="John Doe", program="CS", status="active"
+    )
 
 
 @pytest.mark.django_db
@@ -42,8 +46,12 @@ class TestRequestCRUD:
 
     def test_list_requests(self, api_client, sample_student):
         """Test listing requests"""
-        Request.objects.create(student=sample_student, type="transcript", notes="Test request 1")
-        Request.objects.create(student=sample_student, type="bonafide", notes="Test request 2")
+        Request.objects.create(
+            student=sample_student, type="transcript", notes="Test request 1"
+        )
+        Request.objects.create(
+            student=sample_student, type="bonafide", notes="Test request 2"
+        )
 
         response = api_client.get("/api/requests/")
 
@@ -52,7 +60,9 @@ class TestRequestCRUD:
 
     def test_get_request_detail(self, api_client, sample_student):
         """Test getting request details"""
-        request = Request.objects.create(student=sample_student, type="transcript", notes="Test request")
+        request = Request.objects.create(
+            student=sample_student, type="transcript", notes="Test request"
+        )
 
         response = api_client.get(f"/api/requests/{request.id}/")
 
@@ -62,7 +72,9 @@ class TestRequestCRUD:
 
     def test_update_request(self, api_client, sample_student):
         """Test updating a request"""
-        request = Request.objects.create(student=sample_student, type="transcript", notes="Old notes")
+        request = Request.objects.create(
+            student=sample_student, type="transcript", notes="Old notes"
+        )
 
         response = api_client.patch(
             f"/api/requests/{request.id}/",
@@ -76,7 +88,9 @@ class TestRequestCRUD:
 
     def test_delete_request(self, api_client, sample_student):
         """Test deleting a request"""
-        request = Request.objects.create(student=sample_student, type="transcript", notes="Test request")
+        request = Request.objects.create(
+            student=sample_student, type="transcript", notes="Test request"
+        )
 
         response = api_client.delete(f"/api/requests/{request.id}/")
 
@@ -88,7 +102,9 @@ class TestRequestCRUD:
 class TestRequestTransition:
     def test_transition_to_approved(self, api_client, sample_student):
         """Test transitioning request to approved"""
-        request = Request.objects.create(student=sample_student, type="transcript", status="pending")
+        request = Request.objects.create(
+            student=sample_student, type="transcript", status="pending"
+        )
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -106,7 +122,9 @@ class TestRequestTransition:
 
     def test_transition_to_rejected(self, api_client, sample_student):
         """Test transitioning request to rejected"""
-        request = Request.objects.create(student=sample_student, type="bonafide", status="pending")
+        request = Request.objects.create(
+            student=sample_student, type="bonafide", status="pending"
+        )
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -123,7 +141,9 @@ class TestRequestTransition:
 
     def test_transition_to_completed(self, api_client, sample_student):
         """Test transitioning request to completed"""
-        request = Request.objects.create(student=sample_student, type="transcript", status="approved")
+        request = Request.objects.create(
+            student=sample_student, type="transcript", status="approved"
+        )
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -140,7 +160,9 @@ class TestRequestTransition:
 
     def test_transition_missing_status(self, api_client, sample_student):
         """Test transition without status"""
-        request = Request.objects.create(student=sample_student, type="transcript", status="pending")
+        request = Request.objects.create(
+            student=sample_student, type="transcript", status="pending"
+        )
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -153,7 +175,9 @@ class TestRequestTransition:
 
     def test_transition_invalid_status(self, api_client, sample_student):
         """Test transition with invalid status"""
-        request = Request.objects.create(student=sample_student, type="transcript", status="pending")
+        request = Request.objects.create(
+            student=sample_student, type="transcript", status="pending"
+        )
 
         response = api_client.post(
             f"/api/requests/{request.id}/transition/",
@@ -239,14 +263,19 @@ class TestRequestSearch:
 
     def test_search_by_status(self, api_client, sample_student):
         """Test searching requests by status"""
-        Request.objects.create(student=sample_student, type="transcript", status="pending")
-        Request.objects.create(student=sample_student, type="bonafide", status="approved")
+        Request.objects.create(
+            student=sample_student, type="transcript", status="pending"
+        )
+        Request.objects.create(
+            student=sample_student, type="bonafide", status="approved"
+        )
 
         response = api_client.get("/api/requests/", {"search": "approved"})
 
         assert response.status_code == 200
         assert all(
-            result["status"] == "approved" or "approved" in result.get("notes", "").lower()
+            result["status"] == "approved"
+            or "approved" in result.get("notes", "").lower()
             for result in response.data["results"]
         )
 

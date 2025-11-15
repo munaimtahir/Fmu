@@ -118,7 +118,8 @@ class ResultViewSet(viewsets.ModelViewSet):
                 {
                     "error": {
                         "code": 400,
-                        "message": "Can only freeze published results. Current state: " + result.state,
+                        "message": "Can only freeze published results. Current state: "
+                        + result.state,
                     }
                 },
                 status=status.HTTP_400_BAD_REQUEST,

@@ -25,7 +25,11 @@ class Migration(migrations.Migration):
             model_name="result",
             name="state",
             field=models.CharField(
-                choices=[("draft", "Draft"), ("published", "Published"), ("frozen", "Frozen")],
+                choices=[
+                    ("draft", "Draft"),
+                    ("published", "Published"),
+                    ("frozen", "Frozen"),
+                ],
                 default="draft",
                 max_length=16,
             ),

@@ -68,7 +68,9 @@ class TestAuditMiddlewareEdgeCases:
         log = AuditLog.objects.filter(method="DELETE").latest("timestamp")
         assert str(student.id) == log.object_id
 
-    def test_audit_middleware_response_without_data_attribute(self, api_client, admin_user):
+    def test_audit_middleware_response_without_data_attribute(
+        self, api_client, admin_user
+    ):
         """Test middleware handles responses without data attribute."""
         api_client.force_authenticate(admin_user)
 
@@ -89,7 +91,9 @@ class TestAuditMiddlewareEdgeCases:
         log = AuditLog.objects.filter(method="DELETE").latest("timestamp")
         assert log.object_id == str(student.id)
 
-    def test_audit_middleware_exception_doesnt_break_request(self, api_client, admin_user, monkeypatch):
+    def test_audit_middleware_exception_doesnt_break_request(
+        self, api_client, admin_user, monkeypatch
+    ):
         """Test that audit failures don't break the actual request."""
         # This is hard to test without mocking, but the exception handler is there
         # The pragma: no cover comment is acceptable for this

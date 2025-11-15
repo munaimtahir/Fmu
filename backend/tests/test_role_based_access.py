@@ -1,6 +1,7 @@
 """
 Tests for role-based permissions and data filtering
 """
+
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
