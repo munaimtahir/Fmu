@@ -27,6 +27,7 @@ qrcode==8.0
 Pillow==11.0.0
 
 # Background Jobs
+rq==1.16.2
 django-rq==2.10.2
 redis==5.2.1
 
