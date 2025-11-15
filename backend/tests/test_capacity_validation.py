@@ -23,7 +23,7 @@ def sample_section_with_capacity():
     """Create a section with capacity"""
     program = Program.objects.create(name="Computer Science")
     course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-    section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith", capacity=2)
+    section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith", capacity=2)
     return section
 
 
@@ -112,7 +112,7 @@ class TestEnrollmentCapacity:
         """Test that sections have default capacity"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS102", title="Data Structures", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Jones")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Jones")
 
         assert section.capacity == 30  # Default capacity
 
@@ -123,7 +123,7 @@ class TestAssessmentScoreValidation:
         """Test that score within max_score is accepted"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
         assessment = Assessment.objects.create(section=section, type="Midterm", weight=30)
 
@@ -144,7 +144,7 @@ class TestAssessmentScoreValidation:
         """Test that score exceeding max_score is rejected"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
         assessment = Assessment.objects.create(section=section, type="Midterm", weight=30)
 
@@ -166,7 +166,7 @@ class TestAssessmentScoreValidation:
         """Test that negative score is rejected"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
         assessment = Assessment.objects.create(section=section, type="Midterm", weight=30)
 
@@ -188,7 +188,7 @@ class TestAssessmentScoreValidation:
         """Test that zero or negative max_score is rejected"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
         assessment = Assessment.objects.create(section=section, type="Midterm", weight=30)
 
@@ -214,7 +214,7 @@ class TestAssessmentWeightValidation:
         """Test that assessments within 100% total weight are accepted"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
 
         # Create assessments totaling 100%
         Assessment.objects.create(section=section, type="Midterm", weight=30)
@@ -232,7 +232,7 @@ class TestAssessmentWeightValidation:
         """Test that assessments exceeding 100% total weight are rejected"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
 
         # Create assessments totaling 90%
         Assessment.objects.create(section=section, type="Midterm", weight=40)
@@ -253,7 +253,7 @@ class TestAssessmentWeightValidation:
         """Test updating assessment weight within 100% limit"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
 
         assessment1 = Assessment.objects.create(section=section, type="Midterm", weight=30)
         Assessment.objects.create(section=section, type="Final", weight=40)
@@ -271,7 +271,7 @@ class TestAssessmentWeightValidation:
         """Test updating assessment weight that would exceed 100%"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
 
         assessment1 = Assessment.objects.create(section=section, type="Midterm", weight=30)
         Assessment.objects.create(section=section, type="Final", weight=50)

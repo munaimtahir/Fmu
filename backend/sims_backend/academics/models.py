@@ -59,7 +59,8 @@ class Section(models.Model):
         unique_together = ("course", "term", "teacher")
 
     def save(self, *args, **kwargs):
-        # Auto-populate teacher_name from teacher user
+        # Auto-populate teacher_name from teacher user when teacher is set
+        # If teacher is None, keep the existing teacher_name value
         if self.teacher:
             self.teacher_name = f"{self.teacher.first_name} {self.teacher.last_name}".strip() or self.teacher.username
         super().save(*args, **kwargs)

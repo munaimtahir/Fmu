@@ -14,7 +14,7 @@ def test_enrollment_crud(api_client, admin_user, db):
     ).json()["id"]
     sec = api_client.post(
         "/api/sections/",
-        {"course": c, "term": "Fall-25", "teacher": "Prof X"},
+        {"course": c, "term": "Fall-25", "teacher": None, "teacher_name": "Prof X"},
         format="json",
     ).json()["id"]
     resp = api_client.post(
