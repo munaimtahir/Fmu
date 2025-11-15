@@ -23,8 +23,10 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class SectionSerializer(serializers.ModelSerializer):
-    teacher_name = serializers.CharField(read_only=True)
-    
+    # teacher_name can be written when teacher is None,
+    # but is auto-populated from teacher when teacher is set
+    teacher_name = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = Section
         fields = ["id", "course", "term", "teacher", "teacher_name", "capacity"]

@@ -39,9 +39,9 @@ def dashboard_stats(request):
     Get dashboard statistics based on user role
     """
     user = request.user
-    
+
     stats = {}
-    
+
     # Common stats
     if user.is_superuser or in_group(user, "Admin") or in_group(user, "Registrar"):
         # Admin/Registrar sees all statistics
@@ -59,7 +59,7 @@ def dashboard_stats(request):
         enrolled_students = Enrollment.objects.filter(
             section__in=faculty_sections
         ).values_list('student', flat=True).distinct()
-        
+
         stats = {
             "my_sections": faculty_sections.count(),
             "my_students": enrolled_students.count(),
@@ -76,7 +76,7 @@ def dashboard_stats(request):
         try:
             student = Student.objects.get(name=f"{user.first_name} {user.last_name}")
             my_enrollments = Enrollment.objects.filter(student=student)
-            
+
             stats = {
                 "enrolled_courses": my_enrollments.count(),
                 "attendance_rate": _calculate_attendance_rate(student),
@@ -98,7 +98,7 @@ def dashboard_stats(request):
         stats = {
             "message": "No statistics available for your role"
         }
-    
+
     return Response(stats, status=status.HTTP_200_OK)
 
 
@@ -157,6 +157,6 @@ def _calculate_attendance_rate(student):
     total = Attendance.objects.filter(student=student).count()
     if total == 0:
         return 0.0
-    
+
     present = Attendance.objects.filter(student=student, present=True).count()
     return round((present / total) * 100, 2)

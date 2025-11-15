@@ -23,7 +23,7 @@ class TestAttendancePercentageCalculation:
         student = Student.objects.create(reg_no="STU-ATT-001", name="Full Attendance", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
 
         # Create 10 days of attendance, all present
         for day in range(1, 11):
@@ -47,7 +47,7 @@ class TestAttendancePercentageCalculation:
         )
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS102", title="Data Structures", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Jones")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Jones")
 
         # Create 10 days: 8 present, 2 absent = 80%
         for day in range(1, 9):
@@ -73,7 +73,7 @@ class TestAttendancePercentageCalculation:
         student = Student.objects.create(reg_no="STU-ATT-003", name="No Records", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS103", title="Algorithms", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Brown")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Brown")
 
         percentage = calculate_attendance_percentage(student.id, section.id)
         assert percentage == 0.0
@@ -83,7 +83,7 @@ class TestAttendancePercentageCalculation:
         student = Student.objects.create(reg_no="STU-ATT-004", name="Boundary Case", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS104", title="Networks", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. White")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. White")
 
         # Create 20 days: 15 present (75%), 5 absent
         for day in range(1, 16):
@@ -118,7 +118,7 @@ class TestEligibilityCheck:
         )
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS201", title="Database", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Green")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Green")
 
         # 80% attendance
         for day in range(1, 9):
@@ -151,7 +151,7 @@ class TestEligibilityCheck:
         )
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS202", title="OS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Black")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Black")
 
         # 60% attendance
         for day in range(1, 7):
@@ -183,7 +183,7 @@ class TestEligibilityCheck:
         )
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS203", title="AI", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Gray")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Gray")
 
         # 70% attendance
         for day in range(1, 8):
@@ -218,7 +218,7 @@ class TestSectionAttendanceSummary:
         """Test complete section attendance summary."""
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS301", title="ML", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Blue")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Blue")
 
         # Create students and attendance
         for i in range(1, 4):
@@ -246,7 +246,7 @@ class TestAttendanceAPIEndpoints:
         student = Student.objects.create(reg_no="STU-API-001", name="API Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS401", title="Security", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Red")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Red")
 
         # 75% attendance
         for day in range(1, 16):
@@ -280,7 +280,7 @@ class TestAttendanceAPIEndpoints:
         )
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS402", title="Cloud", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Yellow")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Yellow")
 
         # 80% attendance
         for day in range(1, 9):
@@ -310,7 +310,7 @@ class TestAttendanceAPIEndpoints:
         """Test section summary API endpoint."""
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS403", title="Blockchain", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Purple")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Purple")
 
         student = Student.objects.create(reg_no="STU-API-003", name="Summary Test", program="BSc", status="active")
         Attendance.objects.create(section=section, student=student, date="2024-10-01", present=True)

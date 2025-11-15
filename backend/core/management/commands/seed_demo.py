@@ -101,7 +101,7 @@ class Command(BaseCommand):
     def _create_users(self):
         """Create demo users for different roles"""
         from django.contrib.auth.models import Group
-        
+
         users = {}
 
         # Ensure groups exist
@@ -260,7 +260,7 @@ class Command(BaseCommand):
         """Create sections for courses in current term and assign to faculty"""
         current_term = terms[0]  # Fall term
         sections = []
-        
+
         # Get faculty users
         faculty_users = [
             users.get("faculty"),
@@ -268,15 +268,15 @@ class Command(BaseCommand):
             users.get("faculty2"),
             users.get("faculty3"),
         ]
-        
+
         faculty_idx = 0
-        
+
         for course in courses[:6]:  # Create sections for first 6 courses
             for section_num in range(1, 3):  # 2 sections per course
                 # Assign faculty in round-robin fashion
                 teacher = faculty_users[faculty_idx % len(faculty_users)]
                 faculty_idx += 1
-                
+
                 section, created = Section.objects.get_or_create(
                     course=course,
                     term=current_term.name,

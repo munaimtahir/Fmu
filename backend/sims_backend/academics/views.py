@@ -57,10 +57,10 @@ class SectionViewSet(viewsets.ModelViewSet):
         """Filter sections based on user role"""
         queryset = super().get_queryset()
         user = self.request.user
-        
+
         # Faculty users should only see their own sections
         if not user.is_superuser and not in_group(user, "Admin") and not in_group(user, "Registrar"):
             if in_group(user, "Faculty"):
                 queryset = queryset.filter(teacher=user)
-        
+
         return queryset

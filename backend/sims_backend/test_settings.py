@@ -2,7 +2,6 @@
 
 from sims_backend import settings as base_settings
 
-
 # Import all uppercase settings from the base module without using wildcard imports
 for setting_name in dir(base_settings):
     if setting_name.isupper():
