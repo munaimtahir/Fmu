@@ -5,5 +5,7 @@ from .views import AssessmentScoreViewSet, AssessmentViewSet
 
 router = DefaultRouter()
 router.register(r"assessments", AssessmentViewSet, basename="assessment")
-router.register(r"assessment-scores", AssessmentScoreViewSet, basename="assessmentscore")
+router.register(
+    r"assessment-scores", AssessmentScoreViewSet, basename="assessmentscore"
+)
 urlpatterns = [path("api/", include(router.urls))]

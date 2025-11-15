@@ -13,7 +13,9 @@ from sims_backend.transcripts.views import generate_qr_token, verify_qr_token
 @pytest.fixture
 def api_client():
     client = APIClient()
-    user = User.objects.create_user(username="testuser", password="testpass", is_staff=True, is_superuser=True)
+    user = User.objects.create_user(
+        username="testuser", password="testpass", is_staff=True, is_superuser=True
+    )
     client.force_authenticate(user=user)
     return client
 
@@ -22,11 +24,21 @@ def api_client():
 def sample_student_with_results():
     """Create student with published results"""
     program = Program.objects.create(name="Computer Science")
-    course1 = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-    course2 = Course.objects.create(code="CS102", title="Data Structures", credits=3, program=program)
-    section1 = Section.objects.create(course=course1, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
-    section2 = Section.objects.create(course=course2, term="Fall2024", teacher=None, teacher_name="Dr. Jones")
-    student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
+    course1 = Course.objects.create(
+        code="CS101", title="Intro to CS", credits=3, program=program
+    )
+    course2 = Course.objects.create(
+        code="CS102", title="Data Structures", credits=3, program=program
+    )
+    section1 = Section.objects.create(
+        course=course1, term="Fall2024", teacher=None, teacher_name="Dr. Smith"
+    )
+    section2 = Section.objects.create(
+        course=course2, term="Fall2024", teacher=None, teacher_name="Dr. Jones"
+    )
+    student = Student.objects.create(
+        reg_no="2024001", name="John Doe", program="CS", status="active"
+    )
 
     result1 = Result.objects.create(
         student=student,
@@ -73,7 +85,9 @@ class TestTranscriptGeneration:
 
     def test_generate_transcript_no_results(self, api_client):
         """Test transcript generation for student with no results"""
-        student = Student.objects.create(reg_no="2024002", name="Jane Doe", program="CS", status="active")
+        student = Student.objects.create(
+            reg_no="2024002", name="Jane Doe", program="CS", status="active"
+        )
 
         response = api_client.get(f"/api/transcripts/{student.id}/")
 
@@ -125,7 +139,10 @@ class TestQRTokenVerification:
         result = verify_qr_token(tampered_token)
 
         assert result["valid"] is False
-        assert "invalid" in result["reason"].lower() or "tampered" in result["reason"].lower()
+        assert (
+            "invalid" in result["reason"].lower()
+            or "tampered" in result["reason"].lower()
+        )
 
     def test_verify_expired_token(self):
         """Test verification of expired token (simulated)"""
@@ -146,7 +163,10 @@ class TestQRTokenVerification:
         result = verify_qr_token(invalid_token)
 
         assert result["valid"] is False
-        assert "invalid" in result["reason"].lower() or "format" in result["reason"].lower()
+        assert (
+            "invalid" in result["reason"].lower()
+            or "format" in result["reason"].lower()
+        )
 
     def test_verify_token_via_api_success(self, api_client):
         """Test token verification via API endpoint"""

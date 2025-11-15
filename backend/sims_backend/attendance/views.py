@@ -10,7 +10,11 @@ from sims_backend.common_permissions import IsAdminOrRegistrarReadOnlyFacultyStu
 
 from .models import Attendance
 from .serializers import AttendanceSerializer
-from .utils import calculate_attendance_percentage, check_eligibility, get_section_attendance_summary
+from .utils import (
+    calculate_attendance_percentage,
+    check_eligibility,
+    get_section_attendance_summary,
+)
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):
@@ -68,7 +72,9 @@ class AttendanceViewSet(viewsets.ModelViewSet):
             )
 
         try:
-            percentage = calculate_attendance_percentage(int(student_id), int(section_id))
+            percentage = calculate_attendance_percentage(
+                int(student_id), int(section_id)
+            )
             return Response({"percentage": percentage})
         except Exception as e:
             return Response({"error": str(e)}, status=400)
@@ -87,7 +93,9 @@ class AttendanceViewSet(viewsets.ModelViewSet):
             )
 
         try:
-            result = check_eligibility(int(student_id), int(section_id), float(threshold))
+            result = check_eligibility(
+                int(student_id), int(section_id), float(threshold)
+            )
             return Response(result)
         except Exception as e:
             return Response({"error": str(e)}, status=400)

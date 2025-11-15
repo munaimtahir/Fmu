@@ -5,7 +5,9 @@ from sims_backend.admissions.models import Student
 
 def test_enrollment_crud(api_client, admin_user, db):
     api_client.force_authenticate(admin_user)
-    s = Student.objects.create(reg_no="STU-ENR-1", name="En R", program="BSc", status="active")
+    s = Student.objects.create(
+        reg_no="STU-ENR-1", name="En R", program="BSc", status="active"
+    )
     p = api_client.post("/api/programs/", {"name": "BBA"}, format="json").json()["id"]
     c = api_client.post(
         "/api/courses/",
