@@ -158,7 +158,7 @@ class TestAssessmentScoreViews:
         student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
         assessment = Assessment.objects.create(section=section, type="Quiz", weight=10)
         AssessmentScore.objects.create(assessment=assessment, student=student, score=85, max_score=100)
 

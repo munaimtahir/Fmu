@@ -75,11 +75,12 @@ class TestSectionSerializer:
         """Valid section data should serialize correctly."""
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        data = {"course": course.id, "term": "Fall 2024", "teacher": "Dr. Smith"}
+        data = {"course": course.id, "term": "Fall 2024", "teacher": None, "teacher_name": "Dr. Smith"}
         serializer = SectionSerializer(data=data)
         assert serializer.is_valid(), serializer.errors
         section = serializer.save()
         assert section.term == "Fall 2024"
+        assert section.teacher_name == "Dr. Smith"
 
 
 class TestEnrollmentSerializer:
@@ -90,7 +91,7 @@ class TestEnrollmentSerializer:
         student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
         data = {"student": student.id, "section": section.id, "status": "enrolled"}
         serializer = EnrollmentSerializer(data=data)
         assert serializer.is_valid(), serializer.errors
@@ -102,7 +103,7 @@ class TestEnrollmentSerializer:
         student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
         Enrollment.objects.create(student=student, section=section, status="enrolled")
         data = {"student": student.id, "section": section.id, "status": "enrolled"}
         serializer = EnrollmentSerializer(data=data)
@@ -117,7 +118,7 @@ class TestAttendanceSerializer:
         student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
         data = {
             "section": section.id,
             "student": student.id,
@@ -135,7 +136,7 @@ class TestAttendanceSerializer:
         student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
         data = {
             "section": section.id,
             "student": student.id,
@@ -156,7 +157,7 @@ class TestAssessmentSerializer:
         """Valid assessment should serialize correctly."""
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
         data = {"section": section.id, "type": "Midterm", "weight": 30}
         serializer = AssessmentSerializer(data=data)
         assert serializer.is_valid(), serializer.errors
@@ -173,7 +174,7 @@ class TestAssessmentScoreSerializer:
         student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
         assessment = Assessment.objects.create(section=section, type="Quiz", weight=10)
         data = {
             "assessment": assessment.id,
@@ -195,7 +196,7 @@ class TestResultSerializer:
         student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
         data = {
             "student": student.id,
             "section": section.id,
@@ -213,7 +214,7 @@ class TestResultSerializer:
         student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         now = timezone.now()
         # Create result with published fields directly
         result = Result.objects.create(

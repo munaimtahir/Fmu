@@ -74,7 +74,7 @@ class TestFinalGradeCalculation:
         """Test final grade calculation with simple assessment"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
         # Create one assessment worth 100%
@@ -92,7 +92,7 @@ class TestFinalGradeCalculation:
         """Test final grade calculation with multiple assessments"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
         # Create assessments
@@ -117,7 +117,7 @@ class TestFinalGradeCalculation:
         """Test final grade calculation with missing assessment score"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
         # Create assessments
@@ -139,7 +139,7 @@ class TestFinalGradeCalculation:
         """Test final grade calculation with different max scores"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
         # Create assessment
@@ -156,7 +156,7 @@ class TestFinalGradeCalculation:
         """Test final grade calculation with no assessments"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
         result = calculate_final_grade(student.id, section.id)
@@ -170,7 +170,7 @@ class TestFinalGradeCalculation:
         """Test final grade calculation with partial weight"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
         # Create assessments totaling 60% (partial)
@@ -191,7 +191,7 @@ class TestFinalGradeCalculation:
         """Test that component details are included"""
         program = Program.objects.create(name="Computer Science")
         course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
         student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
         assessment = Assessment.objects.create(section=section, type="Midterm", weight=100)

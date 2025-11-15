@@ -10,7 +10,7 @@ def preserve_teacher_names(apps, schema_editor):
     Copy old teacher CharField data to teacher_name before converting to ForeignKey.
     """
     Section = apps.get_model('academics', 'Section')
-    
+
     # Copy teacher string to teacher_name
     for section in Section.objects.all():
         section.teacher_name = getattr(section, '_teacher_old', '')
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
             old_name='teacher',
             new_name='_teacher_old',
         ),
-        
+
         # Step 2: Add teacher_name field
         migrations.AddField(
             model_name='section',
@@ -44,13 +44,13 @@ class Migration(migrations.Migration):
             ),
             preserve_default=False,
         ),
-        
+
         # Step 3: Copy old data to teacher_name
         migrations.RunPython(
             preserve_teacher_names,
             reverse_code=migrations.RunPython.noop
         ),
-        
+
         # Step 4: Add new teacher ForeignKey field
         migrations.AddField(
             model_name='section',
@@ -64,13 +64,13 @@ class Migration(migrations.Migration):
                 to=settings.AUTH_USER_MODEL
             ),
         ),
-        
+
         # Step 5: Remove old teacher field
         migrations.RemoveField(
             model_name='section',
             name='_teacher_old',
         ),
-        
+
         # Step 6: Remove old unique_together and add new one
         migrations.AlterUniqueTogether(
             name='section',

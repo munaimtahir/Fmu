@@ -23,7 +23,7 @@ def sample_data():
     """Create sample data for testing"""
     program = Program.objects.create(name="Computer Science")
     course = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
-    section = Section.objects.create(course=course, term="Fall2024", teacher="Dr. Smith")
+    section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
     student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
     result = Result.objects.create(student=student, section=section, final_grade="B+")
     return {

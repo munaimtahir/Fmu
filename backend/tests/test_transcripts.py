@@ -24,8 +24,8 @@ def sample_student_with_results():
     program = Program.objects.create(name="Computer Science")
     course1 = Course.objects.create(code="CS101", title="Intro to CS", credits=3, program=program)
     course2 = Course.objects.create(code="CS102", title="Data Structures", credits=3, program=program)
-    section1 = Section.objects.create(course=course1, term="Fall2024", teacher="Dr. Smith")
-    section2 = Section.objects.create(course=course2, term="Fall2024", teacher="Dr. Jones")
+    section1 = Section.objects.create(course=course1, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
+    section2 = Section.objects.create(course=course2, term="Fall2024", teacher=None, teacher_name="Dr. Jones")
     student = Student.objects.create(reg_no="2024001", name="John Doe", program="CS", status="active")
 
     result1 = Result.objects.create(
