@@ -100,27 +100,27 @@ class TestSectionModel:
 
     def test_unique_together(self):
         """Test unique constraint on course, term, teacher.
-        
+
         Note: NULL values in unique_together constraints are not considered equal,
         so multiple sections with the same course/term but teacher=None are allowed.
         The constraint only applies when teacher is not NULL.
         """
         from django.contrib.auth import get_user_model
         from django.db import transaction
-        User = get_user_model()
-        
+        user_model = get_user_model()
+
         program = Program.objects.create(name="BSc CS")
         course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        teacher = User.objects.create_user(username="drsmith", email="drsmith@test.com")
-        
+        teacher = user_model.objects.create_user(username="drsmith", email="drsmith@test.com")
+
         # Create first section with a teacher
         Section.objects.create(course=course, term="Fall 2024", teacher=teacher)
-        
+
         # Attempting to create duplicate should raise IntegrityError
         with pytest.raises(IntegrityError):
             with transaction.atomic():
                 Section.objects.create(course=course, term="Fall 2024", teacher=teacher)
-        
+
         # However, multiple sections with teacher=None are allowed (NULL values are not equal)
         Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Jones")
         Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Brown")
