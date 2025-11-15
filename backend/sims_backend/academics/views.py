@@ -3,7 +3,10 @@ from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
 
-from sims_backend.common_permissions import IsAdminOrRegistrarReadOnlyFacultyStudent, in_group
+from sims_backend.common_permissions import (
+    IsAdminOrRegistrarReadOnlyFacultyStudent,
+    in_group,
+)
 
 from .models import Course, Program, Section, Term
 from .serializers import (
@@ -50,7 +53,14 @@ class SectionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["term", "course"]
-    search_fields = ["course__code", "term", "teacher__username", "teacher__first_name", "teacher__last_name", "teacher_name"]
+    search_fields = [
+        "course__code",
+        "term",
+        "teacher__username",
+        "teacher__first_name",
+        "teacher__last_name",
+        "teacher_name",
+    ]
     ordering_fields = ["id", "term", "teacher_name"]
 
     def get_queryset(self):
@@ -59,7 +69,11 @@ class SectionViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         # Faculty users should only see their own sections
-        if not user.is_superuser and not in_group(user, "Admin") and not in_group(user, "Registrar"):
+        if (
+            not user.is_superuser
+            and not in_group(user, "Admin")
+            and not in_group(user, "Registrar")
+        ):
             if in_group(user, "Faculty"):
                 queryset = queryset.filter(teacher=user)
 

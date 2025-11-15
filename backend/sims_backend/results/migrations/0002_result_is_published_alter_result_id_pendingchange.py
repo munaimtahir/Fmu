@@ -18,18 +18,35 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="result",
             name="id",
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID"),
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+            ),
         ),
         migrations.CreateModel(
             name="PendingChange",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("requested_by", models.CharField(max_length=128)),
-                ("approved_by", models.CharField(blank=True, default="", max_length=128)),
+                (
+                    "approved_by",
+                    models.CharField(blank=True, default="", max_length=128),
+                ),
                 (
                     "status",
                     models.CharField(
-                        choices=[("pending", "Pending"), ("approved", "Approved"), ("rejected", "Rejected")],
+                        choices=[
+                            ("pending", "Pending"),
+                            ("approved", "Approved"),
+                            ("rejected", "Rejected"),
+                        ],
                         default="pending",
                         max_length=16,
                     ),
@@ -41,7 +58,9 @@ class Migration(migrations.Migration):
                 (
                     "result",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name="pending_changes", to="results.result"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pending_changes",
+                        to="results.result",
                     ),
                 ),
             ],

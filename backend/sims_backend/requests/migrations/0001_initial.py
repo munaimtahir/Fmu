@@ -15,7 +15,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Request",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 (
                     "type",
                     models.CharField(
@@ -44,11 +52,16 @@ class Migration(migrations.Migration):
                 ("notes", models.TextField(blank=True, default="")),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("processed_by", models.CharField(blank=True, default="", max_length=128)),
+                (
+                    "processed_by",
+                    models.CharField(blank=True, default="", max_length=128),
+                ),
                 (
                     "student",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name="requests", to="admissions.student"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="requests",
+                        to="admissions.student",
                     ),
                 ),
             ],

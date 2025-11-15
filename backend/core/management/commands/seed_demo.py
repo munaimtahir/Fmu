@@ -22,7 +22,9 @@ fake = Faker()
 
 
 class Command(BaseCommand):
-    help = "Seed demo data for SIMS (Programs, Courses, Terms, Sections, Students, etc.)"
+    help = (
+        "Seed demo data for SIMS (Programs, Courses, Terms, Sections, Students, etc.)"
+    )
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -80,7 +82,9 @@ class Command(BaseCommand):
         self.stdout.write("\n🔑 Login credentials:")
         self.stdout.write("  Admin: admin / admin123")
         self.stdout.write("  Registrar: registrar / registrar123")
-        self.stdout.write("  Faculty: faculty / faculty123 (also faculty1, faculty2, faculty3)")
+        self.stdout.write(
+            "  Faculty: faculty / faculty123 (also faculty1, faculty2, faculty3)"
+        )
         self.stdout.write("  Student: student / student123")
 
     def _clear_data(self):
@@ -220,11 +224,17 @@ class Command(BaseCommand):
             if data["code"].startswith("CS"):
                 program = next(p for p in programs if "Computer Science" in p.name)
             elif data["code"].startswith("EE"):
-                program = next(p for p in programs if "Electrical Engineering" in p.name)
+                program = next(
+                    p for p in programs if "Electrical Engineering" in p.name
+                )
             else:
-                program = next(p for p in programs if "Business Administration" in p.name)
+                program = next(
+                    p for p in programs if "Business Administration" in p.name
+                )
 
-            course, created = Course.objects.get_or_create(code=data["code"], defaults={**data, "program": program})
+            course, created = Course.objects.get_or_create(
+                code=data["code"], defaults={**data, "program": program}
+            )
             courses.append(course)
 
         self.stdout.write(f"  ✓ Created {len(courses)} courses")
@@ -285,7 +295,9 @@ class Command(BaseCommand):
                 )
                 sections.append(section)
 
-        self.stdout.write(f"  ✓ Created {len(sections)} sections with faculty assignments")
+        self.stdout.write(
+            f"  ✓ Created {len(sections)} sections with faculty assignments"
+        )
         return sections
 
     def _create_students(self, programs, num_students, users):
@@ -368,7 +380,10 @@ class Command(BaseCommand):
                     section=enrollment.section,
                     student=enrollment.student,
                     date=attendance_date,
-                    defaults={"present": present, "reason": "" if present else "Absent"},
+                    defaults={
+                        "present": present,
+                        "reason": "" if present else "Absent",
+                    },
                 )
                 attendance_count += 1
 
@@ -398,7 +413,12 @@ class Command(BaseCommand):
                     # Random score between 60-95 out of 100
                     base_score = 60
                     variance = 35
-                    score = base_score + (hash(str(enrollment.id) + str(assessment.id)) % 100) / 100 * variance
+                    score = (
+                        base_score
+                        + (hash(str(enrollment.id) + str(assessment.id)) % 100)
+                        / 100
+                        * variance
+                    )
 
                     AssessmentScore.objects.get_or_create(
                         assessment=assessment,
@@ -406,7 +426,9 @@ class Command(BaseCommand):
                         defaults={"score": round(score, 2), "max_score": 100},
                     )
 
-        self.stdout.write(f"  ✓ Created assessments with scores for {len(sections)} sections")
+        self.stdout.write(
+            f"  ✓ Created assessments with scores for {len(sections)} sections"
+        )
 
     def _create_results(self, enrollments):
         """Create results for enrollments"""
@@ -419,7 +441,9 @@ class Command(BaseCommand):
 
             for assessment in assessments:
                 try:
-                    score = AssessmentScore.objects.get(assessment=assessment, student=enrollment.student)
+                    score = AssessmentScore.objects.get(
+                        assessment=assessment, student=enrollment.student
+                    )
                     # Weighted score
                     total_score += (score.score / score.max_score) * assessment.weight
                 except AssessmentScore.DoesNotExist:

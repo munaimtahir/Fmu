@@ -16,7 +16,9 @@ class Request(models.Model):
         ("completed", "Completed"),
     ]
 
-    student = models.ForeignKey("admissions.Student", on_delete=models.CASCADE, related_name="requests")
+    student = models.ForeignKey(
+        "admissions.Student", on_delete=models.CASCADE, related_name="requests"
+    )
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default="pending")
     notes = models.TextField(blank=True, default="")

@@ -10,7 +10,6 @@ from core.exceptions import custom_exception_handler
 from core.serializers import EmailTokenObtainPairSerializer
 from sims_backend.academics.models import Program
 
-
 User = get_user_model()
 
 
@@ -47,7 +46,7 @@ def test_timestamped_model_touch_updates_timestamp(monkeypatch):
 
 @pytest.mark.django_db
 def test_email_token_obtain_pair_serializer_success(monkeypatch):
-    user = User.objects.create_user(
+    _ = User.objects.create_user(
         username="token-user", email="token@example.com", password="secret123"
     )
     monkeypatch.setattr(api_settings, "UPDATE_LAST_LOGIN", True)

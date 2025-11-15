@@ -20,10 +20,16 @@ class TestAttendancePercentageCalculation:
 
     def test_calculate_attendance_percentage_full_attendance(self):
         """Test 100% attendance calculation."""
-        student = Student.objects.create(reg_no="STU-ATT-001", name="Full Attendance", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-ATT-001", name="Full Attendance", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith"
+        )
 
         # Create 10 days of attendance, all present
         for day in range(1, 11):
@@ -46,8 +52,12 @@ class TestAttendancePercentageCalculation:
             status="active",
         )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS102", title="Data Structures", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Jones")
+        course = Course.objects.create(
+            code="CS102", title="Data Structures", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Jones"
+        )
 
         # Create 10 days: 8 present, 2 absent = 80%
         for day in range(1, 9):
@@ -70,20 +80,32 @@ class TestAttendancePercentageCalculation:
 
     def test_calculate_attendance_percentage_zero_records(self):
         """Test attendance with no records."""
-        student = Student.objects.create(reg_no="STU-ATT-003", name="No Records", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-ATT-003", name="No Records", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS103", title="Algorithms", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Brown")
+        course = Course.objects.create(
+            code="CS103", title="Algorithms", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Brown"
+        )
 
         percentage = calculate_attendance_percentage(student.id, section.id)
         assert percentage == 0.0
 
     def test_calculate_attendance_percentage_boundary_75(self):
         """Test attendance at exactly 75% threshold."""
-        student = Student.objects.create(reg_no="STU-ATT-004", name="Boundary Case", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-ATT-004", name="Boundary Case", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS104", title="Networks", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. White")
+        course = Course.objects.create(
+            code="CS104", title="Networks", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. White"
+        )
 
         # Create 20 days: 15 present (75%), 5 absent
         for day in range(1, 16):
@@ -117,8 +139,12 @@ class TestEligibilityCheck:
             status="active",
         )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS201", title="Database", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Green")
+        course = Course.objects.create(
+            code="CS201", title="Database", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Green"
+        )
 
         # 80% attendance
         for day in range(1, 9):
@@ -150,8 +176,12 @@ class TestEligibilityCheck:
             status="active",
         )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS202", title="OS", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Black")
+        course = Course.objects.create(
+            code="CS202", title="OS", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Black"
+        )
 
         # 60% attendance
         for day in range(1, 7):
@@ -182,8 +212,12 @@ class TestEligibilityCheck:
             status="active",
         )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS203", title="AI", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Gray")
+        course = Course.objects.create(
+            code="CS203", title="AI", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Gray"
+        )
 
         # 70% attendance
         for day in range(1, 8):
@@ -217,8 +251,12 @@ class TestSectionAttendanceSummary:
     def test_section_summary_complete(self):
         """Test complete section attendance summary."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS301", title="ML", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Blue")
+        course = Course.objects.create(
+            code="CS301", title="ML", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Blue"
+        )
 
         # Create students and attendance
         for i in range(1, 4):
@@ -228,8 +266,12 @@ class TestSectionAttendanceSummary:
                 program="BSc",
                 status="active",
             )
-            Attendance.objects.create(section=section, student=student, date="2024-07-01", present=True)
-            Attendance.objects.create(section=section, student=student, date="2024-07-02", present=i != 1)
+            Attendance.objects.create(
+                section=section, student=student, date="2024-07-01", present=True
+            )
+            Attendance.objects.create(
+                section=section, student=student, date="2024-07-02", present=i != 1
+            )
 
         summary = get_section_attendance_summary(section.id)
         assert summary["total_records"] == 6  # 3 students x 2 days
@@ -243,10 +285,16 @@ class TestAttendanceAPIEndpoints:
 
     def test_attendance_percentage_endpoint(self, api_client, admin_user):
         """Test attendance percentage API endpoint."""
-        student = Student.objects.create(reg_no="STU-API-001", name="API Test", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-API-001", name="API Test", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS401", title="Security", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Red")
+        course = Course.objects.create(
+            code="CS401", title="Security", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Red"
+        )
 
         # 75% attendance
         for day in range(1, 16):
@@ -265,7 +313,9 @@ class TestAttendanceAPIEndpoints:
             )
 
         api_client.force_authenticate(admin_user)
-        resp = api_client.get(f"/api/attendance/percentage/?student_id={student.id}&section_id={section.id}")
+        resp = api_client.get(
+            f"/api/attendance/percentage/?student_id={student.id}&section_id={section.id}"
+        )
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp.json()["percentage"] == 75.0
@@ -279,8 +329,12 @@ class TestAttendanceAPIEndpoints:
             status="active",
         )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS402", title="Cloud", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Yellow")
+        course = Course.objects.create(
+            code="CS402", title="Cloud", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Yellow"
+        )
 
         # 80% attendance
         for day in range(1, 9):
@@ -299,7 +353,9 @@ class TestAttendanceAPIEndpoints:
             )
 
         api_client.force_authenticate(admin_user)
-        resp = api_client.get(f"/api/attendance/eligibility/?student_id={student.id}&section_id={section.id}")
+        resp = api_client.get(
+            f"/api/attendance/eligibility/?student_id={student.id}&section_id={section.id}"
+        )
 
         assert resp.status_code == status.HTTP_200_OK
         data = resp.json()
@@ -309,15 +365,27 @@ class TestAttendanceAPIEndpoints:
     def test_section_summary_endpoint(self, api_client, admin_user):
         """Test section summary API endpoint."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS403", title="Blockchain", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Purple")
+        course = Course.objects.create(
+            code="CS403", title="Blockchain", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Purple"
+        )
 
-        student = Student.objects.create(reg_no="STU-API-003", name="Summary Test", program="BSc", status="active")
-        Attendance.objects.create(section=section, student=student, date="2024-10-01", present=True)
-        Attendance.objects.create(section=section, student=student, date="2024-10-02", present=False)
+        student = Student.objects.create(
+            reg_no="STU-API-003", name="Summary Test", program="BSc", status="active"
+        )
+        Attendance.objects.create(
+            section=section, student=student, date="2024-10-01", present=True
+        )
+        Attendance.objects.create(
+            section=section, student=student, date="2024-10-02", present=False
+        )
 
         api_client.force_authenticate(admin_user)
-        resp = api_client.get(f"/api/attendance/section-summary/?section_id={section.id}")
+        resp = api_client.get(
+            f"/api/attendance/section-summary/?section_id={section.id}"
+        )
 
         assert resp.status_code == status.HTTP_200_OK
         data = resp.json()
@@ -336,7 +404,9 @@ class TestAttendanceAPIEndpoints:
     def test_attendance_percentage_invalid_ids(self, api_client, admin_user):
         """Test attendance percentage with invalid IDs."""
         api_client.force_authenticate(admin_user)
-        resp = api_client.get("/api/attendance/percentage/?student_id=invalid&section_id=also_invalid")
+        resp = api_client.get(
+            "/api/attendance/percentage/?student_id=invalid&section_id=also_invalid"
+        )
 
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
         assert "error" in resp.json()
@@ -344,7 +414,9 @@ class TestAttendanceAPIEndpoints:
     def test_eligibility_invalid_ids(self, api_client, admin_user):
         """Test eligibility endpoint with invalid IDs."""
         api_client.force_authenticate(admin_user)
-        resp = api_client.get("/api/attendance/eligibility/?student_id=invalid&section_id=999999")
+        resp = api_client.get(
+            "/api/attendance/eligibility/?student_id=invalid&section_id=999999"
+        )
 
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
         assert "error" in resp.json()

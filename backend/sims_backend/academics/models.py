@@ -31,7 +31,9 @@ class Course(models.Model):
     code = models.CharField(max_length=32, unique=True)
     title = models.CharField(max_length=255)
     credits = models.PositiveSmallIntegerField(default=3)
-    program = models.ForeignKey(Program, on_delete=models.CASCADE, related_name="courses")
+    program = models.ForeignKey(
+        Program, on_delete=models.CASCADE, related_name="courses"
+    )
 
     def __str__(self):
         return f"{self.code} - {self.title}"
@@ -53,7 +55,9 @@ class Section(models.Model):
         if teacher_value is not models.DEFERRED:
             self.teacher = teacher_value
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="sections")
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="sections"
+    )
     term = models.CharField(max_length=32)
     teacher = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -61,12 +65,12 @@ class Section(models.Model):
         related_name="sections",
         null=True,
         blank=True,
-        help_text="Faculty user assigned to teach this section"
+        help_text="Faculty user assigned to teach this section",
     )
     teacher_name = models.CharField(
         max_length=128,
         blank=True,
-        help_text="Display name for teacher (auto-populated from user)"
+        help_text="Display name for teacher (auto-populated from user)",
     )
     capacity = models.PositiveIntegerField(default=30)
 
@@ -77,7 +81,10 @@ class Section(models.Model):
         # Auto-populate teacher_name from teacher user when teacher is set
         # If teacher is None, keep the existing teacher_name value
         if self.teacher:
-            self.teacher_name = f"{self.teacher.first_name} {self.teacher.last_name}".strip() or self.teacher.username
+            self.teacher_name = (
+                f"{self.teacher.first_name} {self.teacher.last_name}".strip()
+                or self.teacher.username
+            )
         elif self.teacher_name:
             duplicate_qs = Section.objects.filter(
                 course=self.course,
@@ -88,9 +95,13 @@ class Section(models.Model):
             if self.pk:
                 duplicate_qs = duplicate_qs.exclude(pk=self.pk)
             if duplicate_qs.exists():
-                raise IntegrityError("Section with this course, term and teacher already exists")
+                raise IntegrityError(
+                    "Section with this course, term and teacher already exists"
+                )
         super().save(*args, **kwargs)
 
     def __str__(self):
-        teacher_display = self.teacher_name or (self.teacher.username if self.teacher else "No teacher")
+        teacher_display = self.teacher_name or (
+            self.teacher.username if self.teacher else "No teacher"
+        )
         return f"{self.course.code} {self.term} ({teacher_display})"

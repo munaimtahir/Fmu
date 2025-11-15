@@ -12,11 +12,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Term",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("name", models.CharField(max_length=32, unique=True)),
                 (
                     "status",
-                    models.CharField(choices=[("open", "Open"), ("closed", "Closed")], default="open", max_length=16),
+                    models.CharField(
+                        choices=[("open", "Open"), ("closed", "Closed")],
+                        default="open",
+                        max_length=16,
+                    ),
                 ),
                 ("start_date", models.DateField()),
                 ("end_date", models.DateField()),

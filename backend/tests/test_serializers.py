@@ -4,10 +4,17 @@ import pytest
 from django.utils import timezone
 
 from sims_backend.academics.models import Course, Program, Section
-from sims_backend.academics.serializers import CourseSerializer, ProgramSerializer, SectionSerializer
+from sims_backend.academics.serializers import (
+    CourseSerializer,
+    ProgramSerializer,
+    SectionSerializer,
+)
 from sims_backend.admissions.models import Student
 from sims_backend.assessments.models import Assessment
-from sims_backend.assessments.serializers import AssessmentScoreSerializer, AssessmentSerializer
+from sims_backend.assessments.serializers import (
+    AssessmentScoreSerializer,
+    AssessmentSerializer,
+)
 from sims_backend.attendance.serializers import AttendanceSerializer
 from sims_backend.enrollment.models import Enrollment
 from sims_backend.enrollment.serializers import EnrollmentSerializer
@@ -57,7 +64,9 @@ class TestCourseSerializer:
     def test_course_unique_code(self):
         """Course codes should be unique."""
         program = Program.objects.create(name="BSc CS")
-        Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
+        Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
         data = {
             "code": "CS101",
             "title": "Different Course",
@@ -74,8 +83,15 @@ class TestSectionSerializer:
     def test_valid_section(self):
         """Valid section data should serialize correctly."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        data = {"course": course.id, "term": "Fall 2024", "teacher": None, "teacher_name": "Dr. Smith"}
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        data = {
+            "course": course.id,
+            "term": "Fall 2024",
+            "teacher": None,
+            "teacher_name": "Dr. Smith",
+        }
         serializer = SectionSerializer(data=data)
         assert serializer.is_valid(), serializer.errors
         section = serializer.save()
@@ -88,10 +104,16 @@ class TestEnrollmentSerializer:
 
     def test_valid_enrollment(self):
         """Valid enrollment should serialize correctly."""
-        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-001", name="Test", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith"
+        )
         data = {"student": student.id, "section": section.id, "status": "enrolled"}
         serializer = EnrollmentSerializer(data=data)
         assert serializer.is_valid(), serializer.errors
@@ -100,10 +122,16 @@ class TestEnrollmentSerializer:
 
     def test_duplicate_enrollment_prevented(self):
         """Duplicate enrollments should be prevented."""
-        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-001", name="Test", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith"
+        )
         Enrollment.objects.create(student=student, section=section, status="enrolled")
         data = {"student": student.id, "section": section.id, "status": "enrolled"}
         serializer = EnrollmentSerializer(data=data)
@@ -115,10 +143,16 @@ class TestAttendanceSerializer:
 
     def test_valid_attendance(self):
         """Valid attendance should serialize correctly."""
-        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-001", name="Test", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith"
+        )
         data = {
             "section": section.id,
             "student": student.id,
@@ -133,10 +167,16 @@ class TestAttendanceSerializer:
 
     def test_attendance_with_reason(self):
         """Absent students can have a reason."""
-        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-001", name="Test", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith"
+        )
         data = {
             "section": section.id,
             "student": student.id,
@@ -156,8 +196,12 @@ class TestAssessmentSerializer:
     def test_valid_assessment(self):
         """Valid assessment should serialize correctly."""
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith"
+        )
         data = {"section": section.id, "type": "Midterm", "weight": 30}
         serializer = AssessmentSerializer(data=data)
         assert serializer.is_valid(), serializer.errors
@@ -171,10 +215,16 @@ class TestAssessmentScoreSerializer:
 
     def test_valid_score(self):
         """Valid score should serialize correctly."""
-        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-001", name="Test", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith"
+        )
         assessment = Assessment.objects.create(section=section, type="Quiz", weight=10)
         data = {
             "assessment": assessment.id,
@@ -193,10 +243,16 @@ class TestResultSerializer:
 
     def test_valid_result(self):
         """Valid result should serialize correctly."""
-        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-001", name="Test", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall 2024", teacher=None, teacher_name="Dr. Smith"
+        )
         data = {
             "student": student.id,
             "section": section.id,
@@ -211,10 +267,16 @@ class TestResultSerializer:
 
     def test_published_result(self):
         """Published results should have timestamp and publisher."""
-        student = Student.objects.create(reg_no="STU-001", name="Test", program="BSc", status="active")
+        student = Student.objects.create(
+            reg_no="STU-001", name="Test", program="BSc", status="active"
+        )
         program = Program.objects.create(name="BSc CS")
-        course = Course.objects.create(code="CS101", title="Programming", credits=3, program=program)
-        section = Section.objects.create(course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith")
+        course = Course.objects.create(
+            code="CS101", title="Programming", credits=3, program=program
+        )
+        section = Section.objects.create(
+            course=course, term="Fall2024", teacher=None, teacher_name="Dr. Smith"
+        )
         now = timezone.now()
         # Create result with published fields directly
         result = Result.objects.create(

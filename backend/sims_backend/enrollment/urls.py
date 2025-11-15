@@ -7,6 +7,10 @@ router = DefaultRouter()
 router.register(r"enrollments", EnrollmentViewSet, basename="enrollment")
 
 urlpatterns = [
-    path("api/sections/<int:section_id>/enroll/", enroll_in_section, name="enroll_in_section"),
+    path(
+        "api/sections/<int:section_id>/enroll/",
+        enroll_in_section,
+        name="enroll_in_section",
+    ),
     path("api/", include(router.urls)),
 ]

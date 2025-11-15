@@ -29,7 +29,9 @@ class AssessmentSerializer(serializers.ModelSerializer):
 
             if total_weight > 100:
                 raise serializers.ValidationError(
-                    {"weight": f"Total weight for section cannot exceed 100%. Current total: {total_weight}%"}
+                    {
+                        "weight": f"Total weight for section cannot exceed 100%. Current total: {total_weight}%"
+                    }
                 )
         return data
 
@@ -45,12 +47,16 @@ class AssessmentScoreSerializer(serializers.ModelSerializer):
         max_score = data.get("max_score", 100)
 
         if score > max_score:
-            raise serializers.ValidationError({"score": f"Score ({score}) cannot exceed max_score ({max_score})"})
+            raise serializers.ValidationError(
+                {"score": f"Score ({score}) cannot exceed max_score ({max_score})"}
+            )
 
         if score < 0:
             raise serializers.ValidationError({"score": "Score cannot be negative"})
 
         if max_score <= 0:
-            raise serializers.ValidationError({"max_score": "Max score must be positive"})
+            raise serializers.ValidationError(
+                {"max_score": "Max score must be positive"}
+            )
 
         return data

@@ -49,9 +49,15 @@ def calculate_final_grade(student_id: int, section_id: int) -> dict:
 
     for assessment in assessments:
         try:
-            score_record = AssessmentScore.objects.get(assessment=assessment, student_id=student_id)
+            score_record = AssessmentScore.objects.get(
+                assessment=assessment, student_id=student_id
+            )
             # Calculate percentage for this assessment
-            score_percentage = (score_record.score / score_record.max_score) * 100 if score_record.max_score > 0 else 0
+            score_percentage = (
+                (score_record.score / score_record.max_score) * 100
+                if score_record.max_score > 0
+                else 0
+            )
             # Weight the score
             weighted_score = (score_percentage * assessment.weight) / 100
             total_score += weighted_score

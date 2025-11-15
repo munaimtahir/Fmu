@@ -1,4 +1,5 @@
 """Custom views for authentication and dashboard."""
+
 import logging
 
 from django.db.models import Count, ExpressionWrapper, F, FloatField, Q
@@ -32,7 +33,7 @@ class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer  # type: ignore[assignment]
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def dashboard_stats(request):
     """
@@ -56,17 +57,18 @@ def dashboard_stats(request):
     elif in_group(user, "Faculty"):
         # Faculty sees only their own sections and students
         faculty_sections = Section.objects.filter(teacher=user)
-        enrolled_students = Enrollment.objects.filter(
-            section__in=faculty_sections
-        ).values_list('student', flat=True).distinct()
+        enrolled_students = (
+            Enrollment.objects.filter(section__in=faculty_sections)
+            .values_list("student", flat=True)
+            .distinct()
+        )
 
         stats = {
             "my_sections": faculty_sections.count(),
             "my_students": enrolled_students.count(),
             "pending_attendance": _count_pending_attendance(faculty_sections),
             "draft_results": Result.objects.filter(
-                section__in=faculty_sections,
-                state="draft"
+                section__in=faculty_sections, state="draft"
             ).count(),
         }
     elif in_group(user, "Student"):
@@ -81,23 +83,17 @@ def dashboard_stats(request):
                 "enrolled_courses": my_enrollments.count(),
                 "attendance_rate": _calculate_attendance_rate(student),
                 "completed_results": Result.objects.filter(
-                    student=student,
-                    state="published"
+                    student=student, state="published"
                 ).count(),
                 "pending_requests": Request.objects.filter(
-                    student=student,
-                    status="pending"
+                    student=student, status="pending"
                 ).count(),
             }
         except Student.DoesNotExist:
             logger.warning(f"No student record found for user {user.username}")
-            stats = {
-                "error": "No student record found for this user"
-            }
+            stats = {"error": "No student record found for this user"}
     else:
-        stats = {
-            "message": "No statistics available for your role"
-        }
+        stats = {"message": "No statistics available for your role"}
 
     return Response(stats, status=status.HTTP_200_OK)
 
@@ -126,6 +122,7 @@ def _count_ineligible_students():
     )
 
     return active_students.filter(attendance_rate__lt=75).count()
+
 
 def _count_pending_attendance(sections):
     """
