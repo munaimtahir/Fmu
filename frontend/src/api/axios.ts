@@ -152,8 +152,9 @@ api.interceptors.response.use(
     }
 
     try {
+      // Use a plain axios instance to avoid circular interceptor calls
       const response = await axios.post<{ access: string }>(
-        `${env.apiBaseUrl}/api/auth/token/refresh/`,
+        `${env.apiBaseUrl.replace(/\/$/, '')}/api/auth/token/refresh/`,
         { refresh }
       )
 

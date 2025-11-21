@@ -68,7 +68,7 @@ services:
     ports:
       - "5174:5173"
     environment:
-      - VITE_API_URL=http://localhost:81/api
+      - VITE_API_URL=http://localhost:81
     depends_on:
       - backend
       - nginx
