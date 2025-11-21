@@ -24,10 +24,11 @@ logger = logging.getLogger(__name__)
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     """
-    Custom token view that accepts email instead of username.
+    A custom token obtain pair view that authenticates with email and password.
 
-    This view uses the EmailTokenObtainPairSerializer to allow
-    users to authenticate using their email address.
+    This view extends the `TokenObtainPairView` from `rest_framework_simplejwt`
+    to use a custom serializer, `EmailTokenObtainPairSerializer`, which allows
+    users to log in using their email address instead of a username.
     """
 
     serializer_class = EmailTokenObtainPairSerializer  # type: ignore[assignment]
@@ -37,7 +38,18 @@ class EmailTokenObtainPairView(TokenObtainPairView):
 @permission_classes([IsAuthenticated])
 def dashboard_stats(request):
     """
-    Get dashboard statistics based on user role
+    Retrieve dashboard statistics tailored to the authenticated user's role.
+
+    This view calculates and returns a set of statistics relevant to the user's
+    primary role (e.g., Admin, Registrar, Faculty, Student). The type of
+    statistics returned depends on the user's group membership.
+
+    Args:
+        request (Request): The DRF request object, containing the user.
+
+    Returns:
+        Response: A DRF response object containing a dictionary of
+                  dashboard statistics.
     """
     user = request.user
 
@@ -100,8 +112,14 @@ def dashboard_stats(request):
 
 def _count_ineligible_students():
     """
-    Count students who are ineligible due to low attendance
-    Ineligible = attendance < 75%
+    Calculates the number of active students with an attendance rate below 75%.
+
+    This function queries the database to find all active students, calculates
+    their attendance rate (present sessions / total sessions), and returns the
+    count of students whose attendance rate is less than 75%.
+
+    Returns:
+        int: The number of students considered ineligible based on attendance.
     """
     active_students = (
         Student.objects.filter(status="active")
@@ -126,7 +144,18 @@ def _count_ineligible_students():
 
 def _count_pending_attendance(sections):
     """
-    Count sections that need attendance marking (basic heuristic)
+    Counts the number of sections that have not had attendance marked recently.
+
+    This function uses a simple heuristic: it counts the number of sections
+    provided in the `sections` queryset that have not had any attendance
+    records in the last 7 days.
+
+    Args:
+        sections (QuerySet): A queryset of `Section` objects to check for
+                             pending attendance.
+
+    Returns:
+        int: The number of sections with no recent attendance records.
     """
     from datetime import date, timedelta
 
@@ -149,7 +178,18 @@ def _count_pending_attendance(sections):
 
 def _calculate_attendance_rate(student):
     """
-    Calculate attendance rate for a student
+    Calculates the attendance rate for a given student.
+
+    The attendance rate is calculated as the percentage of 'present' attendance
+    records out of the total number of attendance records for the student.
+
+    Args:
+        student (Student): The student object for whom to calculate the
+                           attendance rate.
+
+    Returns:
+        float: The attendance rate as a percentage, rounded to two decimal
+               places. Returns 0.0 if the student has no attendance records.
     """
     total = Attendance.objects.filter(student=student).count()
     if total == 0:

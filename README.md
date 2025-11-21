@@ -130,6 +130,17 @@ SIMS is a production-ready academic digitization system designed to manage:
 - Document management and verification
 - Request ticket system (bonafide certificates, transcripts, etc.)
 
+## ✨ Features
+
+- **Role-Based Access Control:** Pre-configured roles for Admin, Registrar, Faculty, and Student, each with a tailored dashboard and permissions.
+- **Academic Structure:** Manage programs, courses, terms, and sections with ease.
+- **Student Lifecycle Management:** A comprehensive system for admissions, enrollments, and maintaining student records.
+- **Attendance Tracking:** Record and monitor student attendance, with automatic eligibility calculations.
+- **Assessment and Results:** Flexible assessment schemes and automated result generation.
+- **Transcript Generation:** Create and manage student transcripts with QR code verification for authenticity.
+- **Demo Data Seeding:** A powerful seeding script to quickly populate the system with realistic demo data for testing and demonstration.
+- **Production-Ready:** Built with best practices for security, performance, and scalability, ready for deployment.
+
 ## Tech Stack
 
 ### Backend

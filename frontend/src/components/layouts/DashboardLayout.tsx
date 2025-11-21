@@ -4,12 +4,26 @@ import { Topbar } from '../layout/Topbar'
 import { Breadcrumbs } from '../layout/Breadcrumbs'
 
 export interface DashboardLayoutProps {
+  /** The content to be rendered within the layout. */
   children: React.ReactNode
 }
 
 /**
- * DashboardLayout - Main application layout with sidebar and topbar
- * Features: Responsive design, collapsible sidebar, breadcrumbs
+ * `DashboardLayout` provides the main structure for the application's dashboard.
+ *
+ * This component includes a responsive sidebar and a top bar, creating a
+ * consistent and user-friendly layout for all dashboard pages. It manages
+ * the state of the sidebar (open/closed) and adapts to different screen sizes.
+ *
+ * @component
+ * @param {DashboardLayoutProps} props The props for the component.
+ * @param {React.ReactNode} props.children The content to be rendered inside the layout.
+ * @returns {React.ReactElement} The rendered `DashboardLayout` component.
+ *
+ * @example
+ * <DashboardLayout>
+ *   <p>This is the dashboard content.</p>
+ * </DashboardLayout>
  */
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {

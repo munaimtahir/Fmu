@@ -2,10 +2,19 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { env } from '@/lib/env'
 
 export interface TokenResponse {
+  /** The JWT access token. */
   access: string
+  /** The JWT refresh token. */
   refresh: string
 }
 
+/**
+ * An Axios instance configured for making API requests.
+ *
+ * This instance is pre-configured with the base URL and default headers.
+ * It also includes interceptors for automatically handling token-based
+ * authentication, including token injection and automatic token refresh.
+ */
 const api = axios.create({
   baseURL: env.apiBaseUrl,
   headers: {
@@ -21,15 +30,28 @@ let refreshToken: string | null = null
 let isRefreshing = false
 let refreshSubscribers: Array<(token: string) => void> = []
 
+/**
+ * Subscribes a callback to be executed when the token is refreshed.
+ * @param {function(string): void} callback The callback to execute with the new token.
+ */
 function subscribeTokenRefresh(callback: (token: string) => void) {
   refreshSubscribers.push(callback)
 }
 
+/**
+ * Executes all subscribed callbacks with the new token.
+ * @param {string} token The new access token.
+ */
 function onTokenRefreshed(token: string) {
   refreshSubscribers.forEach((callback) => callback(token))
   refreshSubscribers = []
 }
 
+/**
+ * Sets the access and refresh tokens in memory and local storage.
+ * @param {string} access The access token.
+ * @param {string} refresh The refresh token.
+ */
 export function setTokens(access: string, refresh: string) {
   accessToken = access
   refreshToken = refresh
@@ -37,6 +59,10 @@ export function setTokens(access: string, refresh: string) {
   localStorage.setItem('refresh_token', refresh)
 }
 
+/**
+ * Retrieves the access token from memory or local storage.
+ * @returns {string | null} The access token, or null if not found.
+ */
 export function getAccessToken(): string | null {
   if (!accessToken) {
     accessToken = localStorage.getItem('access_token')
@@ -44,6 +70,10 @@ export function getAccessToken(): string | null {
   return accessToken
 }
 
+/**
+ * Retrieves the refresh token from memory or local storage.
+ * @returns {string | null} The refresh token, or null if not found.
+ */
 export function getRefreshToken(): string | null {
   if (!refreshToken) {
     refreshToken = localStorage.getItem('refresh_token')
@@ -51,6 +81,9 @@ export function getRefreshToken(): string | null {
   return refreshToken
 }
 
+/**
+ * Clears the access and refresh tokens from memory and local storage.
+ */
 export function clearTokens() {
   accessToken = null
   refreshToken = null
@@ -58,7 +91,12 @@ export function clearTokens() {
   localStorage.removeItem('refresh_token')
 }
 
-// Request interceptor - attach access token
+/**
+ * Axios request interceptor.
+ *
+ * This interceptor attaches the JWT access token to the `Authorization` header
+ * of every outgoing request, if a token is available.
+ */
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getAccessToken()
@@ -70,7 +108,13 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// Response interceptor - handle 401 and refresh token
+/**
+ * Axios response interceptor.
+ *
+ * This interceptor handles 401 Unauthorized errors by attempting to refresh
+ * the access token using the refresh token. If the refresh is successful, the
+ * original request is retried. If it fails, the user is logged out.
+ */
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
