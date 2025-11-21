@@ -3,7 +3,28 @@ import { login as apiLogin, logout as apiLogout } from '@/api/auth'
 import { LoginCredentials } from './types'
 
 /**
- * Custom hook for authentication operations
+ * A custom hook for managing authentication logic.
+ *
+ * This hook provides an interface to the authentication state and actions,
+ * such as logging in and out. It integrates with the `useAuthStore` for state
+ * management and the API for authentication requests.
+ *
+ * @returns {object} An object containing the authentication state and methods.
+ * @property {object | null} user The authenticated user object, or null if not logged in.
+ * @property {boolean} isAuthenticated A boolean indicating if the user is authenticated.
+ * @property {boolean} isLoading A boolean indicating if the authentication state is being loaded.
+ * @property {function(LoginCredentials): Promise<any>} login A function to log in the user.
+ * @property {function(): Promise<void>} logout A function to log out the user.
+ * @property {function(): void} initialize A function to initialize the authentication state.
+ *
+ * @example
+ * const { user, isAuthenticated, login, logout } = useAuth();
+ *
+ * if (isAuthenticated) {
+ *   console.log(`Welcome, ${user.firstName}`);
+ * } else {
+ *   login({ email: 'test@example.com', password: 'password' });
+ * }
  */
 export function useAuth() {
   const { user, isAuthenticated, isLoading, logout: clearAuth, initialize } = useAuthStore()

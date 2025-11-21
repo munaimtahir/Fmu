@@ -8,9 +8,18 @@ import { useAuth } from '@/features/auth/useAuth'
 import { env } from '@/lib/env'
 
 /**
- * DashboardHome - Main dashboard landing page
- * Redirects to role-specific dashboard based on user's primary role
- * Features: System status, user info, navigation cards
+ * `DashboardHome` is the main landing page for the dashboard.
+ *
+ * This component serves as the central hub for authenticated users. It displays
+ * a welcome message, system health status, and quick action cards. It also
+ * contains logic to automatically redirect users to their role-specific
+ * dashboard based on their primary role.
+ *
+ * @component
+ * @returns {React.ReactElement} The rendered `DashboardHome` component.
+ *
+ * @example
+ * return <DashboardHome />
  */
 export const DashboardHome: React.FC = () => {
   const { user } = useAuth()

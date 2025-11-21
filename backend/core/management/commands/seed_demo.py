@@ -22,11 +22,24 @@ fake = Faker()
 
 
 class Command(BaseCommand):
+    """
+    A Django management command to seed the database with demo data.
+
+    This command populates the database with a set of sample data, including
+    users, programs, courses, students, and more, to facilitate testing and
+    demonstration of the SIMS application.
+    """
     help = (
         "Seed demo data for SIMS (Programs, Courses, Terms, Sections, Students, etc.)"
     )
 
     def add_arguments(self, parser):
+        """
+        Adds command-line arguments to the command.
+
+        Args:
+            parser: The argument parser instance.
+        """
         parser.add_argument(
             "--students",
             type=int,
@@ -41,6 +54,17 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        """
+        The main entry point for the command.
+
+        Executes the data seeding process, including clearing existing data
+        if requested, creating users, academic structures, students, and
+        related records.
+
+        Args:
+            *args: Variable length argument list.
+            **options: Keyword arguments, including command-line options.
+        """
         num_students = options["students"]
         clear_data = options["clear"]
 
@@ -88,7 +112,13 @@ class Command(BaseCommand):
         self.stdout.write("  Student: student / student123")
 
     def _clear_data(self):
-        """Clear existing data"""
+        """
+        Clears all existing demo data from the database.
+
+        This method deletes all records from the models that are populated
+        by this seeding script, ensuring a clean slate before new data is
+        inserted.
+        """
         Result.objects.all().delete()
         AssessmentScore.objects.all().delete()
         Assessment.objects.all().delete()
@@ -103,7 +133,15 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("  ✓ Existing data cleared"))
 
     def _create_users(self):
-        """Create demo users for different roles"""
+        """
+        Creates a set of demo users with different roles.
+
+        This method creates users for the roles of Admin, Registrar, Faculty,
+        and Student, and assigns them to the appropriate user groups.
+
+        Returns:
+            dict: A dictionary of the created user objects.
+        """
         from django.contrib.auth.models import Group
 
         users = {}
@@ -190,7 +228,12 @@ class Command(BaseCommand):
         return users
 
     def _create_programs(self):
-        """Create academic programs"""
+        """
+        Creates a set of academic programs.
+
+        Returns:
+            list: A list of the created `Program` objects.
+        """
         programs_data = [
             "Bachelor of Science in Computer Science",
             "Bachelor of Science in Electrical Engineering",
@@ -206,7 +249,16 @@ class Command(BaseCommand):
         return programs
 
     def _create_courses(self, programs):
-        """Create courses for programs"""
+        """
+        Creates a set of courses for the given programs.
+
+        Args:
+            programs (list): A list of `Program` objects to which the courses
+                             will be assigned.
+
+        Returns:
+            list: A list of the created `Course` objects.
+        """
         courses_data = [
             {"code": "CS101", "title": "Introduction to Programming", "credits": 3},
             {"code": "CS201", "title": "Data Structures", "credits": 3},
@@ -241,7 +293,12 @@ class Command(BaseCommand):
         return courses
 
     def _create_terms(self):
-        """Create academic terms"""
+        """
+        Creates a set of academic terms.
+
+        Returns:
+            list: A list of the created `Term` objects.
+        """
         current_year = date.today().year
         terms_data = [
             {
@@ -267,7 +324,17 @@ class Command(BaseCommand):
         return terms
 
     def _create_sections(self, courses, terms, users):
-        """Create sections for courses in current term and assign to faculty"""
+        """
+        Creates sections for courses and assigns them to faculty members.
+
+        Args:
+            courses (list): A list of `Course` objects.
+            terms (list): A list of `Term` objects.
+            users (dict): A dictionary of user objects.
+
+        Returns:
+            list: A list of the created `Section` objects.
+        """
         current_term = terms[0]  # Fall term
         sections = []
 
@@ -301,7 +368,17 @@ class Command(BaseCommand):
         return sections
 
     def _create_students(self, programs, num_students, users):
-        """Create student records and link to student user"""
+        """
+        Creates a set of student records.
+
+        Args:
+            programs (list): A list of `Program` objects.
+            num_students (int): The number of students to create.
+            users (dict): A dictionary of user objects.
+
+        Returns:
+            list: A list of the created `Student` objects.
+        """
         students = []
         bscs_program = next(p for p in programs if "Computer Science" in p.name)
 
@@ -337,7 +414,16 @@ class Command(BaseCommand):
         return students
 
     def _enroll_students(self, students, sections):
-        """Enroll students in sections"""
+        """
+        Enrolls students in various sections.
+
+        Args:
+            students (list): A list of `Student` objects.
+            sections (list): A list of `Section` objects.
+
+        Returns:
+            list: A list of the created `Enrollment` objects.
+        """
         enrollments = []
 
         for student in students:
@@ -359,7 +445,12 @@ class Command(BaseCommand):
         return enrollments
 
     def _create_attendance(self, enrollments):
-        """Create attendance records"""
+        """
+        Creates attendance records for students in their enrolled sections.
+
+        Args:
+            enrollments (list): A list of `Enrollment` objects.
+        """
         attendance_count = 0
 
         for enrollment in enrollments:
@@ -390,7 +481,12 @@ class Command(BaseCommand):
         self.stdout.write(f"  ✓ Created {attendance_count} attendance records")
 
     def _create_assessments(self, sections):
-        """Create assessments and scores"""
+        """
+        Creates assessments and scores for students in the given sections.
+
+        Args:
+            sections (list): A list of `Section` objects.
+        """
         for section in sections:
             # Create assessment scheme
             assessments_data = [
@@ -431,7 +527,12 @@ class Command(BaseCommand):
         )
 
     def _create_results(self, enrollments):
-        """Create results for enrollments"""
+        """
+        Creates final results for students based on their assessment scores.
+
+        Args:
+            enrollments (list): A list of `Enrollment` objects.
+        """
         results_count = 0
 
         for enrollment in enrollments:
@@ -463,7 +564,15 @@ class Command(BaseCommand):
         self.stdout.write(f"  ✓ Created {results_count} results")
 
     def _calculate_grade(self, score):
-        """Calculate letter grade from score"""
+        """
+        Calculates the letter grade based on a numerical score.
+
+        Args:
+            score (float): The numerical score.
+
+        Returns:
+            str: The corresponding letter grade.
+        """
         if score >= 90:
             return "A+"
         elif score >= 85:

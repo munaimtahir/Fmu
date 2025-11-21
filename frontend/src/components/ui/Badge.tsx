@@ -1,11 +1,27 @@
 import React from 'react'
 
 export interface BadgeProps {
+  /** The content to be rendered inside the badge. */
   children: React.ReactNode
+  /** The color scheme of the badge. */
   variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+  /** Additional CSS classes to apply to the badge. */
   className?: string
 }
 
+/**
+ * A component to display a badge with different color variants.
+ *
+ * Badges are used to highlight small pieces of information, such as statuses
+ * or categories. This component provides several pre-defined color schemes.
+ *
+ * @component
+ * @param {BadgeProps} props The props for the component.
+ * @returns {React.ReactElement} The rendered `Badge` component.
+ *
+ * @example
+ * <Badge variant="success">Active</Badge>
+ */
 export const Badge: React.FC<BadgeProps> = ({ 
   children, 
   variant = 'default', 

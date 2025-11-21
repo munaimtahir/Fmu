@@ -11,23 +11,35 @@ User = get_user_model()
 
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
-    Custom TokenObtainPairSerializer that accepts email instead of username.
+    A custom token obtain pair serializer that uses email instead of username.
 
-    This allows users to authenticate using their email address and password,
-    which is more user-friendly than using a username.
+    This serializer extends the `TokenObtainPairSerializer` to allow users to
+    authenticate using their email address and password. It validates the
+    credentials and, if successful, returns a pair of JWT access and refresh
+    tokens.
     """
 
     username_field = "email"
 
     def validate(self, attrs):
         """
-        Validate the credentials and return tokens.
+        Validates the user's credentials and generates JWT tokens.
 
-        This method overrides the parent to:
-        1. Accept 'email' instead of 'username'
-        2. Look up the user by email
-        3. Validate password
-        4. Return JWT tokens
+        This method overrides the default validation to authenticate a user
+        based on their email and password. It checks for the existence of the
+        user, verifies the password, and ensures the user is active. If all
+        checks pass, it updates the last login time and returns the tokens.
+
+        Args:
+            attrs (dict): The dictionary of input data, expected to contain
+                          'email' and 'password'.
+
+        Returns:
+            dict: A dictionary containing the 'refresh' and 'access' tokens.
+
+        Raises:
+            AuthenticationFailed: If the credentials are invalid, the user
+                                  does not exist, or is inactive.
         """
         email = attrs.get("email")
         password = attrs.get("password")

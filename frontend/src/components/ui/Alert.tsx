@@ -1,12 +1,32 @@
 import React from 'react'
 
 export interface AlertProps {
+  /** The main content of the alert. */
   children: React.ReactNode
+  /** The color scheme and icon of the alert. */
   variant?: 'info' | 'success' | 'warning' | 'error'
+  /** An optional title for the alert. */
   title?: string
+  /** Additional CSS classes to apply to the alert. */
   className?: string
 }
 
+/**
+ * A component to display contextual messages with different severity levels.
+ *
+ * This component is used to show important information to the user, such as
+ * success messages, warnings, or errors. It includes a relevant icon and
+ * color scheme based on the specified variant.
+ *
+ * @component
+ * @param {AlertProps} props The props for the component.
+ * @returns {React.ReactElement} The rendered `Alert` component.
+ *
+ * @example
+ * <Alert variant="warning" title="Warning">
+ *   This is a warning message.
+ * </Alert>
+ */
 export const Alert: React.FC<AlertProps> = ({ 
   children, 
   variant = 'info', 
