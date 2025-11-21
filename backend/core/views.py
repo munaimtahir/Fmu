@@ -31,7 +31,7 @@ class EmailTokenObtainPairView(TokenObtainPairView):
     users to log in using their email address instead of a username.
     """
 
-    serializer_class = EmailTokenObtainPairSerializer
+    serializer_class = EmailTokenObtainPairSerializer  # type: ignore[assignment]
 
 
 @api_view(["GET"])
