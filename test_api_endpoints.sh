@@ -112,16 +112,26 @@ echo ""
 echo "=== Endpoint Path Verification ==="
 echo "Verifying that endpoints don't have double /api paths..."
 
-# Test that /api/api/... doesn't exist
-response=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/api/api/students/")
-if [ "$response" == "404" ]; then
-    echo -e "${GREEN}PASS${NC} - /api/api/students/ returns 404 (as expected)"
-    TESTS_PASSED=$((TESTS_PASSED + 1))
-else
-    echo -e "${RED}FAIL${NC} - /api/api/students/ should return 404 but returned $response"
-    TESTS_FAILED=$((TESTS_FAILED + 1))
-fi
-TESTS_RUN=$((TESTS_RUN + 1))
+# Test multiple endpoints to ensure no double /api paths exist
+DOUBLE_API_ENDPOINTS=(
+    "/api/api/students/"
+    "/api/api/courses/"
+    "/api/api/sections/"
+    "/api/api/enrollments/"
+    "/api/api/attendance/"
+)
+
+for endpoint in "${DOUBLE_API_ENDPOINTS[@]}"; do
+    TESTS_RUN=$((TESTS_RUN + 1))
+    response=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL$endpoint")
+    if [ "$response" == "404" ]; then
+        echo -e "${GREEN}PASS${NC} - $endpoint returns 404 (as expected)"
+        TESTS_PASSED=$((TESTS_PASSED + 1))
+    else
+        echo -e "${RED}FAIL${NC} - $endpoint should return 404 but returned $response"
+        TESTS_FAILED=$((TESTS_FAILED + 1))
+    fi
+done
 
 echo ""
 echo "=========================================="
