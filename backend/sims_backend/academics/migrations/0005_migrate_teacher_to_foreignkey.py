@@ -5,16 +5,19 @@ from django.conf import settings
 from django.db import migrations, models
 
 
-def preserve_teacher_names(apps, schema_editor):
+def migrate_teacher_data(apps, schema_editor):
     """
-    Copy old teacher CharField data to teacher_name before converting to ForeignKey.
+    Copy teacher CharField data to teacher_name field.
+    Safely handles the case where _teacher_old field exists.
     """
     Section = apps.get_model("academics", "Section")
-
-    # Copy teacher string to teacher_name
+    
+    # Iterate through all sections and copy teacher data
     for section in Section.objects.all():
-        section.teacher_name = getattr(section, "_teacher_old", "")
-        section.save(update_fields=["teacher_name"])
+        # The field will be named _teacher_old at this point in the migration
+        if hasattr(section, '_teacher_old') and section._teacher_old:
+            section.teacher_name = section._teacher_old
+            section.save(update_fields=["teacher_name"])
 
 
 class Migration(migrations.Migration):
@@ -25,13 +28,18 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Step 1: Rename old teacher field temporarily
+        # Step 1: Remove old unique_together constraint first
+        migrations.AlterUniqueTogether(
+            name="section",
+            unique_together=set(),
+        ),
+        # Step 2: Rename teacher (CharField) to _teacher_old temporarily
         migrations.RenameField(
             model_name="section",
             old_name="teacher",
             new_name="_teacher_old",
         ),
-        # Step 2: Add teacher_name field
+        # Step 3: Add new teacher_name CharField
         migrations.AddField(
             model_name="section",
             name="teacher_name",
@@ -41,13 +49,13 @@ class Migration(migrations.Migration):
                 help_text="Display name for teacher (auto-populated from user)",
                 max_length=128,
             ),
-            preserve_default=False,
         ),
-        # Step 3: Copy old data to teacher_name
+        # Step 4: Copy data from _teacher_old to teacher_name
         migrations.RunPython(
-            preserve_teacher_names, reverse_code=migrations.RunPython.noop
+            migrate_teacher_data,
+            reverse_code=migrations.RunPython.noop
         ),
-        # Step 4: Add new teacher ForeignKey field
+        # Step 5: Add new teacher ForeignKey field
         migrations.AddField(
             model_name="section",
             name="teacher",
@@ -60,16 +68,12 @@ class Migration(migrations.Migration):
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
-        # Step 5: Remove old teacher field
+        # Step 6: Remove the old _teacher_old CharField
         migrations.RemoveField(
             model_name="section",
             name="_teacher_old",
         ),
-        # Step 6: Remove old unique_together and add new one
-        migrations.AlterUniqueTogether(
-            name="section",
-            unique_together=set(),
-        ),
+        # Step 7: Add new unique_together with ForeignKey teacher
         migrations.AlterUniqueTogether(
             name="section",
             unique_together={("course", "term", "teacher")},
