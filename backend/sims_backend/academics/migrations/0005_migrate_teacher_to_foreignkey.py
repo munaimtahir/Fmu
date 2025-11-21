@@ -15,8 +15,9 @@ def migrate_teacher_data(apps, schema_editor):
     # Iterate through all sections and copy teacher data
     for section in Section.objects.all():
         # The field will be named _teacher_old at this point in the migration
-        if hasattr(section, '_teacher_old') and section._teacher_old:
-            section.teacher_name = section._teacher_old
+        # Check for existence and copy even empty strings
+        if hasattr(section, '_teacher_old'):
+            section.teacher_name = section._teacher_old or ""
             section.save(update_fields=["teacher_name"])
 
 
@@ -49,6 +50,7 @@ class Migration(migrations.Migration):
                 help_text="Display name for teacher (auto-populated from user)",
                 max_length=128,
             ),
+            preserve_default=False,
         ),
         # Step 4: Copy data from _teacher_old to teacher_name
         migrations.RunPython(
