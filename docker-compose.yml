@@ -68,9 +68,10 @@ services:
     ports:
       - "5174:5173"
     environment:
-      - VITE_API_URL=http://localhost:8000
+      - VITE_API_URL=http://localhost:81/api
     depends_on:
       - backend
+      - nginx
 
   rqworker:
     build:

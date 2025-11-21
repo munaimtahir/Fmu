@@ -50,13 +50,4 @@ export const sectionsService = {
   async delete(id: number): Promise<void> {
     await api.delete(`/api/sections/${id}/`)
   },
-
-  /**
-   * Enroll student(s) in a section
-   */
-  async enroll(sectionId: number, studentIds: number[]): Promise<void> {
-    await api.post(`/api/sections/${sectionId}/enroll/`, {
-      student_ids: studentIds,
-    })
-  },
 }
