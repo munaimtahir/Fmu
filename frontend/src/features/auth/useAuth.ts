@@ -21,7 +21,7 @@ import { LoginCredentials } from './types'
  * const { user, isAuthenticated, login, logout } = useAuth();
  *
  * if (isAuthenticated) {
- *   console.log(`Welcome, ${user.firstName}`);
+ *   console.log(`Welcome, ${user.first_name}`);
  * } else {
  *   login({ email: 'test@example.com', password: 'password' });
  * }
