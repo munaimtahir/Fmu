@@ -48,5 +48,12 @@ describe('axios setup and token management', () => {
     it('should have JSON content type header', () => {
       expect(api.defaults.headers['Content-Type']).toBe('application/json')
     })
+
+    it('should not have /api suffix in base URL to avoid double /api paths', () => {
+      // The baseURL should NOT end with /api since all service calls include /api in their paths
+      // This prevents URLs like http://localhost:81/api/api/students/
+      const baseURL = api.defaults.baseURL || ''
+      expect(baseURL.endsWith('/api')).toBe(false)
+    })
   })
 })
