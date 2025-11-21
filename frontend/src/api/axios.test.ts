@@ -41,8 +41,8 @@ describe('axios setup and token management', () => {
   })
 
   describe('API instance', () => {
-    it('should have correct base URL', () => {
-      expect(api.defaults.baseURL).toBeDefined()
+    it('should have a relative base URL', () => {
+      expect(api.defaults.baseURL).toBe('')
     })
 
     it('should have JSON content type header', () => {
