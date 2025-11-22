@@ -17,6 +17,13 @@ export default defineConfig({
       '/api': {
         target: 'http://backend:8000',
         changeOrigin: true,
+        ws: true,
+        onError: (err, req, res) => {
+          console.error('Proxy error:', err);
+        },
+        onProxyReq: (proxyReq, req, res) => {
+          console.log(`Proxying request to: ${req.url}`);
+        },
       },
     },
     watch: {
