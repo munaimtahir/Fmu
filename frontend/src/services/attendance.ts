@@ -21,7 +21,13 @@ export const attendanceService = {
   },
 
   /**
-   * Mark attendance for a section
+   * Mark attendance for a section (creates individual records)
+   * 
+   * Note: This method creates attendance records individually via the /api/attendance/ endpoint
+   * since the backend doesn't have a section-specific batch endpoint. Returns an array of
+   * created Attendance objects.
+   * 
+   * For better performance with large classes, consider requesting a backend batch endpoint.
    */
   async markAttendance(sectionId: number, data: {
     date: string
@@ -29,8 +35,21 @@ export const attendanceService = {
       student: number
       status: 'Present' | 'Absent' | 'Late' | 'Excused'
     }>
-  }): Promise<void> {
-    await api.post(`/api/sections/${sectionId}/attendance/`, data)
+  }): Promise<Attendance[]> {
+    // Create attendance records individually
+    // TODO: Replace with batch endpoint if/when backend supports it
+    const results = await Promise.all(
+      data.records.map((record) =>
+        api.post<Attendance>('/api/attendance/', {
+          section: sectionId,
+          student: record.student,
+          date: data.date,
+          present: record.status === 'Present',
+          status: record.status,
+        })
+      )
+    )
+    return results.map((r) => r.data)
   },
 
   /**
@@ -40,8 +59,8 @@ export const attendanceService = {
     date?: string
   }): Promise<PaginatedResponse<Attendance>> {
     const response = await api.get<PaginatedResponse<Attendance>>(
-      `/api/sections/${sectionId}/attendance/`,
-      { params }
+      '/api/attendance/',
+      { params: { ...params, section: sectionId } }
     )
     return response.data
   },
