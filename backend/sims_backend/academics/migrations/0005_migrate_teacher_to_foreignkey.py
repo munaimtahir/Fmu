@@ -65,10 +65,10 @@ class Migration(migrations.Migration):
             model_name="section",
             name="_teacher_old",
         ),
-        # Step 6: Manually drop the old unique constraint and add new one
-        migrations.RunSQL(
-            sql="ALTER TABLE academics_section DROP CONSTRAINT academics_section_course_id_term_teacher_12345678_uniq;",
-            reverse_sql=migrations.RunSQL.noop,
+        # Step 6: Remove old unique_together and add new one
+        migrations.AlterUniqueTogether(
+            name="section",
+            unique_together=set(),
         ),
         migrations.AlterUniqueTogether(
             name="section",
