@@ -33,7 +33,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
-        "DJANGO_ALLOWED_HOSTS", "172.235.33.181,104.64.0.164,localhost"
+        "DJANGO_ALLOWED_HOSTS", "172.237.71.40,104.64.0.164,localhost"
     ).split(",")
 ]
 
@@ -210,7 +210,7 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://localhost,http://localhost:81",
+        "http://172.237.71.40,http://172.237.71.40:81,http://104.64.0.164,http://104.64.0.164:81,http://localhost,http://localhost:81",
     ).split(",")
 ]
 
@@ -221,7 +221,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CSRF_TRUSTED_ORIGINS",
-        "http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://localhost,http://localhost:81",
+        "http://172.237.71.40,http://172.237.71.40:81,http://104.64.0.164,http://104.64.0.164:81,http://localhost,http://localhost:81",
     ).split(",")
 ]
 
