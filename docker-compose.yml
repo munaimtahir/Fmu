@@ -67,8 +67,6 @@ services:
       - /app/node_modules
     ports:
       - "5174:5173"
-    environment:
-      - VITE_API_URL=http://localhost:81
     depends_on:
       - backend
 
@@ -104,7 +102,7 @@ services:
       - "444:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
       - static_volume:/app/static:ro
       - media_volume:/app/media:ro
     depends_on:
