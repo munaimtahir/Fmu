@@ -60,9 +60,8 @@ services:
       dockerfile: Dockerfile.prod
       args:
         - VITE_API_URL=${VITE_API_URL:-}
-    container_name: sims_frontend
     volumes:
-      - frontend_dist:/usr/share/nginx/html
+      - frontend_dist:/app/dist
 
   rqworker:
     build:
@@ -114,3 +113,4 @@ volumes:
   static_volume:
   media_volume:
   frontend_dist:
+    name: sims_frontend_dist
