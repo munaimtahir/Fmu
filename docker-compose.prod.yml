@@ -36,7 +36,6 @@ services:
     container_name: sims_backend
     command: gunicorn sims_backend.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
-      - ./backend:/app
       - static_volume:/app/static
       - media_volume:/app/media
     ports:
@@ -60,9 +59,8 @@ services:
       dockerfile: Dockerfile.prod
       args:
         - VITE_API_URL=${VITE_API_URL:-}
-    container_name: sims_frontend
     volumes:
-      - frontend_dist:/usr/share/nginx/html
+      - frontend_dist:/app/dist
 
   rqworker:
     build:
@@ -71,7 +69,6 @@ services:
     container_name: sims_rqworker
     command: python manage.py rqworker default
     volumes:
-      - ./backend:/app
       - media_volume:/app/media
     env_file:
       - .env
@@ -114,3 +111,4 @@ volumes:
   static_volume:
   media_volume:
   frontend_dist:
+    name: sims_frontend_dist
