@@ -23,67 +23,69 @@ FAILED=0
 
 # Check function
 check() {
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ $1${NC}"
+    local exit_code=$1
+    local message=$2
+    if [ $exit_code -eq 0 ]; then
+        echo -e "${GREEN}✅ $message${NC}"
         ((PASSED++))
     else
-        echo -e "${RED}❌ $1${NC}"
+        echo -e "${RED}❌ $message${NC}"
         ((FAILED++))
     fi
 }
 
 echo "1. Checking Docker installation..."
 docker --version > /dev/null 2>&1
-check "Docker is installed"
+check $? "Docker is installed"
 
 docker compose version > /dev/null 2>&1
-check "Docker Compose is installed"
+check $? "Docker Compose is installed"
 
 echo ""
 echo "2. Checking required files..."
 
 # Docker files
 test -f backend/Dockerfile
-check "backend/Dockerfile exists"
+check $? "backend/Dockerfile exists"
 
 test -f backend/.dockerignore
-check "backend/.dockerignore exists"
+check $? "backend/.dockerignore exists"
 
 test -f frontend/Dockerfile
-check "frontend/Dockerfile exists"
+check $? "frontend/Dockerfile exists"
 
 test -f frontend/Dockerfile.prod
-check "frontend/Dockerfile.prod exists"
+check $? "frontend/Dockerfile.prod exists"
 
 test -f frontend/.dockerignore
-check "frontend/.dockerignore exists"
+check $? "frontend/.dockerignore exists"
 
 # Docker Compose files
 test -f docker-compose.yml
-check "docker-compose.yml exists"
+check $? "docker-compose.yml exists"
 
 test -f docker-compose.prod.yml
-check "docker-compose.prod.yml exists"
+check $? "docker-compose.prod.yml exists"
 
 test -f docker-compose.staging.yml
-check "docker-compose.staging.yml exists"
+check $? "docker-compose.staging.yml exists"
 
 # nginx files
 test -f nginx/nginx.conf
-check "nginx/nginx.conf exists"
+check $? "nginx/nginx.conf exists"
 
 test -f nginx/nginx.staging.conf
-check "nginx/nginx.staging.conf exists"
+check $? "nginx/nginx.staging.conf exists"
 
 test -f nginx/conf.d/default.conf
-check "nginx/conf.d/default.conf exists"
+check $? "nginx/conf.d/default.conf exists"
 
 test -f nginx/conf.d/production.conf
-check "nginx/conf.d/production.conf exists"
+check $? "nginx/conf.d/production.conf exists"
 
 # Environment file
 test -f .env.example
-check ".env.example exists"
+check $? ".env.example exists"
 
 echo ""
 echo "3. Validating Docker Compose configurations..."
@@ -97,13 +99,13 @@ if [ ! -f .env ]; then
 fi
 
 docker compose -f docker-compose.yml config --quiet 2>&1
-check "docker-compose.yml is valid"
+check $? "docker-compose.yml is valid"
 
 docker compose -f docker-compose.prod.yml config --quiet 2>&1
-check "docker-compose.prod.yml is valid"
+check $? "docker-compose.prod.yml is valid"
 
 docker compose -f docker-compose.staging.yml config --quiet 2>&1
-check "docker-compose.staging.yml is valid"
+check $? "docker-compose.staging.yml is valid"
 
 # Clean up temporary file
 if [ "$TEMP_ENV_CREATED" = true ]; then
@@ -115,10 +117,10 @@ echo ""
 echo "4. Checking IP configuration (172.237.71.40)..."
 
 grep -q "172.237.71.40" nginx/conf.d/production.conf
-check "IP found in nginx/conf.d/production.conf"
+check $? "IP found in nginx/conf.d/production.conf"
 
 grep -q "172.237.71.40" .env.example
-check "IP found in .env.example"
+check $? "IP found in .env.example"
 
 echo ""
 echo "5. Checking environment configuration..."
@@ -129,13 +131,13 @@ if [ -f .env ]; then
     
     # Check critical variables
     grep -q "DJANGO_SECRET_KEY" .env
-    check "DJANGO_SECRET_KEY is defined"
+    check $? "DJANGO_SECRET_KEY is defined"
     
     grep -q "DB_PASSWORD" .env
-    check "DB_PASSWORD is defined"
+    check $? "DB_PASSWORD is defined"
     
     grep -q "DJANGO_ALLOWED_HOSTS" .env
-    check "DJANGO_ALLOWED_HOSTS is defined"
+    check $? "DJANGO_ALLOWED_HOSTS is defined"
 else
     echo -e "${YELLOW}⚠️  .env file not found (will need to create from .env.example)${NC}"
 fi
@@ -147,7 +149,8 @@ echo "6. Checking port conflicts..."
 if command -v lsof > /dev/null 2>&1; then
     lsof -i :80 > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-        echo -e "${YELLOW}⚠️  Port 80 is in use${NC}"
+        echo -e "${YELLOW}⚠️  Port 80 is in use (may need to stop existing service)${NC}"
+        ((FAILED++))
     else
         echo -e "${GREEN}✅ Port 80 is available${NC}"
         ((PASSED++))
@@ -155,7 +158,8 @@ if command -v lsof > /dev/null 2>&1; then
     
     lsof -i :81 > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-        echo -e "${YELLOW}⚠️  Port 81 is in use${NC}"
+        echo -e "${YELLOW}⚠️  Port 81 is in use (may need to stop existing service)${NC}"
+        ((FAILED++))
     else
         echo -e "${GREEN}✅ Port 81 is available${NC}"
         ((PASSED++))
