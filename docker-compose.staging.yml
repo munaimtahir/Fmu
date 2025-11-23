@@ -62,9 +62,12 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-      target: production
+      dockerfile: Dockerfile.prod
+      args:
+        - VITE_API_URL=${VITE_API_URL:-}
     container_name: sims_frontend_staging
+    volumes:
+      - frontend_dist:/app/dist
     networks:
       - sims_network
     depends_on:
@@ -106,6 +109,7 @@ services:
     volumes:
       - ./nginx/nginx.staging.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
+      - frontend_dist:/app/frontend:ro
       - static_volume:/app/static:ro
       - media_volume:/app/media:ro
       - ./certbot/conf:/etc/letsencrypt:ro
@@ -136,6 +140,7 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+  frontend_dist:
 
 networks:
   sims_network:
