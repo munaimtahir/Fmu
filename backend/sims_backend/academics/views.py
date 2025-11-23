@@ -1,4 +1,4 @@
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import CharFilter, DjangoFilterBackend, FilterSet
 from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
@@ -37,12 +37,20 @@ class ProgramViewSet(viewsets.ModelViewSet):
     ordering_fields = ["id", "name"]
 
 
+class CourseFilter(FilterSet):
+    program = CharFilter(field_name="program__name", lookup_expr="iexact")
+
+    class Meta:
+        model = Course
+        fields = ["program", "credits"]
+
+
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["program", "credits"]
+    filterset_class = CourseFilter
     search_fields = ["code", "title"]
     ordering_fields = ["id", "code", "title", "credits"]
 
