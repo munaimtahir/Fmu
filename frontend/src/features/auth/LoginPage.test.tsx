@@ -51,7 +51,7 @@ describe('LoginPage', () => {
     )
 
     expect(screen.getByText('Welcome Back')).toBeInTheDocument()
-    expect(screen.getByLabelText(/email address/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/username/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
   })
@@ -69,26 +69,8 @@ describe('LoginPage', () => {
     await user.click(submitButton)
 
     await waitFor(() => {
-      expect(screen.getByText(/email is required/i)).toBeInTheDocument()
+      expect(screen.getByText(/username is required/i)).toBeInTheDocument()
       expect(screen.getByText(/password is required/i)).toBeInTheDocument()
-    })
-  })
-
-  it('should show validation error for invalid email', async () => {
-    const user = userEvent.setup()
-
-    render(
-      <MemoryRouter>
-        <LoginPage />
-      </MemoryRouter>
-    )
-
-    const emailInput = screen.getByLabelText(/email address/i)
-    await user.type(emailInput, 'invalid-email')
-    await user.tab() // Trigger onBlur validation
-
-    await waitFor(() => {
-      expect(screen.getByText(/please enter a valid email/i)).toBeInTheDocument()
     })
   })
 
@@ -102,17 +84,17 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    const emailInput = screen.getByLabelText(/email address/i)
+    const usernameInput = screen.getByLabelText(/username/i)
     const passwordInput = screen.getByLabelText(/password/i)
     const submitButton = screen.getByRole('button', { name: /sign in/i })
 
-    await user.type(emailInput, 'test@example.com')
+    await user.type(usernameInput, 'testuser')
     await user.type(passwordInput, 'password123')
     await user.click(submitButton)
 
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
-        email: 'test@example.com',
+        username: 'testuser',
         password: 'password123',
       })
     })
@@ -128,11 +110,11 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    const emailInput = screen.getByLabelText(/email address/i)
+    const usernameInput = screen.getByLabelText(/username/i)
     const passwordInput = screen.getByLabelText(/password/i)
     const submitButton = screen.getByRole('button', { name: /sign in/i })
 
-    await user.type(emailInput, 'test@example.com')
+    await user.type(usernameInput, 'testuser')
     await user.type(passwordInput, 'password123')
     await user.click(submitButton)
 
@@ -151,11 +133,11 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    const emailInput = screen.getByLabelText(/email address/i)
+    const usernameInput = screen.getByLabelText(/username/i)
     const passwordInput = screen.getByLabelText(/password/i)
     const submitButton = screen.getByRole('button', { name: /sign in/i })
 
-    await user.type(emailInput, 'test@example.com')
+    await user.type(usernameInput, 'testuser')
     await user.type(passwordInput, 'wrongpassword')
     await user.click(submitButton)
 
