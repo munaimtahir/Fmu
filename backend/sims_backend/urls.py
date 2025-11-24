@@ -9,9 +9,15 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from rest_framework_simplejwt.views import TokenRefreshView
 
-from core.views import EmailTokenObtainPairView, dashboard_stats
+from core.views import (
+    EmailTokenObtainPairView,
+    LogoutView,
+    MeView,
+    TokenRefreshView,
+    UnifiedLoginView,
+    dashboard_stats,
+)
 
 
 def health_check(request):
@@ -46,10 +52,20 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("health/", health_check, name="health"),
     path("healthz/", health_check, name="healthz"),  # Alias for health check
+    # New unified auth endpoints (canonical)
+    path("api/auth/login/", UnifiedLoginView.as_view(), name="auth_login"),
+    path("api/auth/logout/", LogoutView.as_view(), name="auth_logout"),
+    path("api/auth/refresh/", TokenRefreshView.as_view(), name="auth_refresh"),
+    path("api/auth/me/", MeView.as_view(), name="auth_me"),
+    # Legacy auth endpoints (deprecated, kept for backward compatibility)
     path(
         "api/auth/token/", EmailTokenObtainPairView.as_view(), name="token_obtain_pair"
     ),
-    path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path(
+        "api/auth/token/refresh/",
+        EmailTokenObtainPairView.as_view(),
+        name="token_refresh_legacy",
+    ),
     path("api/dashboard/stats/", dashboard_stats, name="dashboard_stats"),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
