@@ -63,7 +63,7 @@ urlpatterns = [
     ),
     path(
         "api/auth/token/refresh/",
-        EmailTokenObtainPairView.as_view(),
+        TokenRefreshView.as_view(),
         name="token_refresh_legacy",
     ),
     path("api/dashboard/stats/", dashboard_stats, name="dashboard_stats"),

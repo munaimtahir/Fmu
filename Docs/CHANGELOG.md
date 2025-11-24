@@ -1,5 +1,111 @@
 # Changelog
 
+## 2025-11-24 - Unified Authentication System (v1.3.0)
+
+### Summary
+Complete rebuild of the authentication system with a unified login flow that accepts either username or email through a single `identifier` field. This change standardizes the auth contract across backend and frontend.
+
+### New Features
+
+#### Backend
+- **Unified Login Endpoint** (`POST /api/auth/login/`): Single endpoint that accepts either email or username via the `identifier` field
+- **Logout Endpoint** (`POST /api/auth/logout/`): Invalidates refresh token with optional token blacklisting
+- **Token Refresh Endpoint** (`POST /api/auth/refresh/`): New canonical endpoint for refreshing access tokens
+- **User Info Endpoint** (`GET /api/auth/me/`): Returns current authenticated user information
+- **Standard Error Format**: All auth endpoints return consistent error responses with error codes
+
+#### Frontend
+- **Unified Login Form**: Single form field accepting email or username
+- **New User Type**: Simplified user object with `full_name` and `role` (string) instead of `firstName`/`lastName` and `roles` (array)
+- **Auth Service Refactor**: New `authClient` functions for login, logout, refresh, and getCurrentUser
+- **Automatic Token Refresh**: Axios interceptor updated to use new `/api/auth/refresh/` endpoint
+
+### API Changes
+
+#### New Endpoints
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/auth/login/` | POST | Unified login (identifier + password) |
+| `/api/auth/logout/` | POST | Logout and invalidate token |
+| `/api/auth/refresh/` | POST | Refresh access token |
+| `/api/auth/me/` | GET | Get current user info |
+
+#### Request/Response Format
+```json
+// Login Request
+POST /api/auth/login/
+{ "identifier": "user@example.com or username", "password": "..." }
+
+// Login Response (Success)
+{
+  "user": {
+    "id": 1,
+    "username": "...",
+    "email": "...",
+    "full_name": "...",
+    "role": "Faculty",
+    "is_active": true
+  },
+  "tokens": { "access": "...", "refresh": "..." }
+}
+
+// Error Response
+{
+  "error": {
+    "code": "AUTH_INVALID_CREDENTIALS",
+    "message": "Invalid username/email or password."
+  }
+}
+```
+
+#### Error Codes
+- `AUTH_INVALID_CREDENTIALS` - Invalid username/email or password
+- `AUTH_INACTIVE_ACCOUNT` - User account is disabled
+- `AUTH_ACCOUNT_LOCKED` - Account locked (future feature)
+- `AUTH_TOKEN_INVALID` - Invalid token
+- `AUTH_TOKEN_EXPIRED` - Token expired
+
+### Legacy Support
+- Legacy endpoints (`/api/auth/token/`, `/api/auth/token/refresh/`) remain available for backward compatibility
+- Frontend updated to use new endpoints; legacy endpoints are deprecated
+
+### Breaking Changes
+- Frontend `User` type changed: `firstName`/`lastName` → `full_name`, `roles[]` → `role`
+- Login payload changed: `username` → `identifier`
+- Components using old User type have been updated
+
+### Files Changed
+
+#### Backend
+- `backend/core/serializers.py` - New UnifiedLoginSerializer, UserSerializer, TokenRefreshSerializer
+- `backend/core/views.py` - New UnifiedLoginView, LogoutView, TokenRefreshView, MeView
+- `backend/sims_backend/urls.py` - New auth routes
+- `backend/tests/test_email_auth.py` - Expanded tests (24 total)
+
+#### Frontend
+- `frontend/src/features/auth/types.ts` - Updated User interface
+- `frontend/src/api/auth.ts` - New auth service functions
+- `frontend/src/api/axios.ts` - Updated refresh endpoint
+- `frontend/src/features/auth/LoginPage.tsx` - Unified identifier field
+- `frontend/src/features/auth/authStore.ts` - Updated to use /me endpoint
+- `frontend/src/features/auth/useAuth.ts` - Updated login flow
+- `frontend/src/components/layout/*.tsx` - Updated for new User type
+- `frontend/src/pages/**/*.tsx` - Updated dashboard components
+
+### Testing
+- Backend: 274 tests passing
+- Frontend: 33 tests passing
+- All linters passing (ruff, mypy, eslint, tsc)
+
+### Migration Notes
+For developers:
+1. Use `identifier` field instead of `username` or `email` in login requests
+2. Access user's name via `user.full_name` instead of `user.firstName`/`user.lastName`
+3. Access user's role via `user.role` (string) instead of `user.roles` (array)
+4. New login endpoint is `/api/auth/login/` (not `/api/auth/token/`)
+
+---
+
 ## 2025-10-27 - Autonomous Release Execution Framework (v1.2.0)
 
 ### New Features

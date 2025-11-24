@@ -5,28 +5,143 @@
 ## Authentication
 
 ### JWT Authentication
-- `POST /api/auth/token/` - Obtain JWT access and refresh tokens
-- `POST /api/auth/token/refresh/` - Refresh access token
 
-**Login Request** (`POST /api/auth/token/`):
+The unified authentication system accepts either username or email through a single `identifier` field.
+
+#### Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/auth/login/` | POST | Unified login (email or username) |
+| `/api/auth/logout/` | POST | Logout and invalidate refresh token |
+| `/api/auth/refresh/` | POST | Refresh access token |
+| `/api/auth/me/` | GET | Get current user information |
+
+#### Legacy Endpoints (Deprecated)
+- `POST /api/auth/token/` - Accepts `{ email, password }` only (use `/api/auth/login/` instead)
+- `POST /api/auth/token/refresh/` - Legacy refresh (use `/api/auth/refresh/` instead)
+
+---
+
+### Login
+
+**Request** (`POST /api/auth/login/`):
 ```json
 {
-  "email": "user@university.edu",
+  "identifier": "user@university.edu",  // or "username"
   "password": "your_password"
 }
 ```
 
-**Response**:
+The `identifier` field accepts **either** an email address **or** a username. The system will automatically detect which one is provided.
+
+**Success Response** (200):
 ```json
 {
-  "access": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "user": {
+    "id": 1,
+    "username": "john.doe",
+    "email": "john.doe@university.edu",
+    "full_name": "John Doe",
+    "role": "Faculty",
+    "is_active": true
+  },
+  "tokens": {
+    "access": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+  }
+}
+```
+
+**Error Response** (401):
+```json
+{
+  "error": {
+    "code": "AUTH_INVALID_CREDENTIALS",
+    "message": "Invalid username/email or password."
+  }
+}
+```
+
+**Error Codes**:
+- `AUTH_INVALID_CREDENTIALS` - Wrong username/email or password
+- `AUTH_INACTIVE_ACCOUNT` - User account is disabled
+- `AUTH_ACCOUNT_LOCKED` - Account locked due to failed attempts
+- `AUTH_TOKEN_INVALID` - Invalid or malformed token
+- `AUTH_TOKEN_EXPIRED` - Token has expired
+
+---
+
+### Logout
+
+**Request** (`POST /api/auth/logout/`):
+```json
+{
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."  // optional
+}
+```
+
+Requires authentication. If refresh token is provided, it will be blacklisted.
+
+**Success Response** (200):
+```json
+{
+  "success": true
+}
+```
+
+---
+
+### Token Refresh
+
+**Request** (`POST /api/auth/refresh/`):
+```json
+{
   "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."
 }
 ```
 
-**Headers**: Include `Authorization: Bearer <access_token>` in all authenticated requests.
+**Success Response** (200):
+```json
+{
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."  // new refresh token if rotation enabled
+}
+```
 
-**Note**: The authentication endpoint accepts `email` and `password` (not `username`).
+---
+
+### Get Current User
+
+**Request** (`GET /api/auth/me/`):
+
+Requires authentication (Bearer token).
+
+**Success Response** (200):
+```json
+{
+  "id": 1,
+  "username": "john.doe",
+  "email": "john.doe@university.edu",
+  "full_name": "John Doe",
+  "role": "Faculty",
+  "is_active": true
+}
+```
+
+---
+
+### User Roles
+
+| Role | Description |
+|------|-------------|
+| `Admin` | Full system access |
+| `Registrar` | Student records and enrollment management |
+| `Faculty` | Course and section management |
+| `Student` | View own academic records |
+| `ExamCell` | Examination and results management |
+
+**Headers**: Include `Authorization: Bearer <access_token>` in all authenticated requests.
 
 ---
 
