@@ -40,7 +40,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
 
   // Check role-based access
   if (allowedRoles && allowedRoles.length > 0) {
-    const hasRequiredRole = user?.roles?.some(role => allowedRoles.includes(role))
+    const hasRequiredRole = user?.role && allowedRoles.includes(user.role)
     if (!hasRequiredRole) {
       // Redirect to main dashboard if user doesn't have required role
       return <Navigate to="/dashboard" replace />

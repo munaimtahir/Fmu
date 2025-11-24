@@ -15,7 +15,7 @@ export const StudentDashboard = () => {
             Student Dashboard
           </h1>
           <p className="text-gray-600">
-            Welcome back, {user?.firstName || 'Student'}. Here's your academic overview.
+            Welcome back, {user?.full_name || 'Student'}. Here's your academic overview.
           </p>
         </div>
 

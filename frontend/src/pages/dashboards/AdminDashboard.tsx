@@ -58,7 +58,7 @@ export const AdminDashboard = () => {
             Admin Dashboard
           </h1>
           <p className="text-gray-600">
-            Welcome back, {user?.firstName || 'Administrator'}. Here's your system overview.
+            Welcome back, {user?.full_name || 'Administrator'}. Here's your system overview.
           </p>
         </div>
 

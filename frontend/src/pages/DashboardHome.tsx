@@ -29,15 +29,10 @@ export const DashboardHome: React.FC = () => {
 
   // Role-based redirect logic
   useEffect(() => {
-    if (user && user.roles && user.roles.length > 0) {
-      // Priority: Admin > Registrar > Faculty > Student > ExamCell
-      const rolePriority = ['Admin', 'Registrar', 'Faculty', 'Student', 'ExamCell']
-      const primaryRole = rolePriority.find(role => user.roles.includes(role))
-      
-      if (primaryRole) {
-        const dashboardPath = `/dashboard/${primaryRole.toLowerCase()}`
-        navigate(dashboardPath, { replace: true })
-      }
+    if (user && user.role) {
+      // Navigate to role-specific dashboard
+      const dashboardPath = `/dashboard/${user.role.toLowerCase()}`
+      navigate(dashboardPath, { replace: true })
     }
   }, [user, navigate])
 
@@ -63,7 +58,7 @@ export const DashboardHome: React.FC = () => {
         {/* Welcome Section */}
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back{user?.firstName ? `, ${user.firstName}` : ''}!
+            Welcome back{user?.full_name ? `, ${user.full_name}` : ''}!
           </h1>
           <p className="text-gray-600 text-lg">
             Here&apos;s what&apos;s happening in your system today.
@@ -169,23 +164,21 @@ export const DashboardHome: React.FC = () => {
                 <span className="text-gray-600">Email:</span>
                 <span className="font-medium text-gray-900">{user.email}</span>
               </div>
-              {user.firstName && (
+              {user.full_name && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Name:</span>
                   <span className="font-medium text-gray-900">
-                    {user.firstName} {user.lastName}
+                    {user.full_name}
                   </span>
                 </div>
               )}
-              {user.roles.length > 0 && (
+              {user.role && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Roles:</span>
+                  <span className="text-gray-600">Role:</span>
                   <div className="flex gap-2">
-                    {user.roles.map((role) => (
-                      <Badge key={role} variant="primary">
-                        {role}
-                      </Badge>
-                    ))}
+                    <Badge variant="primary">
+                      {user.role}
+                    </Badge>
                   </div>
                 </div>
               )}

@@ -14,7 +14,7 @@ export const FacultyDashboard = () => {
             Faculty Dashboard
           </h1>
           <p className="text-gray-600">
-            Welcome, {user?.firstName || 'Professor'}. Manage your courses and students.
+            Welcome, {user?.full_name || 'Professor'}. Manage your courses and students.
           </p>
         </div>
 

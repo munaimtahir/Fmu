@@ -35,8 +35,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isMobile = f
 
   const canAccessItem = (item: NavItem): boolean => {
     if (!item.roles || item.roles.length === 0) return true
-    if (!user || !user.roles || user.roles.length === 0) return false
-    return item.roles.some(role => user.roles.includes(role))
+    if (!user || !user.role) return false
+    return item.roles.includes(user.role)
   }
 
   const filteredItems = navigationItems.filter(canAccessItem)
@@ -121,13 +121,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isMobile = f
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">
-                  {user.firstName && user.lastName 
-                    ? `${user.firstName} ${user.lastName}` 
-                    : user.email}
+                  {user.full_name || user.email}
                 </p>
-                {user.roles.length > 0 && (
+                {user.role && (
                   <p className="text-xs text-gray-400 truncate">
-                    {user.roles[0]}
+                    {user.role}
                   </p>
                 )}
               </div>

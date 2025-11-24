@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { User } from './types'
 import { getAccessToken, clearTokens } from '@/api/axios'
-import { decodeToken } from '@/api/auth'
+import { getCurrentUser } from '@/api/auth'
 
 interface AuthStore {
   user: User | null
@@ -9,7 +9,7 @@ interface AuthStore {
   isLoading: boolean
   setUser: (user: User | null) => void
   logout: () => void
-  initialize: () => void
+  initialize: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -33,33 +33,28 @@ export const useAuthStore = create<AuthStore>((set) => ({
     })
   },
 
-  initialize: () => {
+  initialize: async () => {
     const token = getAccessToken()
-    
+
     if (token) {
       try {
-        const payload = decodeToken(token)
-        if (payload) {
-          // Extract user info from token
-          // Adjust based on your JWT structure
-          const user: User = {
-            id: payload.user_id as number || 0,
-            email: payload.email as string || '',
-            firstName: payload.first_name as string || '',
-            lastName: payload.last_name as string || '',
-            roles: payload.roles as string[] || [],
-          }
+        // Fetch user info from /api/auth/me endpoint
+        const user = await getCurrentUser()
+        if (user) {
           set({
             user,
             isAuthenticated: true,
             isLoading: false,
           })
         } else {
-          set({ isLoading: false })
+          // Token exists but user fetch failed - clear auth
+          clearTokens()
+          set({ isLoading: false, isAuthenticated: false, user: null })
         }
-      } catch (error) {
-        console.error('Failed to decode token:', error)
-        set({ isLoading: false })
+      } catch {
+        // Error fetching user - clear auth
+        clearTokens()
+        set({ isLoading: false, isAuthenticated: false, user: null })
       }
     } else {
       set({ isLoading: false })

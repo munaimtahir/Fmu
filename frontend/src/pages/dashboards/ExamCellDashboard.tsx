@@ -15,7 +15,7 @@ export const ExamCellDashboard = () => {
             Exam Cell Dashboard
           </h1>
           <p className="text-gray-600">
-            Welcome, {user?.firstName || 'Exam Coordinator'}. Manage examinations and results.
+            Welcome, {user?.full_name || 'Exam Coordinator'}. Manage examinations and results.
           </p>
         </div>
 
