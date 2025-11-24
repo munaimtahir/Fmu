@@ -12,10 +12,7 @@ import { useAuth } from './useAuth'
 
 // Validation schema
 const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+  username: z.string().min(1, 'Username is required'),
   password: z
     .string()
     .min(1, 'Password is required')
@@ -61,7 +58,7 @@ export const LoginPage: React.FC = () => {
       const errorMessage =
         err instanceof Error
           ? err.message
-          : 'Invalid credentials. Please check your email and password.'
+          : 'Invalid credentials. Please check your username and password.'
       
       setError(errorMessage)
       
@@ -87,12 +84,12 @@ export const LoginPage: React.FC = () => {
         )}
 
         <FormField
-          {...register('email')}
-          label="Email Address"
-          type="email"
-          placeholder="you@university.edu"
-          error={errors.email?.message}
-          autoComplete="email"
+          {...register('username')}
+          label="Username"
+          type="text"
+          placeholder="your.username"
+          error={errors.username?.message}
+          autoComplete="username"
           autoFocus
         />
 

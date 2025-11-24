@@ -1,8 +1,8 @@
 import api, { TokenResponse, setTokens, clearTokens } from './axios'
 
 export interface LoginCredentials {
-  /** The user's email address. */
-  email: string
+  /** The user's username. */
+  username: string
   /** The user's password. */
   password: string
 }
@@ -31,7 +31,7 @@ export interface LoginResponse extends TokenResponse {
  * This function sends a POST request to the login endpoint and, upon a
  * successful response, stores the received access and refresh tokens.
  *
- * @param {LoginCredentials} credentials The user's email and password.
+ * @param {LoginCredentials} credentials The user's username and password.
  * @returns {Promise<LoginResponse>} A promise that resolves with the access and refresh tokens.
  * @throws {Error} If the login request fails.
  */

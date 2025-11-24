@@ -23,7 +23,7 @@ import { LoginCredentials } from './types'
  * if (isAuthenticated) {
  *   console.log(`Welcome, ${user.first_name}`);
  * } else {
- *   login({ email: 'test@example.com', password: 'password' });
+ *   login({ username: 'testuser', password: 'password' });
  * }
  */
 export function useAuth() {
