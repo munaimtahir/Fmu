@@ -15,7 +15,7 @@ export const RegistrarDashboard = () => {
             Registrar Dashboard
           </h1>
           <p className="text-gray-600">
-            Welcome, {user?.firstName || 'Registrar'}. Manage student records and enrollments.
+            Welcome, {user?.full_name || 'Registrar'}. Manage student records and enrollments.
           </p>
         </div>
 

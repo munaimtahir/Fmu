@@ -153,13 +153,16 @@ api.interceptors.response.use(
 
     try {
       // Use a plain axios instance to avoid circular interceptor calls
-      const response = await axios.post<{ access: string }>(
-        `${env.apiBaseUrl.replace(/\/$/, '')}/api/auth/token/refresh/`,
+      // Use the new unified refresh endpoint
+      const response = await axios.post<{ access: string; refresh?: string }>(
+        `${env.apiBaseUrl.replace(/\/$/, '')}/api/auth/refresh/`,
         { refresh }
       )
 
       const newAccessToken = response.data.access
-      setTokens(newAccessToken, refresh)
+      // If a new refresh token is returned (rotation enabled), use it
+      const newRefreshToken = response.data.refresh || refresh
+      setTokens(newAccessToken, newRefreshToken)
 
       // Notify all queued requests
       onTokenRefreshed(newAccessToken)

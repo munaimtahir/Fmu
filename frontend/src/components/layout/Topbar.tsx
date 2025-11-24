@@ -91,13 +91,11 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick, showMenuButton = fa
                 </div>
                 <div className="hidden sm:block text-left">
                   <p className="text-sm font-medium text-gray-900">
-                    {user.firstName && user.lastName 
-                      ? `${user.firstName} ${user.lastName}` 
-                      : user.email}
+                    {user.full_name || user.email}
                   </p>
-                  {user.roles.length > 0 && (
+                  {user.role && (
                     <p className="text-xs text-gray-500">
-                      {user.roles.join(', ')}
+                      {user.role}
                     </p>
                   )}
                 </div>
@@ -116,9 +114,9 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick, showMenuButton = fa
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-lg border border-gray-200 py-2">
                   <div className="px-4 py-3 border-b border-gray-200">
                     <p className="text-sm font-medium text-gray-900">{user.email}</p>
-                    {user.roles.length > 0 && (
+                    {user.role && (
                       <p className="text-xs text-gray-500 mt-1">
-                        Role: {user.roles.join(', ')}
+                        Role: {user.role}
                       </p>
                     )}
                   </div>

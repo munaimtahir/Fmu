@@ -1,51 +1,75 @@
-import api, { TokenResponse, setTokens, clearTokens } from './axios'
+import api, { setTokens, clearTokens, getRefreshToken } from './axios'
+import type {
+  LoginCredentials,
+  LoginResponse,
+  User,
+  AuthError,
+  TokenRefreshResponse,
+} from '@/features/auth/types'
 
-export interface LoginCredentials {
-  /** The user's username. */
-  username: string
-  /** The user's password. */
-  password: string
+/**
+ * Auth API error codes
+ */
+export const AUTH_ERROR_CODES = {
+  INVALID_CREDENTIALS: 'AUTH_INVALID_CREDENTIALS',
+  INACTIVE_ACCOUNT: 'AUTH_INACTIVE_ACCOUNT',
+  ACCOUNT_LOCKED: 'AUTH_ACCOUNT_LOCKED',
+  TOKEN_INVALID: 'AUTH_TOKEN_INVALID',
+  TOKEN_EXPIRED: 'AUTH_TOKEN_EXPIRED',
+} as const
+
+/**
+ * Error response shape from auth endpoints
+ */
+interface AuthErrorResponse {
+  error: AuthError
 }
 
-export interface User {
-  /** The unique identifier for the user. */
-  id: number
-  /** The user's email address. */
-  email: string
-  /** The user's first name. */
-  first_name: string
-  /** The user's last name. */
-  last_name: string
-  /** An array of roles assigned to the user. */
-  roles: string[]
-}
-
-export interface LoginResponse extends TokenResponse {
-  /** Optional user information returned upon login. */
-  user?: User
+/**
+ * Check if error response has the standard auth error shape
+ */
+function isAuthError(data: unknown): data is AuthErrorResponse {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'error' in data &&
+    typeof (data as AuthErrorResponse).error === 'object' &&
+    'code' in (data as AuthErrorResponse).error &&
+    'message' in (data as AuthErrorResponse).error
+  )
 }
 
 /**
  * Authenticates a user with the given credentials.
  *
- * This function sends a POST request to the login endpoint and, upon a
+ * This function sends a POST request to the unified login endpoint and, upon a
  * successful response, stores the received access and refresh tokens.
  *
- * @param {LoginCredentials} credentials The user's username and password.
- * @returns {Promise<LoginResponse>} A promise that resolves with the access and refresh tokens.
+ * @param {LoginCredentials} credentials The user's identifier (email or username) and password.
+ * @returns {Promise<LoginResponse>} A promise that resolves with the user info and tokens.
  * @throws {Error} If the login request fails.
  */
 export async function login(credentials: LoginCredentials): Promise<LoginResponse> {
   try {
-    const response = await api.post<TokenResponse>('/api/auth/token/', credentials)
-    const { access, refresh } = response.data
-    
-    setTokens(access, refresh)
-    
-    // Optionally fetch user profile after login
-    // For now, we'll extract basic info from token or return tokens only
-    return { access, refresh }
-  } catch (error) {
+    const response = await api.post<LoginResponse>('/api/auth/login/', credentials)
+    const { user, tokens } = response.data
+
+    setTokens(tokens.access, tokens.refresh)
+
+    return { user, tokens }
+  } catch (error: unknown) {
+    // Handle axios error with standard error shape
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'response' in error &&
+      typeof (error as { response?: { data?: unknown } }).response?.data === 'object'
+    ) {
+      const responseData = (error as { response: { data: unknown } }).response.data
+      if (isAuthError(responseData)) {
+        throw new Error(responseData.error.message)
+      }
+    }
     throw error
   }
 }
@@ -53,33 +77,62 @@ export async function login(credentials: LoginCredentials): Promise<LoginRespons
 /**
  * Logs out the current user.
  *
- * This function clears the authentication tokens from storage. It can be
- * extended to also call a backend logout endpoint if one exists.
+ * This function calls the backend logout endpoint and clears the authentication tokens from storage.
  *
  * @returns {Promise<void>} A promise that resolves when the logout is complete.
  */
 export async function logout(): Promise<void> {
-  clearTokens()
-  // Optionally call backend logout endpoint if it exists
-  // await api.post('/api/auth/logout/')
+  try {
+    const refreshToken = getRefreshToken()
+    if (refreshToken) {
+      await api.post('/api/auth/logout/', { refresh: refreshToken })
+    }
+  } catch {
+    // Ignore logout errors - we'll clear tokens anyway
+  } finally {
+    clearTokens()
+  }
+}
+
+/**
+ * Refreshes the access token using the refresh token.
+ *
+ * @returns {Promise<TokenRefreshResponse>} A promise that resolves with the new tokens.
+ * @throws {Error} If the refresh request fails.
+ */
+export async function refreshTokens(): Promise<TokenRefreshResponse> {
+  const refreshToken = getRefreshToken()
+  if (!refreshToken) {
+    throw new Error('No refresh token available')
+  }
+
+  try {
+    const response = await api.post<TokenRefreshResponse>('/api/auth/refresh/', {
+      refresh: refreshToken,
+    })
+
+    const { access, refresh: newRefresh } = response.data
+
+    // Update stored tokens
+    setTokens(access, newRefresh || refreshToken)
+
+    return response.data
+  } catch (error: unknown) {
+    clearTokens()
+    throw error
+  }
 }
 
 /**
  * Retrieves the profile of the currently authenticated user.
  *
- * This function would typically make a request to an endpoint like `/api/me/`.
- * (This is a placeholder implementation).
- *
  * @returns {Promise<User | null>} A promise that resolves with the user's profile, or null if not found.
  */
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    // This endpoint may not exist yet in backend
-    // For now, return null or decode from JWT
-    // const response = await api.get<User>('/api/auth/me/')
-    // return response.data
-    return null
-  } catch (error) {
+    const response = await api.get<User>('/api/auth/me/')
+    return response.data
+  } catch {
     return null
   }
 }
@@ -104,7 +157,10 @@ export function decodeToken(token: string): Record<string, unknown> | null {
         .join('')
     )
     return JSON.parse(jsonPayload)
-  } catch (error) {
+  } catch {
     return null
   }
 }
+
+// Re-export types for convenience
+export type { LoginCredentials, LoginResponse, User, AuthError }

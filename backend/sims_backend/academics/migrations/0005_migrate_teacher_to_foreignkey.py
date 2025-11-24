@@ -11,7 +11,7 @@ def migrate_teacher_data(apps, schema_editor):
     Safely handles the case where _teacher_old field exists.
     """
     Section = apps.get_model("academics", "Section")
-    
+
     # Iterate through all sections and copy teacher data
     for section in Section.objects.all():
         # The field will be named _teacher_old at this point in the migration

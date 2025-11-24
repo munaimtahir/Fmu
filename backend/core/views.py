@@ -5,8 +5,10 @@ import logging
 from django.db.models import Count, ExpressionWrapper, F, FloatField, Q
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from sims_backend.academics.models import Course, Section
@@ -17,18 +19,171 @@ from sims_backend.enrollment.models import Enrollment
 from sims_backend.requests.models import Request
 from sims_backend.results.models import Result
 
-from .serializers import EmailTokenObtainPairSerializer
+from .serializers import (
+    AUTH_ERROR_CODES,
+    EmailTokenObtainPairSerializer,
+    TokenRefreshSerializer,
+    UnifiedLoginSerializer,
+    UserSerializer,
+)
 
 logger = logging.getLogger(__name__)
 
 
+class UnifiedLoginView(APIView):
+    """
+    Unified login endpoint that accepts identifier (email OR username) and password.
+
+    POST /api/auth/login
+    Request: { "identifier": "user@example.com or username", "password": "..." }
+    Response: {
+        "user": { "id", "username", "email", "full_name", "role", "is_active" },
+        "tokens": { "access": "...", "refresh": "..." }
+    }
+    """
+
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        """Handle login request."""
+        serializer = UnifiedLoginSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            # Extract error from validation errors
+            errors = serializer.errors
+            # Handle the error wrapper from our custom validation errors
+            if "error" in errors:
+                error_data = errors["error"]
+                # If it's a list (from ValidationError), take the first one
+                if isinstance(error_data, list) and len(error_data) > 0:
+                    return Response(
+                        {"error": error_data[0]}, status=status.HTTP_401_UNAUTHORIZED
+                    )
+                return Response(
+                    {"error": error_data}, status=status.HTTP_401_UNAUTHORIZED
+                )
+            # Handle field-level errors
+            if "non_field_errors" in errors:
+                error_detail = errors["non_field_errors"][0]
+                if isinstance(error_detail, dict) and "error" in error_detail:
+                    return Response(error_detail, status=status.HTTP_401_UNAUTHORIZED)
+            # Default error response
+            return Response(
+                {
+                    "error": {
+                        "code": AUTH_ERROR_CODES["invalid_credentials"],
+                        "message": "Invalid request data.",
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = serializer.validated_data["user"]
+        tokens = serializer.validated_data["tokens"]
+
+        return Response(
+            {
+                "user": UserSerializer(user).data,
+                "tokens": tokens,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class LogoutView(APIView):
+    """
+    Logout endpoint that invalidates the refresh token.
+
+    POST /api/auth/logout
+    Request: { "refresh": "JWT_REFRESH_TOKEN" } (optional)
+    Response: { "success": true }
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """Handle logout request."""
+        refresh_token = request.data.get("refresh")
+
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            except Exception:
+                # Token might already be blacklisted or invalid
+                pass
+
+        return Response({"success": True}, status=status.HTTP_200_OK)
+
+
+class TokenRefreshView(APIView):
+    """
+    Token refresh endpoint.
+
+    POST /api/auth/refresh
+    Request: { "refresh": "JWT_REFRESH_TOKEN" }
+    Response: { "access": "NEW_ACCESS_TOKEN", "refresh": "NEW_REFRESH_TOKEN" (if rotation) }
+    """
+
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        """Handle token refresh request."""
+        serializer = TokenRefreshSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            errors = serializer.errors
+            # Handle error wrapper from validation errors
+            if "error" in errors:
+                error_data = errors["error"]
+                if isinstance(error_data, list) and len(error_data) > 0:
+                    return Response(
+                        {"error": error_data[0]}, status=status.HTTP_401_UNAUTHORIZED
+                    )
+                return Response(
+                    {"error": error_data}, status=status.HTTP_401_UNAUTHORIZED
+                )
+            if "non_field_errors" in errors:
+                error_detail = errors["non_field_errors"][0]
+                if isinstance(error_detail, dict) and "error" in error_detail:
+                    return Response(error_detail, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {
+                    "error": {
+                        "code": AUTH_ERROR_CODES["token_invalid"],
+                        "message": "Invalid refresh token.",
+                    }
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+class MeView(APIView):
+    """
+    Get current user information.
+
+    GET /api/auth/me
+    Response: { "id", "username", "email", "full_name", "role", "is_active" }
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """Return current user information."""
+        return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
+
+
+# Legacy view for backward compatibility (deprecated)
 class EmailTokenObtainPairView(TokenObtainPairView):
     """
-    A custom token obtain pair view that authenticates with email and password.
+    DEPRECATED: Use UnifiedLoginView at /api/auth/login instead.
 
-    This view extends the `TokenObtainPairView` from `rest_framework_simplejwt`
-    to use a custom serializer, `EmailTokenObtainPairSerializer`, which allows
-    users to log in using their email address instead of a username.
+    A custom token obtain pair view that authenticates with email and password.
+    Kept for backward compatibility during transition period.
     """
 
     serializer_class = EmailTokenObtainPairSerializer  # type: ignore[assignment]
