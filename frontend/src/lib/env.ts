@@ -23,7 +23,7 @@ interface Env {
  * @property {boolean} isProduction True if the application is in production mode.
  */
 export const env: Env = {
-  apiBaseUrl: '',
+  apiBaseUrl: import.meta.env.VITE_API_URL || '',
   isDevelopment: import.meta.env.DEV,
   isProduction: import.meta.env.PROD,
 }
