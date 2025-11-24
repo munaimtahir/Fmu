@@ -58,10 +58,10 @@ export const LoginPage: React.FC = () => {
       // Navigate to dashboard
       navigate('/dashboard')
     } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : 'Invalid credentials. Please check your email and password.'
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : 'Invalid credentials. Please check your email and password.'
       
       setError(errorMessage)
       
@@ -88,9 +88,9 @@ export const LoginPage: React.FC = () => {
 
         <FormField
           {...register('email')}
-          label="Email Address"
+          label="Email"
           type="email"
-          placeholder="you@university.edu"
+          placeholder="you@example.com"
           error={errors.email?.message}
           autoComplete="email"
           autoFocus

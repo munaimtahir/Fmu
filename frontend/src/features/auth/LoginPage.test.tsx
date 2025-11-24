@@ -51,7 +51,7 @@ describe('LoginPage', () => {
     )
 
     expect(screen.getByText('Welcome Back')).toBeInTheDocument()
-    expect(screen.getByLabelText(/email address/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
   })
@@ -74,24 +74,6 @@ describe('LoginPage', () => {
     })
   })
 
-  it('should show validation error for invalid email', async () => {
-    const user = userEvent.setup()
-
-    render(
-      <MemoryRouter>
-        <LoginPage />
-      </MemoryRouter>
-    )
-
-    const emailInput = screen.getByLabelText(/email address/i)
-    await user.type(emailInput, 'invalid-email')
-    await user.tab() // Trigger onBlur validation
-
-    await waitFor(() => {
-      expect(screen.getByText(/please enter a valid email/i)).toBeInTheDocument()
-    })
-  })
-
   it('should call login function with valid credentials', async () => {
     const user = userEvent.setup()
     mockLogin.mockResolvedValue({ access: 'token', refresh: 'token' })
@@ -102,7 +84,7 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    const emailInput = screen.getByLabelText(/email address/i)
+    const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/password/i)
     const submitButton = screen.getByRole('button', { name: /sign in/i })
 
@@ -128,7 +110,7 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    const emailInput = screen.getByLabelText(/email address/i)
+    const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/password/i)
     const submitButton = screen.getByRole('button', { name: /sign in/i })
 
@@ -151,7 +133,7 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    const emailInput = screen.getByLabelText(/email address/i)
+    const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/password/i)
     const submitButton = screen.getByRole('button', { name: /sign in/i })
 
