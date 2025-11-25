@@ -9,8 +9,10 @@ import { Input } from '@/components/ui/Input'
 
 interface Section {
   id: number
-  course: { code: string; title: string }
-  term: { name: string }
+  course: number
+  course_detail?: { id: number; code: string; title: string; credits: number; program: number }
+  term: string
+  teacher_name?: string
 }
 
 interface Assessment {
@@ -277,8 +279,9 @@ export function Gradebook() {
             <option value="">-- Choose Section --</option>
             {sections.map((section) => (
               <option key={section.id} value={section.id}>
-                {section.course.code} - {section.course.title} (
-                {section.term.name})
+                {section.course_detail
+                  ? `${section.course_detail.code} - ${section.course_detail.title} (${section.term})`
+                  : `Section ${section.id} - ${section.term}`}
               </option>
             ))}
           </select>
