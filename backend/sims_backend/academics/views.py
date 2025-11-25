@@ -18,23 +18,25 @@ from .serializers import (
 
 
 class TermViewSet(viewsets.ModelViewSet):
-    queryset = Term.objects.all()
+    queryset = Term.objects.all().order_by("id")
     serializer_class = TermSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["status"]
     search_fields = ["name"]
     ordering_fields = ["id", "name", "start_date", "end_date"]
+    ordering = ["id"]
 
 
 class ProgramViewSet(viewsets.ModelViewSet):
-    queryset = Program.objects.all()
+    queryset = Program.objects.all().order_by("id")
     serializer_class = ProgramSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["name"]
     search_fields = ["name"]
     ordering_fields = ["id", "name"]
+    ordering = ["id"]
 
 
 class CourseFilter(FilterSet):
@@ -46,17 +48,18 @@ class CourseFilter(FilterSet):
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
+    queryset = Course.objects.all().order_by("id")
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = CourseFilter
     search_fields = ["code", "title"]
     ordering_fields = ["id", "code", "title", "credits"]
+    ordering = ["id"]
 
 
 class SectionViewSet(viewsets.ModelViewSet):
-    queryset = Section.objects.all()
+    queryset = Section.objects.all().order_by("id")
     serializer_class = SectionSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -70,6 +73,7 @@ class SectionViewSet(viewsets.ModelViewSet):
         "teacher_name",
     ]
     ordering_fields = ["id", "term", "teacher_name"]
+    ordering = ["id"]
 
     def get_queryset(self):
         """Filter sections based on user role"""

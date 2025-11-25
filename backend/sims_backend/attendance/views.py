@@ -18,12 +18,13 @@ from .utils import (
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):
-    queryset = Attendance.objects.all()
+    queryset = Attendance.objects.all().order_by("id")
     serializer_class = AttendanceSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["section__course__code", "student__reg_no", "date"]
     ordering_fields = ["id", "date"]
+    ordering = ["id"]
 
     def update(self, request, *args, **kwargs):
         """Update attendance record with same-day edit restriction."""
