@@ -18,7 +18,7 @@ from .utils import (
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):
-    queryset = Attendance.objects.all().order_by("id")
+    queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [SearchFilter, OrderingFilter]

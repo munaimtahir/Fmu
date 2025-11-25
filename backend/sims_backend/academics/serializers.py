@@ -26,17 +26,6 @@ class CourseSerializer(serializers.ModelSerializer):
 User = get_user_model()
 
 
-class SectionListSerializer(serializers.ModelSerializer):
-    """Serializer for listing sections with nested course data for frontend display."""
-
-    course = CourseSerializer(read_only=True)
-    teacher_name = serializers.CharField(required=False, allow_blank=True)
-
-    class Meta:
-        model = Section
-        fields = ["id", "course", "term", "teacher", "teacher_name", "capacity"]
-
-
 class SectionSerializer(serializers.ModelSerializer):
     teacher_name = serializers.CharField(required=False, allow_blank=True)
     teacher = serializers.PrimaryKeyRelatedField(

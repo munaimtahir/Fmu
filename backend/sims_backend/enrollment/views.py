@@ -13,7 +13,7 @@ from .serializers import EnrollmentSerializer
 
 
 class EnrollmentViewSet(viewsets.ModelViewSet):
-    queryset = Enrollment.objects.all().order_by("id")
+    queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [SearchFilter, OrderingFilter]

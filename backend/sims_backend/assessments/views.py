@@ -9,7 +9,7 @@ from .serializers import AssessmentScoreSerializer, AssessmentSerializer
 
 
 class AssessmentViewSet(viewsets.ModelViewSet):
-    queryset = Assessment.objects.all().order_by("id")
+    queryset = Assessment.objects.all()
     serializer_class = AssessmentSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [SearchFilter, OrderingFilter]
@@ -19,7 +19,7 @@ class AssessmentViewSet(viewsets.ModelViewSet):
 
 
 class AssessmentScoreViewSet(viewsets.ModelViewSet):
-    queryset = AssessmentScore.objects.all().order_by("id")
+    queryset = AssessmentScore.objects.all()
     serializer_class = AssessmentScoreSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [SearchFilter, OrderingFilter]

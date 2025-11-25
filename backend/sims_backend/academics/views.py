@@ -18,7 +18,7 @@ from .serializers import (
 
 
 class TermViewSet(viewsets.ModelViewSet):
-    queryset = Term.objects.all().order_by("id")
+    queryset = Term.objects.all()
     serializer_class = TermSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -29,7 +29,7 @@ class TermViewSet(viewsets.ModelViewSet):
 
 
 class ProgramViewSet(viewsets.ModelViewSet):
-    queryset = Program.objects.all().order_by("id")
+    queryset = Program.objects.all()
     serializer_class = ProgramSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -48,7 +48,7 @@ class CourseFilter(FilterSet):
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all().order_by("id")
+    queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -59,7 +59,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class SectionViewSet(viewsets.ModelViewSet):
-    queryset = Section.objects.all().order_by("id")
+    queryset = Section.objects.all()
     serializer_class = SectionSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]

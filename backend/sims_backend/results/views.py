@@ -12,7 +12,7 @@ from .serializers import PendingChangeSerializer, ResultSerializer
 
 
 class ResultViewSet(viewsets.ModelViewSet):
-    queryset = Result.objects.all().order_by("id")
+    queryset = Result.objects.all()
     serializer_class = ResultSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [SearchFilter, OrderingFilter]
@@ -254,7 +254,7 @@ class ResultViewSet(viewsets.ModelViewSet):
 
 
 class PendingChangeViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = PendingChange.objects.all().order_by("id")
+    queryset = PendingChange.objects.all()
     serializer_class = PendingChangeSerializer
     permission_classes = [IsAuthenticated, IsAdminOrRegistrarReadOnlyFacultyStudent]
     filter_backends = [SearchFilter, OrderingFilter]
