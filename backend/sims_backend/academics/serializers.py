@@ -26,11 +26,24 @@ class CourseSerializer(serializers.ModelSerializer):
 User = get_user_model()
 
 
+class SectionListSerializer(serializers.ModelSerializer):
+    """Serializer for listing sections with nested course data for frontend display."""
+
+    course = CourseSerializer(read_only=True)
+    teacher_name = serializers.CharField(required=False, allow_blank=True)
+
+    class Meta:
+        model = Section
+        fields = ["id", "course", "term", "teacher", "teacher_name", "capacity"]
+
+
 class SectionSerializer(serializers.ModelSerializer):
     teacher_name = serializers.CharField(required=False, allow_blank=True)
     teacher = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), allow_null=True, required=False
     )
+    # Nested course data for read operations
+    course_detail = CourseSerializer(source="course", read_only=True)
 
     def to_internal_value(self, data):
         """Allow creating sections with either a teacher id or a teacher name.
@@ -73,4 +86,12 @@ class SectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Section
-        fields = ["id", "course", "term", "teacher", "teacher_name", "capacity"]
+        fields = [
+            "id",
+            "course",
+            "course_detail",
+            "term",
+            "teacher",
+            "teacher_name",
+            "capacity",
+        ]
