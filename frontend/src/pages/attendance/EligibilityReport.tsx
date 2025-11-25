@@ -9,8 +9,10 @@ import { Input } from '@/components/ui/Input'
 
 interface Section {
   id: number
-  course: { code: string; title: string }
-  term: { name: string }
+  course: number
+  course_detail?: { id: number; code: string; title: string; credits: number; program: number }
+  term: string
+  teacher_name?: string
 }
 
 interface EligibilityRecord {
@@ -216,8 +218,9 @@ export function EligibilityReport() {
                     className="rounded"
                   />
                   <span className="text-sm">
-                    {section.course.code} - {section.course.title} (
-                    {section.term.name})
+                    {section.course_detail
+                      ? `${section.course_detail.code} - ${section.course_detail.title} (${section.term})`
+                      : `Section ${section.id} - ${section.term}`}
                   </span>
                 </label>
               ))}

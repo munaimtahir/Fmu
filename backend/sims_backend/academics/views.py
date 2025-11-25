@@ -25,6 +25,7 @@ class TermViewSet(viewsets.ModelViewSet):
     filterset_fields = ["status"]
     search_fields = ["name"]
     ordering_fields = ["id", "name", "start_date", "end_date"]
+    ordering = ["id"]
 
 
 class ProgramViewSet(viewsets.ModelViewSet):
@@ -35,6 +36,7 @@ class ProgramViewSet(viewsets.ModelViewSet):
     filterset_fields = ["name"]
     search_fields = ["name"]
     ordering_fields = ["id", "name"]
+    ordering = ["id"]
 
 
 class CourseFilter(FilterSet):
@@ -53,6 +55,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     filterset_class = CourseFilter
     search_fields = ["code", "title"]
     ordering_fields = ["id", "code", "title", "credits"]
+    ordering = ["id"]
 
 
 class SectionViewSet(viewsets.ModelViewSet):
@@ -70,6 +73,7 @@ class SectionViewSet(viewsets.ModelViewSet):
         "teacher_name",
     ]
     ordering_fields = ["id", "term", "teacher_name"]
+    ordering = ["id"]
 
     def get_queryset(self):
         """Filter sections based on user role"""

@@ -15,6 +15,7 @@ class AssessmentViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["section__course__code", "type"]
     ordering_fields = ["id", "weight"]
+    ordering = ["id"]
 
 
 class AssessmentScoreViewSet(viewsets.ModelViewSet):
@@ -24,3 +25,4 @@ class AssessmentScoreViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["assessment__section__course__code", "student__reg_no"]
     ordering_fields = ["id", "score", "max_score"]
+    ordering = ["id"]

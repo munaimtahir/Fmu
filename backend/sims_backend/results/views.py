@@ -18,6 +18,7 @@ class ResultViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["student__reg_no", "section__course__code", "final_grade"]
     ordering_fields = ["id", "published_at"]
+    ordering = ["id"]
 
     def update(self, request, *args, **kwargs):
         """Override update to prevent editing published or frozen results"""
@@ -259,3 +260,4 @@ class PendingChangeViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["result__student__reg_no", "status"]
     ordering_fields = ["id", "requested_at", "resolved_at"]
+    ordering = ["id"]

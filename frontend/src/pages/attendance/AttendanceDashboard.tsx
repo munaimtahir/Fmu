@@ -8,13 +8,16 @@ import { Alert } from '@/components/ui/Alert'
 
 interface Section {
   id: number
-  course: { code: string; title: string }
-  term: { name: string }
+  course: number
+  course_detail?: { id: number; code: string; title: string; credits: number; program: number }
+  term: string
+  teacher_name?: string
 }
 
 interface AttendanceRecord {
   id: number
-  student: { reg_no: string; full_name: string }
+  student: number
+  student_detail?: { id: number; reg_no: string; name: string; program: string; status: string }
   section: number
   date: string
   present: boolean
@@ -113,14 +116,14 @@ export function AttendanceDashboard() {
 
   const attendanceColumns = [
     {
-      key: 'student.reg_no',
+      key: 'student_detail.reg_no',
       label: 'Reg No',
-      render: (record: AttendanceRecord) => record.student.reg_no,
+      render: (record: AttendanceRecord) => record.student_detail?.reg_no || '-',
     },
     {
-      key: 'student.full_name',
+      key: 'student_detail.name',
       label: 'Student Name',
-      render: (record: AttendanceRecord) => record.student.full_name,
+      render: (record: AttendanceRecord) => record.student_detail?.name || '-',
     },
     { key: 'date', label: 'Date' },
     {
@@ -205,8 +208,9 @@ export function AttendanceDashboard() {
             <option value="">-- Choose Section --</option>
             {sections.map((section) => (
               <option key={section.id} value={section.id}>
-                {section.course.code} - {section.course.title} (
-                {section.term.name})
+                {section.course_detail
+                  ? `${section.course_detail.code} - ${section.course_detail.title} (${section.term})`
+                  : `Section ${section.id} - ${section.term}`}
               </option>
             ))}
           </select>

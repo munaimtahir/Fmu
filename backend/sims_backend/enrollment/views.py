@@ -19,6 +19,7 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["student__reg_no", "section__course__code", "status"]
     ordering_fields = ["id", "status", "enrolled_at"]
+    ordering = ["id"]
 
 
 @api_view(["POST"])
