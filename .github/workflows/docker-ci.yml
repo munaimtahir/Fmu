@@ -153,7 +153,7 @@ jobs:
           EOF
 
       - name: Build all services (dev stack)
-        run: docker compose build --no-cache
+        run: docker compose build
 
       - name: Verify images were built
         run: |
@@ -161,7 +161,7 @@ jobs:
           docker compose config --services
 
       - name: Build production services
-        run: docker compose -f docker-compose.prod.yml build --no-cache
+        run: docker compose -f docker-compose.prod.yml build
 
   # Summary job that depends on all others
   docker-ci-success:
