@@ -4,6 +4,7 @@ import logging
 
 from django.db.models import Count, ExpressionWrapper, F, FloatField, Q
 from rest_framework import status
+from rest_framework.authentication import BaseAuthentication
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -43,7 +44,7 @@ class UnifiedLoginView(APIView):
     """
 
     permission_classes = [AllowAny]
-    authentication_classes = []
+    authentication_classes: list[BaseAuthentication] = []
 
     def post(self, request):
         """Handle login request."""
@@ -127,7 +128,7 @@ class TokenRefreshView(APIView):
     """
 
     permission_classes = [AllowAny]
-    authentication_classes = []
+    authentication_classes: list[BaseAuthentication] = []
 
     def post(self, request):
         """Handle token refresh request."""
