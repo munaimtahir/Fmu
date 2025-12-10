@@ -1,4 +1,4 @@
-# Deployment Checklist for 172.237.71.40
+# Deployment Checklist for 172.237.71.40 and 139.162.9.224
 
 ## Pre-Deployment Steps
 
@@ -23,9 +23,9 @@ nano .env
 - [ ] `DJANGO_SECRET_KEY` - Generate new secret key
 - [ ] `DJANGO_DEBUG=False` - Must be False for production
 - [ ] `DB_PASSWORD` - Set strong database password
-- [ ] `DJANGO_ALLOWED_HOSTS` - Verify includes 172.237.71.40
-- [ ] `CORS_ALLOWED_ORIGINS` - Verify includes http://172.237.71.40
-- [ ] `CSRF_TRUSTED_ORIGINS` - Verify includes http://172.237.71.40
+- [ ] `DJANGO_ALLOWED_HOSTS` - Verify includes `139.162.9.224` (and any other active VPS IPs)
+- [ ] `CORS_ALLOWED_ORIGINS` - Verify includes `http://139.162.9.224` and `http://139.162.9.224:81`
+- [ ] `CSRF_TRUSTED_ORIGINS` - Verify includes `http://139.162.9.224` and `http://139.162.9.224:81`
 
 **Generate Django Secret Key:**
 ```bash
@@ -76,18 +76,18 @@ sims_rqworker      Up (healthy)
 sims_nginx         Up (healthy)
 ```
 
-### 3. Test Health Endpoints
+### 3. Test Health Endpoints (example: 139.162.9.224)
 ```bash
 # Test nginx health
-curl http://172.237.71.40:81/health
+curl http://139.162.9.224:81/health
 # Expected: healthy
 
 # Test backend health
-curl -I http://172.237.71.40:81/api/
+curl -I http://139.162.9.224:81/api/
 # Expected: HTTP/1.1 200 OK
 
 # Test frontend
-curl -I http://172.237.71.40:81/
+curl -I http://139.162.9.224:81/
 # Expected: HTTP/1.1 200 OK
 ```
 
@@ -103,11 +103,11 @@ docker compose -f docker-compose.prod.yml exec backend python manage.py seed_dem
 
 ## Post-Deployment Verification
 
-### Access Points
-- [ ] Frontend: http://172.237.71.40:81/
-- [ ] API Docs: http://172.237.71.40:81/api/docs/
-- [ ] Admin Panel: http://172.237.71.40:81/admin/
-- [ ] Health Check: http://172.237.71.40:81/health
+### Access Points (for chosen VPS IP, e.g., 139.162.9.224)
+- [ ] Frontend: `http://<VPS_IP>:81/` (e.g., `http://139.162.9.224:81/`)
+- [ ] API Docs: `http://<VPS_IP>:81/api/docs/` (e.g., `http://139.162.9.224:81/api/docs/`)
+- [ ] Admin Panel: `http://<VPS_IP>:81/admin/` (e.g., `http://139.162.9.224:81/admin/`)
+- [ ] Health Check: `http://<VPS_IP>:81/health` (e.g., `http://139.162.9.224:81/health`)
 
 ### Test Functionality
 - [ ] Can access frontend

@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "DJANGO_ALLOWED_HOSTS",
-        "172.235.33.181,104.64.0.164,172.237.71.40,localhost,127.0.0.1",
+        "172.235.33.181,104.64.0.164,172.237.71.40,139.162.9.224,localhost,127.0.0.1",
     ).split(",")
 ]
 
@@ -211,7 +211,7 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81",
+        "http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81",
     ).split(",")
 ]
 
@@ -222,7 +222,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CSRF_TRUSTED_ORIGINS",
-        "http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81",
+        "http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81",
     ).split(",")
 ]
 

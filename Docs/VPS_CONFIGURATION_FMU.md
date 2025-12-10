@@ -2,7 +2,7 @@
 
 ## Target VPS Information
 
-- **VPS IPs**: `172.235.33.181` (new), `104.64.0.164` (existing), `172.237.71.40` (additional)
+- **VPS IPs**: `172.235.33.181` (new), `104.64.0.164` (existing), `172.237.71.40` (additional), `139.162.9.224` (new deployment)
 - **Application**: FMU Student Information Management System (SIMS)
 - **Stack**: Django + React + PostgreSQL + Redis + Nginx
 
@@ -10,7 +10,7 @@
 
 To avoid conflicts with the existing `lab` application on the same VPS, FMU uses dedicated ports:
 
-| Service | Container Port | Host Port | Access URL (replace `<VPS_IP>` with `172.235.33.181`, `104.64.0.164`, or `172.237.71.40`) |
+| Service | Container Port | Host Port | Access URL (replace `<VPS_IP>` with `172.235.33.181`, `104.64.0.164`, `172.237.71.40`, or `139.162.9.224`) |
 |---------|---------------|-----------|------------|
 | Nginx (HTTP) | 80 | 81 | `http://<VPS_IP>:81` |
 | Nginx (HTTPS) | 443 | 444 | `https://<VPS_IP>:444` (when TLS configured) |
@@ -23,9 +23,9 @@ To avoid conflicts with the existing `lab` application on the same VPS, FMU uses
 
 ### Production Access (via Nginx)
 
-- **Frontend (SPA)**: `http://<VPS_IP>:81`
-- **Backend API**: `http://<VPS_IP>:81/api/`
-- **Django Admin**: `http://<VPS_IP>:81/admin/`
+- **Frontend (SPA)**: `http://<VPS_IP>:81` (e.g., `http://139.162.9.224:81`)
+- **Backend API**: `http://<VPS_IP>:81/api/` (e.g., `http://139.162.9.224:81/api/`)
+- **Django Admin**: `http://<VPS_IP>:81/admin/` (e.g., `http://139.162.9.224:81/admin/`)
 - **Static Files**: `http://<VPS_IP>:81/static/`
 - **Media Files**: `http://<VPS_IP>:81/media/`
 
@@ -41,14 +41,14 @@ The following environment variables are configured in `.env` file for production
 # Core Django configuration
 DJANGO_SECRET_KEY=CHANGE_ME_IN_PRODUCTION
 DJANGO_DEBUG=False
-DJANGO_ALLOWED_HOSTS=172.235.33.181,104.64.0.164,172.237.71.40,localhost,127.0.0.1
+DJANGO_ALLOWED_HOSTS=172.235.33.181,104.64.0.164,172.237.71.40,139.162.9.224,localhost,127.0.0.1
 
 # CORS / CSRF configuration
-CORS_ALLOWED_ORIGINS=http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81
-CSRF_TRUSTED_ORIGINS=http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81
+CORS_ALLOWED_ORIGINS=http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81
+CSRF_TRUSTED_ORIGINS=http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81
 
 # Frontend configuration
-VITE_API_URL=http://172.237.71.40:81/api  # swap to 172.235.33.181 or 104.64.0.164 if deploying there
+VITE_API_URL=http://139.162.9.224:81/api  # or swap to 172.235.33.181, 104.64.0.164, or 172.237.71.40 if deploying there
 
 # Database (internal Docker network)
 DB_ENGINE=django.db.backends.postgresql
@@ -65,14 +65,14 @@ REDIS_PORT=6379
 
 ## Configuration Files Consistency Check
 
-All configuration files are aligned with the VPS IPs `172.235.33.181`, `104.64.0.164`, and `172.237.71.40` and port mappings:
+All configuration files are aligned with the VPS IPs `172.235.33.181`, `104.64.0.164`, `172.237.71.40`, and `139.162.9.224` and port mappings:
 
 ### ✅ `.env.example`
 - `DJANGO_DEBUG=False`
-- `DJANGO_ALLOWED_HOSTS=172.235.33.181,104.64.0.164,172.237.71.40,localhost,127.0.0.1`
-- `CORS_ALLOWED_ORIGINS=http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81`
-- `CSRF_TRUSTED_ORIGINS=http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81`
-- `VITE_API_URL=http://172.237.71.40:81/api` (swap to `172.235.33.181` or `104.64.0.164` when deploying there)
+- `DJANGO_ALLOWED_HOSTS=172.235.33.181,104.64.0.164,172.237.71.40,139.162.9.224,localhost,127.0.0.1`
+- `CORS_ALLOWED_ORIGINS=http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81`
+- `CSRF_TRUSTED_ORIGINS=http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81`
+- `VITE_API_URL=http://139.162.9.224:81/api` (or swap to `172.235.33.181`, `104.64.0.164`, or `172.237.71.40` when deploying there)
 
 ### ✅ `docker-compose.yml` (Development)
 - Backend: `8001:8000`
@@ -89,7 +89,7 @@ All configuration files are aligned with the VPS IPs `172.235.33.181`, `104.64.0
 - Redis: Internal only (no external port)
 
 ### ✅ `nginx/conf.d/production.conf`
-- `server_name 172.235.33.181 104.64.0.164 172.237.71.40 localhost 127.0.0.1`
+- `server_name 172.235.33.181 104.64.0.164 172.237.71.40 139.162.9.224 localhost 127.0.0.1`
 - Proxy `/api/` → `backend:8000`
 - Proxy `/admin/` → `backend:8000`
 - Serve static files from `/app/static/`
@@ -97,9 +97,9 @@ All configuration files are aligned with the VPS IPs `172.235.33.181`, `104.64.0
 - Serve React SPA from `/app/frontend/`
 
 ### ✅ `backend/sims_backend/settings.py`
-- `ALLOWED_HOSTS` reads from `DJANGO_ALLOWED_HOSTS` env var (default: `172.235.33.181,104.64.0.164,172.237.71.40,localhost,127.0.0.1`)
-- `CORS_ALLOWED_ORIGINS` reads from env var (default: `http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81`)
-- `CSRF_TRUSTED_ORIGINS` reads from env var (default: `http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81`)
+- `ALLOWED_HOSTS` reads from `DJANGO_ALLOWED_HOSTS` env var (default: `172.235.33.181,104.64.0.164,172.237.71.40,139.162.9.224,localhost,127.0.0.1`)
+- `CORS_ALLOWED_ORIGINS` reads from env var (default: `http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81`)
+- `CSRF_TRUSTED_ORIGINS` reads from env var (default: `http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81`)
 - `DEBUG` reads from `DJANGO_DEBUG` env var (default: `False`)
 
 ### ✅ `frontend/Dockerfile.prod`
