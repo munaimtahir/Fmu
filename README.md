@@ -427,6 +427,7 @@ docker compose -f docker-compose.prod.yml exec backend python manage.py createsu
 
 Complete documentation is available in the [docs/](docs/) directory:
 
+- **[Repository Structure](docs/REPO_STRUCTURE.md)** - Directory organization guide
 - **[Architecture](docs/ARCHITECTURE.md)** - System design and components
 - **[API Reference](docs/API.md)** - Complete endpoint documentation  
 - **[Data Model](docs/DATAMODEL.md)** - Database schema and ERD
