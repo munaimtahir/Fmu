@@ -580,5 +580,5 @@ If tests fail, consult:
 ## Version
 
 - **Test Plan Version**: 1.0
-- **Last Updated**: 2024
+- **Last Updated**: December 24, 2024
 - **Compatible with**: SIMS v1.0+
