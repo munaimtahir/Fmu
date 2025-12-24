@@ -418,9 +418,50 @@ docker compose -f docker-compose.prod.yml exec backend python manage.py createsu
 - Configure `DJANGO_ALLOWED_HOSTS` with your domain
 - Enable HTTPS (see [docs/SECURITY_DEPLOYMENT.md](docs/SECURITY_DEPLOYMENT.md))
 
+### Keystone Deployment (Path-Based Routing)
+
+SIMS is **fully compatible with Keystone** deployments using path-based routing (e.g., `http://VPS_IP/{APP_SLUG}/`).
+
+**Quick Keystone Setup:**
+
+```bash
+# 1. Clone and configure
+git clone https://github.com/munaimtahir/Fmu.git && cd Fmu
+cp .env.example .env
+
+# 2. Configure for Keystone (edit .env)
+FORCE_SCRIPT_NAME=/sims           # Your app slug (no trailing slash)
+SESSION_COOKIE_PATH=/sims/         # With trailing slash
+CSRF_COOKIE_PATH=/sims/            # With trailing slash
+VITE_BASE_PATH=/sims/              # Frontend base path
+
+# 3. Build and deploy
+docker compose up -d --build
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py collectstatic --noinput
+
+# 4. Configure Traefik labels (add to docker-compose.yml)
+# See docs/KEYSTONE_DEPLOYMENT.md for complete Traefik configuration
+
+# Access at: http://VPS_IP/sims/
+```
+
+**Key Features:**
+- ✅ Path-based routing support (`/{APP_SLUG}/...`)
+- ✅ Static files work correctly under subpath
+- ✅ API calls respect subpath routing
+- ✅ Sessions and cookies properly scoped
+- ✅ Works with Traefik reverse proxy
+- ✅ Backward compatible (still works at root `/` for standard deployments)
+
+**Documentation:**
+- **[Complete Keystone Guide](docs/KEYSTONE_DEPLOYMENT.md)** - Full deployment instructions
+- **[Keystone Test Plan](docs/KEYSTONE_TEST_PLAN.md)** - Testing and verification
+
 **Complete guides:**
 - [docs/SETUP.md](docs/SETUP.md) - Detailed deployment instructions
 - [docs/SECURITY_DEPLOYMENT.md](docs/SECURITY_DEPLOYMENT.md) - Production security
+- [docs/KEYSTONE_DEPLOYMENT.md](docs/KEYSTONE_DEPLOYMENT.md) - Keystone path-based routing
 - [docs/CI-CD.md](docs/CI-CD.md) - CI/CD pipeline documentation
 
 ## 📄 Documentation
@@ -433,6 +474,7 @@ Complete documentation is available in the [docs/](docs/) directory:
 - **[Data Model](docs/DATAMODEL.md)** - Database schema and ERD
 - **[Setup Guide](docs/SETUP.md)** - Deployment and configuration
 - **[Security & Deployment](docs/SECURITY_DEPLOYMENT.md)** - Production security guide
+- **[Keystone Deployment](docs/KEYSTONE_DEPLOYMENT.md)** - Path-based routing for Keystone
 - **[Email Configuration](docs/EMAIL_CONFIG.md)** - Email setup guide
 - **[Contributing](CONTRIBUTING.md)** - Contribution guidelines
 - **[Changelog](docs/CHANGELOG.md)** - Version history

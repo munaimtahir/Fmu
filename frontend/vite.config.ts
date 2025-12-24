@@ -5,6 +5,10 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // Keystone compatibility: Support deployment under subpath (e.g., /{APP_SLUG}/)
+  // For local dev: leave empty or set to '/' (default)
+  // For Keystone: set VITE_BASE_PATH to '/{APP_SLUG}/' in production
+  base: process.env.VITE_BASE_PATH || '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
