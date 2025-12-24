@@ -21,11 +21,15 @@ import { AssessmentsPage } from '@/features/assessments/AssessmentsPage'
 import { BulkEnrollmentPage } from '@/features/enrollment/BulkEnrollmentPage'
 import { BulkAttendancePage } from '@/features/attendance/BulkAttendancePage'
 import { AnalyticsDashboard } from '@/features/analytics/AnalyticsDashboard'
+import { env } from '@/lib/env'
 
 /**
  * Application routes configuration
  * Public routes: /login
  * Protected routes: /dashboard and role-specific dashboards
+ * 
+ * Keystone compatibility: Uses basename from env.basePath to support
+ * deployment under subpaths (e.g., /{APP_SLUG}/)
  */
 export const router = createBrowserRouter([
   {
@@ -196,4 +200,6 @@ export const router = createBrowserRouter([
     path: '*',
     element: <Navigate to="/dashboard" replace />,
   },
-])
+], {
+  basename: env.basePath !== '/' ? env.basePath.replace(/\/$/, '') : undefined,
+})

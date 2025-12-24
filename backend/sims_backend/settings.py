@@ -38,6 +38,23 @@ ALLOWED_HOSTS = [
     ).split(",")
 ]
 
+# =============================================================================
+# Keystone Deployment Configuration (Path-based Routing)
+# =============================================================================
+# FORCE_SCRIPT_NAME: Tells Django it's running under a subpath (e.g., /sims/)
+# This makes all reverse() URLs and redirects respect the subpath.
+# For local dev: Leave empty or set to None (default)
+# For Keystone: Set to '/{APP_SLUG}' (e.g., '/sims' or '/fmu') WITHOUT trailing slash
+FORCE_SCRIPT_NAME = os.getenv("FORCE_SCRIPT_NAME", None)
+
+# USE_X_FORWARDED_HOST: Trust X-Forwarded-Host header from reverse proxy (Traefik)
+# This is essential for correct URL generation behind a reverse proxy
+USE_X_FORWARDED_HOST = os.getenv("USE_X_FORWARDED_HOST", "True").lower() == "true"
+
+# SECURE_PROXY_SSL_HEADER: Trust X-Forwarded-Proto header for HTTPS detection
+# Uncomment when using HTTPS with Traefik SSL termination
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 
 # Application definition
 
@@ -156,6 +173,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# Keystone compatibility: STATIC_URL and MEDIA_URL respect FORCE_SCRIPT_NAME
+# Django will automatically prepend FORCE_SCRIPT_NAME when generating URLs
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
@@ -225,6 +244,13 @@ CSRF_TRUSTED_ORIGINS = [
         "http://172.235.33.181,http://172.235.33.181:81,http://104.64.0.164,http://104.64.0.164:81,http://172.237.71.40,http://172.237.71.40:81,http://139.162.9.224,http://139.162.9.224:81,http://localhost,http://localhost:81,http://127.0.0.1,http://127.0.0.1:81",
     ).split(",")
 ]
+
+# Keystone compatibility: Cookie paths for subpath routing
+# When deploying under a subpath, cookies must be scoped to that path
+# For local dev: Leave as '/' (default)
+# For Keystone: Set to '/{APP_SLUG}/' to match FORCE_SCRIPT_NAME
+SESSION_COOKIE_PATH = os.getenv("SESSION_COOKIE_PATH", "/")
+CSRF_COOKIE_PATH = os.getenv("CSRF_COOKIE_PATH", "/")
 
 # Redis/RQ Settings
 RQ_QUEUES = {
